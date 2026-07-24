@@ -879,6 +879,7 @@ git commit -m "feat: add roadmap graph with cycle detection and unlock logic"
   - `readRoadmap(root?: string): Roadmap` and `readLessonFiles(root?: string): LessonFile[]` from `scripts/lib/content-io.ts`, where `LessonFile = { file: string; slug: string; frontmatter: unknown; body: string }`. Tasks 5 and 6 reuse both.
   - `parseFrontmatter(raw: string): { frontmatter: Record<string, unknown>; body: string }`.
   - `validateContent(roadmap: Roadmap, lessons: LessonFile[]): string[]` — returns human-readable error strings, empty when valid.
+  - `isPendingLesson(error: string): boolean` — true for "node declared but its lesson file is not written yet", the one error class that does not fail a non-strict run.
 
 - [ ] **Step 1: Write the failing validation test**
 
@@ -993,9 +994,30 @@ describe('validateContent', () => {
   });
 });
 
+describe('isPendingLesson', () => {
+  it('recognises a missing-lesson error', () => {
+    expect(isPendingLesson('Node "numpy" has a missing lesson file (expected slug "numpy").')).toBe(true);
+  });
+
+  it('does not treat other errors as pending', () => {
+    expect(isPendingLesson('Orphan lesson content/lessons/00-x.md is not referenced by any roadmap node.')).toBe(false);
+    expect(isPendingLesson('Prerequisite cycle detected: a -> b -> a.')).toBe(false);
+  });
+});
+
 describe('the real content directory', () => {
-  it('passes every validation rule', () => {
-    expect(validateContent(readRoadmap(), readLessonFiles())).toEqual([]);
+  // roadmap.json declares all 34 lessons from Task 3 onward, but the lesson
+  // files arrive incrementally in Tasks 11-15. A node without its file yet is
+  // "pending", not corruption. Every OTHER rule must hold at all times.
+  const errors = validateContent(readRoadmap(), readLessonFiles());
+
+  it('has no errors other than lessons not yet written', () => {
+    expect(errors.filter((e) => !isPendingLesson(e))).toEqual([]);
+  });
+
+  it('reports one pending error per unwritten lesson', () => {
+    const written = readLessonFiles().length;
+    expect(errors.filter(isPendingLesson)).toHaveLength(34 - written);
   });
 });
 ```
@@ -1153,15 +1175,41 @@ export function validateContent(roadmap: Roadmap, lessons: LessonFile[]): string
   return errors;
 }
 
+/**
+ * A node whose lesson file has not been written yet.
+ *
+ * roadmap.json declares the whole 34-lesson curriculum up front, while the
+ * lesson files land incrementally. That is a known-incomplete state, not
+ * corruption, so it does not fail the build unless --strict is passed.
+ */
+export function isPendingLesson(error: string): boolean {
+  return error.includes('has a missing lesson file');
+}
+
 function main(): void {
+  const strict = process.argv.includes('--strict');
   const errors = validateContent(readRoadmap(), readLessonFiles());
-  if (errors.length > 0) {
-    console.error(`\nContent validation failed with ${errors.length} error(s):\n`);
-    for (const error of errors) console.error(`  ✗ ${error}`);
+  const pending = errors.filter(isPendingLesson);
+  const hard = strict ? errors : errors.filter((e) => !isPendingLesson(e));
+
+  if (!strict && pending.length > 0) {
+    console.warn(`\n${pending.length} lesson(s) not written yet:\n`);
+    for (const error of pending) console.warn(`  ⚠ ${error}`);
+    console.warn('');
+  }
+
+  if (hard.length > 0) {
+    console.error(`\nContent validation failed with ${hard.length} error(s):\n`);
+    for (const error of hard) console.error(`  ✗ ${error}`);
     console.error('');
     process.exit(1);
   }
-  console.log('✓ Content validation passed.');
+
+  console.log(
+    pending.length > 0 && !strict
+      ? `✓ Content validation passed (${pending.length} lesson(s) still pending).`
+      : '✓ Content validation passed.',
+  );
 }
 
 if (import.meta.url === `file://${process.argv[1]}`) main();
@@ -1170,15 +1218,19 @@ if (import.meta.url === `file://${process.argv[1]}`) main();
 - [ ] **Step 5: Run the test to verify it passes**
 
 Run: `npx vitest run tests/scripts/validate-content.test.ts`
-Expected: PASS — 13 tests, including the real-content check against the two Stage 0 lessons.
+Expected: PASS — 17 tests, including the real-content checks against the two Stage 0 lessons.
 
-- [ ] **Step 6: Verify the CLI fails loudly on bad content**
+- [ ] **Step 6: Verify the CLI distinguishes pending lessons from real errors**
 
 Run: `npm run validate`
-Expected: `✓ Content validation passed.`
+Expected: exit code 0, a `⚠` warning line for each of the 32 unwritten lessons, then
+`✓ Content validation passed (32 lesson(s) still pending).`
 
-Then temporarily add `"prerequisites": ["ghost"]` to the `what-is-ai` node in `content/roadmap.json` and run again.
-Expected: exit code 1 and `✗ Node "what-is-ai" lists unknown prerequisite "ghost".`
+Run: `npm run validate -- --strict`
+Expected: exit code 1 — under `--strict` an unwritten lesson is a hard error. This is the mode CI uses once the curriculum is complete (Task 17).
+
+Then temporarily add `"prerequisites": ["ghost"]` to the `what-is-ai` node in `content/roadmap.json` and run `npm run validate` again.
+Expected: exit code 1 and `✗ Node "what-is-ai" lists unknown prerequisite "ghost".` — a real error fails even without `--strict`.
 
 Revert the change and confirm it passes again.
 
@@ -3182,10 +3234,13 @@ ls content/lessons/*.md | wc -l
 Expected: `34`
 
 ```bash
-npm run validate && npm run gen:curriculum && npm test && npx astro build
+npm run validate -- --strict && npm run gen:curriculum && npm test && npx astro build
 ```
 
-Expected: all pass; `CURRICULUM.md` reports `**34 lessons**`; the build emits 34 lesson pages.
+Expected: all pass. `--strict` is the point here: with the curriculum complete,
+zero lessons may remain pending, so this is the first moment strict validation
+can succeed. `CURRICULUM.md` reports `**34 lessons**`; the build emits 34 lesson
+pages.
 
 ```bash
 ls dist/lessons | wc -l
@@ -3336,7 +3391,7 @@ jobs:
       - run: npm ci
 
       - name: Validate content
-        run: npm run validate
+        run: npm run validate -- --strict
 
       - name: Run tests
         run: npm test
@@ -3364,10 +3419,11 @@ jobs:
 - [ ] **Step 2: Verify the workflow locally first**
 
 ```bash
-npm ci && npm run validate && npm test && npm run build
+npm ci && npm run validate -- --strict && npm test && npm run build
 ```
 
-Expected: every command exits 0. This is exactly what CI runs.
+Expected: every command exits 0. This is exactly what CI runs. `--strict` will
+fail if any lesson file is missing, which is the guarantee CI exists to provide.
 
 - [ ] **Step 3: Confirm `CURRICULUM.md` is not stale**
 
