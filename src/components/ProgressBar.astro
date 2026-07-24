@@ -1,0 +1,38 @@
+---
+interface Props {
+  total: number;
+}
+const { total } = Astro.props;
+---
+<div class="progress-wrap">
+  <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+    <div class="progress-fill" data-progress-fill></div>
+  </div>
+  <p class="progress-label" data-progress-label>0 of {total} lessons complete</p>
+</div>
+
+<style>
+  .progress-wrap {
+    margin: 1.5rem 0;
+  }
+  .progress {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    height: 10px;
+    overflow: hidden;
+    position: relative;
+  }
+  .progress-fill {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 999px;
+    height: 100%;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+  .progress-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    margin: 0.5rem 0 0;
+  }
+</style>

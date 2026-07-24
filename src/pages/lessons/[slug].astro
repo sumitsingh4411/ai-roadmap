@@ -123,3 +123,27 @@ const tocHeadings = headings.filter((h) => h.depth === 2);
   .pager a { color: var(--accent-2); font-size: 0.9rem; text-decoration: none; }
   .pager a:hover { text-decoration: underline; }
 </style>
+
+<script>
+  import { createProgressStore } from '../../lib/progress';
+
+  const button = document.getElementById('mark-complete');
+  const slug = button?.dataset.slug;
+
+  if (button && slug) {
+    const store = createProgressStore();
+
+    function paint() {
+      const done = store.isComplete(slug!);
+      button!.setAttribute('aria-pressed', String(done));
+      button!.textContent = done ? '✓ Completed' : 'Mark as complete';
+    }
+
+    button.addEventListener('click', () => {
+      store.toggle(slug);
+      paint();
+    });
+
+    paint();
+  }
+</script>
