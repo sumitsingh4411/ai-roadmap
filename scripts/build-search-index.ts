@@ -20,7 +20,14 @@ export function stripMarkdown(markdown: string): string {
     .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
     .replace(/^\s{0,3}#{1,6}\s+/gm, '')
     .replace(/^\s{0,3}>\s?/gm, '')
-    .replace(/[*_]{1,3}([^*_]+)[*_]{1,3}/g, '$1')
+    // Asterisk emphasis strips anywhere. Underscore emphasis only strips at
+    // word boundaries (CommonMark's intraword rule) so identifiers like
+    // `train_test_split` and `__init__` survive untouched — `\w` includes
+    // `_`, so any underscore touching another underscore or an alnum on its
+    // outer side is left alone, and multi-underscore runs (`__`, `___`)
+    // never match at all.
+    .replace(/\*{1,3}([^*]+)\*{1,3}/g, '$1')
+    .replace(/(?<!\w)_(?!_)([^_]+)_(?!\w)/g, '$1')
     .replace(/^\s*[-*+]\s+/gm, '')
     .replace(/\|/g, ' ')
     .replace(/\s+/g, ' ')

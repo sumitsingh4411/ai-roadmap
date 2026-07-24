@@ -19,6 +19,22 @@ describe('stripMarkdown', () => {
     expect(stripMarkdown('**bold** and _italic_')).toBe('bold and italic');
   });
 
+  it('removes asterisk emphasis', () => {
+    expect(stripMarkdown('*emphasis*')).toBe('emphasis');
+  });
+
+  it('strips word-bounded underscore emphasis', () => {
+    expect(stripMarkdown('a _real_ word')).toBe('a real word');
+  });
+
+  it('does not mangle snake_case identifiers', () => {
+    expect(stripMarkdown('train_test_split')).toBe('train_test_split');
+  });
+
+  it('does not mangle dunder identifiers', () => {
+    expect(stripMarkdown('__init__')).toBe('__init__');
+  });
+
   it('collapses whitespace', () => {
     expect(stripMarkdown('a\n\n\n   b')).toBe('a b');
   });

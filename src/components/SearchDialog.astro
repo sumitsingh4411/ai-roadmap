@@ -178,6 +178,11 @@
         try {
           await loadIndex();
           status!.textContent = '';
+          // The user may have typed while the fetch was in flight — `input`
+          // events during that window were swallowed by runQuery's
+          // still-loading guard, so replay the pending query now that
+          // cachedDocs is populated.
+          if (input!.value.trim() !== '') runQuery();
         } catch {
           status!.textContent = 'Search unavailable';
         }
