@@ -8,7 +8,7 @@
     "prebuild": "npm run validate && npm run gen:curriculum && npm run gen:search",
     "build": "astro build",
     "preview": "astro preview",
-    "validate": "tsx --import ./scripts/register-content-stub.mjs scripts/validate-content.ts",
+    "validate": "tsx scripts/validate-content.ts",
     "gen:curriculum": "tsx scripts/generate-curriculum.ts",
     "gen:search": "tsx scripts/build-search-index.ts",
     "test": "vitest run",

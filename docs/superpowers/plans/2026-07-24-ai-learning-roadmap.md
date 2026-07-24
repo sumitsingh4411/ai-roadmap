@@ -14,6 +14,7 @@
 - **Astro `^7.1.3`** — Content Layer API only. The legacy content collections API was removed in v6; `type: 'content'` and `legacy.collections` do not exist.
 - **Zod is imported from `astro/zod`**, never from a separate `zod` package. Applies to `src/content.config.ts`, `src/lib/*`, and `scripts/*`.
 - **Content collection loader:** `glob()` imported from `astro/loaders`.
+- **`astro:content` is a Vite virtual module and cannot be resolved by plain Node/`tsx`.** Anything a script imports must therefore stay clear of it: the lesson schema and `stripOrderPrefix` live in `src/lib/lesson.ts`, which imports only `astro/zod`. `src/content.config.ts` re-exports them for site code. Never make `scripts/**` depend, even transitively, on `astro:content` — no loader hooks, no stubs.
 - **Rendering:** `render(entry)` imported from `astro:content`. There is no `entry.render()` method.
 - **Lesson Markdown is portable only** — headings, fenced code blocks with language hints, tables, blockquotes, links, images. **No MDX, no Astro components, no raw HTML, no import statements.** Every lesson must render correctly on github.com.
 - **Site config:** `site: 'https://sumitsingh4411.github.io'`, `base: '/ai-roadmap'`.
@@ -34,7 +35,8 @@
 | `content/lessons/*.md` | 34 canonical lessons. The product. |
 | `CURRICULUM.md` | Generated ordered index for GitHub-only readers. Never hand-edited. |
 | `README.md` | Project intro, "learn from GitHub" pitch, contribution notes. |
-| `src/content.config.ts` | Collection definition + Zod frontmatter schema. |
+| `src/lib/lesson.ts` | Pure lesson frontmatter schema + `stripOrderPrefix`. No Astro-virtual imports, so Node scripts can import it directly. |
+| `src/content.config.ts` | Collection definition. Re-exports `src/lib/lesson.ts`. |
 | `src/lib/url.ts` | `href()` base-path helper. |
 | `src/lib/roadmap.ts` | Graph types, cycle detection, topological order, unlock logic. Pure, no I/O. |
 | `src/lib/progress.ts` | `localStorage` progress store. Injectable storage for testing. |
@@ -1035,7 +1037,7 @@ Frontmatter is parsed with a small hand-rolled reader rather than a YAML depende
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { roadmapSchema, type Roadmap } from '../../src/lib/roadmap';
-import { stripOrderPrefix } from '../../src/content.config';
+import { stripOrderPrefix } from '../../src/lib/lesson';
 
 export interface LessonFile {
   file: string;
@@ -1098,7 +1100,7 @@ export function readLessonFiles(root = process.cwd()): LessonFile[] {
 - [ ] **Step 4: Implement `scripts/validate-content.ts`**
 
 ```ts
-import { lessonSchema } from '../src/content.config';
+import { lessonSchema } from '../src/lib/lesson';
 import { detectCycle, type Roadmap } from '../src/lib/roadmap';
 import { readRoadmap, readLessonFiles, type LessonFile } from './lib/content-io';
 
@@ -1306,7 +1308,7 @@ Expected: FAIL — cannot resolve `../../scripts/generate-curriculum`.
 
 ```ts
 import { writeFileSync } from 'node:fs';
-import { lessonSchema } from '../src/content.config';
+import { lessonSchema } from '../src/lib/lesson';
 import { topologicalOrder, type Roadmap } from '../src/lib/roadmap';
 import { readRoadmap, readLessonFiles, type LessonFile } from './lib/content-io';
 
@@ -2778,7 +2780,7 @@ Expected: FAIL — cannot resolve `../../scripts/build-search-index`.
 
 ```ts
 import { writeFileSync, mkdirSync } from 'node:fs';
-import { lessonSchema } from '../src/content.config';
+import { lessonSchema } from '../src/lib/lesson';
 import { readLessonFiles, type LessonFile } from './lib/content-io';
 
 export interface SearchDoc {

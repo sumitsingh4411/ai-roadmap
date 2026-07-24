@@ -1,4 +1,4 @@
-import { lessonSchema } from '../src/content.config';
+import { lessonSchema } from '../src/lib/lesson';
 import { detectCycle, type Roadmap } from '../src/lib/roadmap';
 import { readRoadmap, readLessonFiles, type LessonFile } from './lib/content-io';
 

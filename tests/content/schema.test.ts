@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { lessonSchema, stripOrderPrefix } from '../../src/content.config';
+import { lessonSchema, stripOrderPrefix } from '../../src/lib/lesson';
 
 const valid = {
   title: 'NumPy',

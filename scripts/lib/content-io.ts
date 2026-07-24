@@ -1,7 +1,7 @@
 import { readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { roadmapSchema, type Roadmap } from '../../src/lib/roadmap';
-import { stripOrderPrefix } from '../../src/content.config';
+import { stripOrderPrefix } from '../../src/lib/lesson';
 
 export interface LessonFile {
   file: string;
