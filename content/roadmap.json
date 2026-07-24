@@ -1,0 +1,53 @@
+{
+  "stages": [
+    { "id": 0, "name": "Orientation",            "color": "violet" },
+    { "id": 1, "name": "Python & Data",          "color": "indigo" },
+    { "id": 2, "name": "Math You Actually Need", "color": "sky" },
+    { "id": 3, "name": "Classical ML",           "color": "cyan" },
+    { "id": 4, "name": "Deep Learning",          "color": "teal" },
+    { "id": 5, "name": "Generative AI & LLMs",   "color": "amber" },
+    { "id": 6, "name": "Ship It",                "color": "rose" }
+  ],
+  "nodes": [
+    { "id": "what-is-ai",          "lesson": "00-what-is-ai",          "stage": 0, "grid": { "x": 1, "y": 0 }, "prerequisites": [] },
+    { "id": "how-to-learn-ai",     "lesson": "01-how-to-learn-ai",     "stage": 0, "grid": { "x": 2, "y": 0 }, "prerequisites": ["what-is-ai"] },
+
+    { "id": "python-basics",       "lesson": "02-python-basics",       "stage": 1, "grid": { "x": 0, "y": 1 }, "prerequisites": ["how-to-learn-ai"] },
+    { "id": "numpy",               "lesson": "03-numpy",               "stage": 1, "grid": { "x": 1, "y": 1 }, "prerequisites": ["python-basics"] },
+    { "id": "pandas",              "lesson": "04-pandas",              "stage": 1, "grid": { "x": 2, "y": 1 }, "prerequisites": ["numpy"] },
+    { "id": "data-visualization",  "lesson": "05-data-visualization",  "stage": 1, "grid": { "x": 3, "y": 1 }, "prerequisites": ["pandas"] },
+    { "id": "real-datasets",       "lesson": "06-real-datasets",       "stage": 1, "grid": { "x": 4, "y": 1 }, "prerequisites": ["pandas"] },
+
+    { "id": "linear-algebra",      "lesson": "07-linear-algebra",      "stage": 2, "grid": { "x": 0, "y": 2 }, "prerequisites": ["how-to-learn-ai"] },
+    { "id": "calculus",            "lesson": "08-calculus",            "stage": 2, "grid": { "x": 1, "y": 2 }, "prerequisites": ["linear-algebra"] },
+    { "id": "probability-stats",   "lesson": "09-probability-stats",   "stage": 2, "grid": { "x": 2, "y": 2 }, "prerequisites": ["how-to-learn-ai"] },
+
+    { "id": "ml-fundamentals",     "lesson": "10-ml-fundamentals",     "stage": 3, "grid": { "x": 0, "y": 3 }, "prerequisites": ["numpy", "probability-stats"] },
+    { "id": "regression",          "lesson": "11-regression",          "stage": 3, "grid": { "x": 1, "y": 3 }, "prerequisites": ["ml-fundamentals", "linear-algebra"] },
+    { "id": "classification",      "lesson": "12-classification",      "stage": 3, "grid": { "x": 2, "y": 3 }, "prerequisites": ["regression"] },
+    { "id": "model-evaluation",    "lesson": "13-model-evaluation",    "stage": 3, "grid": { "x": 3, "y": 3 }, "prerequisites": ["classification"] },
+    { "id": "feature-engineering", "lesson": "14-feature-engineering", "stage": 3, "grid": { "x": 4, "y": 3 }, "prerequisites": ["pandas", "model-evaluation"] },
+    { "id": "clustering-pca",      "lesson": "15-clustering-pca",      "stage": 3, "grid": { "x": 5, "y": 3 }, "prerequisites": ["ml-fundamentals", "linear-algebra"] },
+    { "id": "trees-ensembles",     "lesson": "16-trees-ensembles",     "stage": 3, "grid": { "x": 6, "y": 3 }, "prerequisites": ["model-evaluation"] },
+    { "id": "first-ml-project",    "lesson": "17-first-ml-project",    "stage": 3, "grid": { "x": 7, "y": 3 }, "prerequisites": ["feature-engineering", "trees-ensembles", "data-visualization", "real-datasets"] },
+
+    { "id": "neural-networks",     "lesson": "18-neural-networks",     "stage": 4, "grid": { "x": 0, "y": 4 }, "prerequisites": ["first-ml-project", "calculus"] },
+    { "id": "backprop-training",   "lesson": "19-backprop-training",   "stage": 4, "grid": { "x": 1, "y": 4 }, "prerequisites": ["neural-networks"] },
+    { "id": "pytorch",             "lesson": "20-pytorch",             "stage": 4, "grid": { "x": 2, "y": 4 }, "prerequisites": ["backprop-training"] },
+    { "id": "cnns-vision",         "lesson": "21-cnns-vision",         "stage": 4, "grid": { "x": 3, "y": 4 }, "prerequisites": ["pytorch"] },
+    { "id": "sequence-models",     "lesson": "22-sequence-models",     "stage": 4, "grid": { "x": 4, "y": 4 }, "prerequisites": ["pytorch"] },
+    { "id": "transformers",        "lesson": "23-transformers",        "stage": 4, "grid": { "x": 5, "y": 4 }, "prerequisites": ["sequence-models"] },
+
+    { "id": "how-llms-work",       "lesson": "24-how-llms-work",       "stage": 5, "grid": { "x": 0, "y": 5 }, "prerequisites": ["transformers"] },
+    { "id": "prompt-engineering",  "lesson": "25-prompt-engineering",  "stage": 5, "grid": { "x": 1, "y": 5 }, "prerequisites": ["how-llms-work"] },
+    { "id": "embeddings",          "lesson": "26-embeddings",          "stage": 5, "grid": { "x": 2, "y": 5 }, "prerequisites": ["how-llms-work"] },
+    { "id": "rag",                 "lesson": "27-rag",                 "stage": 5, "grid": { "x": 3, "y": 5 }, "prerequisites": ["embeddings", "prompt-engineering"] },
+    { "id": "fine-tuning",         "lesson": "28-fine-tuning",         "stage": 5, "grid": { "x": 4, "y": 5 }, "prerequisites": ["how-llms-work", "pytorch"] },
+    { "id": "ai-agents",           "lesson": "29-ai-agents",           "stage": 5, "grid": { "x": 5, "y": 5 }, "prerequisites": ["rag"] },
+    { "id": "evals-guardrails",    "lesson": "30-evals-guardrails",    "stage": 5, "grid": { "x": 6, "y": 5 }, "prerequisites": ["ai-agents"] },
+
+    { "id": "mlops-basics",        "lesson": "31-mlops-basics",        "stage": 6, "grid": { "x": 0, "y": 6 }, "prerequisites": ["first-ml-project"] },
+    { "id": "deploying-models",    "lesson": "32-deploying-models",    "stage": 6, "grid": { "x": 1, "y": 6 }, "prerequisites": ["mlops-basics"] },
+    { "id": "portfolio-career",    "lesson": "33-portfolio-career",    "stage": 6, "grid": { "x": 2, "y": 6 }, "prerequisites": ["deploying-models", "evals-guardrails"] }
+  ]
+}
