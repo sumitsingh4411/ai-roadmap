@@ -23,6 +23,13 @@
   button?.addEventListener('click', () => {
     apply(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
   });
+
+  // The pre-paint script in BaseLayout may have set the theme from storage or
+  // the OS preference before this ran, so sync aria-pressed to reality on load.
+  button?.setAttribute(
+    'aria-pressed',
+    String(document.documentElement.dataset.theme === 'light'),
+  );
 </script>
 
 <style>
