@@ -1,0 +1,435 @@
+---
+// Command palette: fetches the build-time search index lazily on first open
+// and matches with the same `searchDocs` the tests pin. Degrades gracefully —
+// if the fetch fails the rest of the site keeps working.
+---
+<button type="button" id="search-trigger" aria-haspopup="dialog" aria-controls="search-dialog">
+  <span class="icon" aria-hidden="true">⌕</span>
+  <span>Search</span>
+  <kbd>⌘K</kbd>
+</button>
+
+<dialog id="search-dialog" aria-label="Search lessons">
+  <div class="panel">
+    <div class="search-field">
+      <span class="icon" aria-hidden="true">⌕</span>
+      <input
+        id="search-input"
+        type="text"
+        aria-label="Search lessons"
+        aria-controls="search-results"
+        aria-autocomplete="list"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder="Search lessons…"
+      />
+      <kbd>esc</kbd>
+    </div>
+
+    <div id="search-results" role="listbox" aria-label="Search results"></div>
+    <p id="search-status" role="status"></p>
+
+    <div class="hints" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span><kbd>esc</kbd> close</span>
+    </div>
+  </div>
+</dialog>
+
+<script>
+  import { href } from '../lib/url';
+  import { searchDocs } from '../lib/search';
+  import type { SearchDoc } from '../../scripts/build-search-index';
+  import roadmapData from '../../content/roadmap.json';
+
+  const stageNames = new Map<number, string>(roadmapData.stages.map((s) => [s.id, s.name]));
+
+  // Module scope: fetched once and reused for the lifetime of the page.
+  let cachedDocs: SearchDoc[] | null = null;
+
+  async function loadIndex(): Promise<SearchDoc[]> {
+    if (cachedDocs) return cachedDocs;
+    const response = await fetch(href('/search-index.json'));
+    if (!response.ok) throw new Error(`search index responded ${response.status}`);
+    const docs = (await response.json()) as SearchDoc[];
+    cachedDocs = docs;
+    return docs;
+  }
+
+  const trigger = document.getElementById('search-trigger');
+  const dialog = document.getElementById('search-dialog') as HTMLDialogElement | null;
+  const input = document.getElementById('search-input') as HTMLInputElement | null;
+  const results = document.getElementById('search-results');
+  const status = document.getElementById('search-status');
+
+  if (trigger && dialog && input && results && status) {
+    let activeIndex = -1;
+
+    function isTypingTarget(el: Element | null): boolean {
+      if (!(el instanceof HTMLElement)) return false;
+      return el.tagName === 'INPUT' || el.tagName === 'TEXTAREA' || el.isContentEditable;
+    }
+
+    function options(): HTMLAnchorElement[] {
+      return Array.from(results!.querySelectorAll('a[role="option"]'));
+    }
+
+    function setActive(index: number): void {
+      const opts = options();
+      for (const opt of opts) opt.setAttribute('aria-selected', 'false');
+      activeIndex = index;
+      const active = opts[index];
+      if (active) {
+        active.setAttribute('aria-selected', 'true');
+        active.scrollIntoView({ block: 'nearest' });
+        input!.setAttribute('aria-activedescendant', active.id);
+      } else {
+        input!.removeAttribute('aria-activedescendant');
+      }
+    }
+
+    function moveActive(delta: number): void {
+      const opts = options();
+      if (opts.length === 0) return;
+      const next =
+        activeIndex === -1
+          ? delta > 0 ? 0 : opts.length - 1
+          : (activeIndex + delta + opts.length) % opts.length;
+      setActive(next);
+    }
+
+    function navigateToActive(): void {
+      const opts = options();
+      const target = opts[activeIndex] ?? opts[0];
+      if (target) window.location.assign(target.href);
+    }
+
+    function renderResults(docs: SearchDoc[], query: string): void {
+      results!.innerHTML = '';
+      activeIndex = -1;
+      input!.removeAttribute('aria-activedescendant');
+
+      if (query.trim() === '') {
+        status!.textContent = '';
+        return;
+      }
+
+      if (docs.length === 0) {
+        status!.textContent = `No lessons match "${query}"`;
+        return;
+      }
+
+      status!.textContent = '';
+      const fragment = document.createDocumentFragment();
+
+      docs.forEach((doc, index) => {
+        const option = document.createElement('a');
+        option.id = `search-option-${index}`;
+        option.className = 'result';
+        option.setAttribute('role', 'option');
+        option.setAttribute('aria-selected', 'false');
+        option.tabIndex = -1;
+        option.href = href(`/lessons/${doc.slug}`);
+        option.addEventListener('mouseenter', () => setActive(index));
+
+        const main = document.createElement('span');
+        main.className = 'result-main';
+
+        const title = document.createElement('span');
+        title.className = 'result-title';
+        title.textContent = doc.title;
+
+        const summary = document.createElement('span');
+        summary.className = 'result-summary';
+        summary.textContent = doc.summary;
+
+        main.append(title, summary);
+
+        const stage = document.createElement('span');
+        stage.className = 'result-stage';
+        stage.textContent = stageNames.get(doc.stage) ?? `Stage ${doc.stage}`;
+
+        option.append(main, stage);
+        fragment.append(option);
+      });
+
+      results!.append(fragment);
+      setActive(0);
+    }
+
+    function runQuery(): void {
+      const query = input!.value;
+      if (!cachedDocs) return; // still loading, or the fetch failed — status already reflects that
+      renderResults(searchDocs(cachedDocs, query, 8), query);
+    }
+
+    async function openDialog(): Promise<void> {
+      dialog!.showModal();
+      input!.value = '';
+      results!.innerHTML = '';
+      input!.removeAttribute('aria-activedescendant');
+      activeIndex = -1;
+
+      if (cachedDocs) {
+        status!.textContent = '';
+      } else {
+        status!.textContent = 'Loading…';
+        try {
+          await loadIndex();
+          status!.textContent = '';
+        } catch {
+          status!.textContent = 'Search unavailable';
+        }
+      }
+      input!.focus();
+    }
+
+    trigger.addEventListener('click', () => {
+      openDialog();
+    });
+
+    // Backdrop click: a click that lands outside the panel's box but still
+    // targets the (fullscreen) dialog element itself.
+    dialog.addEventListener('click', (event) => {
+      const rect = dialog.getBoundingClientRect();
+      const inside =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+      if (!inside) dialog.close();
+    });
+
+    // Escape is handled natively by <dialog> (fires `cancel` then `close`) —
+    // nothing to wire up here.
+
+    document.addEventListener('keydown', (event) => {
+      // Never hijack keystrokes while the user is typing anywhere on the
+      // page — otherwise "/" in a text field would reopen the dialog.
+      if (isTypingTarget(document.activeElement)) return;
+
+      const isOpenCombo = (event.key.toLowerCase() === 'k' && (event.metaKey || event.ctrlKey)) ||
+        event.key === '/';
+      if (isOpenCombo && !dialog.open) {
+        event.preventDefault();
+        openDialog();
+      }
+    });
+
+    input.addEventListener('input', runQuery);
+
+    input.addEventListener('keydown', (event) => {
+      if (event.key === 'ArrowDown') {
+        event.preventDefault();
+        moveActive(1);
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault();
+        moveActive(-1);
+      } else if (event.key === 'Enter') {
+        event.preventDefault();
+        navigateToActive();
+      }
+    });
+  }
+</script>
+
+<style is:global>
+  #search-trigger {
+    align-items: center;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    font-size: 0.85rem;
+    gap: 0.45rem;
+    padding: 0.4rem 0.6rem 0.4rem 0.75rem;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  #search-trigger:hover {
+    border-color: var(--border-bright);
+    color: var(--text);
+  }
+  #search-trigger .icon {
+    font-size: 0.95rem;
+  }
+  #search-trigger kbd {
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding: 0.1rem 0.4rem;
+  }
+
+  #search-dialog {
+    background: transparent;
+    border: none;
+    /* Explicit top/left positioning — bottom/right must stay auto or the
+       browser's UA stylesheet (inset-block: 0) stretches this box to the
+       viewport bottom, which would break the backdrop-click hit test below. */
+    bottom: auto;
+    left: 50%;
+    margin: 0;
+    max-height: none;
+    max-width: min(640px, 92vw);
+    padding: 0;
+    position: fixed;
+    right: auto;
+    top: 12vh;
+    transform: translateX(-50%);
+    width: 100%;
+  }
+  #search-dialog::backdrop {
+    background: rgba(4, 4, 12, 0.6);
+    backdrop-filter: blur(6px);
+  }
+  :root[data-theme='light'] #search-dialog::backdrop {
+    background: rgba(20, 12, 46, 0.32);
+  }
+  #search-dialog[open] .panel {
+    animation: search-dialog-in 0.16s ease-out;
+  }
+  #search-dialog[open]::backdrop {
+    animation: search-backdrop-in 0.16s ease-out;
+  }
+  @keyframes search-dialog-in {
+    from { opacity: 0; transform: translateY(-10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  @keyframes search-backdrop-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    #search-dialog[open] .panel,
+    #search-dialog[open]::backdrop {
+      animation: none;
+    }
+  }
+
+  #search-dialog .panel {
+    background: var(--bg-raised);
+    border: 1px solid var(--border-bright);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-deep);
+    display: flex;
+    flex-direction: column;
+    max-height: 70vh;
+    overflow: hidden;
+  }
+  #search-dialog .search-field {
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 0.65rem;
+    padding: 0.9rem 1.1rem;
+  }
+  #search-dialog .search-field .icon {
+    color: var(--text-muted);
+    font-size: 1.05rem;
+  }
+  #search-dialog .search-field kbd {
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.68rem;
+    padding: 0.1rem 0.4rem;
+  }
+  #search-input {
+    background: transparent;
+    border: none;
+    color: var(--text);
+    flex: 1;
+    font-size: 1rem;
+    outline: none;
+  }
+  #search-input::placeholder {
+    color: var(--text-muted);
+  }
+
+  #search-results {
+    overflow-y: auto;
+    padding: 0.5rem;
+  }
+  #search-results:empty {
+    padding: 0;
+  }
+  #search-results .result {
+    align-items: center;
+    border-radius: calc(var(--radius) - 6px);
+    color: var(--text);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 0.65rem 0.75rem;
+    text-decoration: none;
+  }
+  #search-results .result[aria-selected='true'] {
+    background: var(--surface-strong);
+  }
+  #search-results .result-main {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+    min-width: 0;
+  }
+  #search-results .result-title {
+    font-weight: 600;
+  }
+  #search-results .result-summary {
+    color: var(--text-muted);
+    font-size: 0.82rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  #search-results .result-stage {
+    color: var(--accent);
+    flex-shrink: 0;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  #search-status {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 0 1.1rem;
+  }
+  #search-status:empty {
+    display: none;
+    padding: 0;
+  }
+
+  #search-dialog .hints {
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    display: flex;
+    font-size: 0.72rem;
+    gap: 1rem;
+    padding: 0.6rem 1.1rem;
+  }
+  #search-dialog .hints kbd {
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    padding: 0.05rem 0.3rem;
+  }
+
+  @media (max-width: 560px) {
+    #search-trigger kbd {
+      display: none;
+    }
+    #search-dialog .hints span:first-child {
+      display: none;
+    }
+  }
+</style>

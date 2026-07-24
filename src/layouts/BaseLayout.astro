@@ -2,6 +2,7 @@
 import '../styles/theme.css';
 import '../styles/global.css';
 import ThemeToggle from '../components/ThemeToggle.astro';
+import SearchDialog from '../components/SearchDialog.astro';
 import { href } from '../lib/url';
 
 interface Props {
@@ -47,6 +48,7 @@ const fullTitle = title === 'AI Roadmap' ? title : `${title} · AI Roadmap`;
       <nav>
         <a href={href('/')}>Roadmap</a>
         <a href="https://github.com/sumitsingh4411/ai-roadmap" rel="noopener">GitHub</a>
+        <SearchDialog />
         <ThemeToggle />
       </nav>
     </header>
