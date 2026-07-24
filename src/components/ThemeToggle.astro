@@ -1,0 +1,47 @@
+---
+// Toggles data-theme on <html> and persists the choice.
+---
+<button id="theme-toggle" type="button" aria-label="Toggle colour theme" aria-pressed="false">
+  <span aria-hidden="true" data-icon-dark>◐</span>
+  <span aria-hidden="true" data-icon-light>◑</span>
+</button>
+
+<script>
+  const KEY = 'ai-roadmap:theme';
+  const button = document.getElementById('theme-toggle');
+
+  function apply(theme: string) {
+    document.documentElement.dataset.theme = theme;
+    button?.setAttribute('aria-pressed', String(theme === 'light'));
+    try {
+      localStorage.setItem(KEY, theme);
+    } catch {
+      /* private browsing — the choice simply does not persist */
+    }
+  }
+
+  button?.addEventListener('click', () => {
+    apply(document.documentElement.dataset.theme === 'light' ? 'dark' : 'light');
+  });
+</script>
+
+<style>
+  #theme-toggle {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 0.95rem;
+    padding: 0.4rem 0.7rem;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  #theme-toggle:hover {
+    color: var(--text);
+    border-color: var(--border-bright);
+  }
+  :root[data-theme='light'] [data-icon-dark],
+  :root:not([data-theme='light']) [data-icon-light] {
+    display: none;
+  }
+</style>

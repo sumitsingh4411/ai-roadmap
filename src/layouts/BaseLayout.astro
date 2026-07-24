@@ -1,0 +1,112 @@
+---
+import '../styles/theme.css';
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import { href } from '../lib/url';
+
+interface Props {
+  title: string;
+  description: string;
+  wide?: boolean;
+}
+
+const { title, description, wide = false } = Astro.props;
+const fullTitle = title === 'AI Roadmap' ? title : `${title} · AI Roadmap`;
+---
+<!doctype html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <!-- Applied before first paint so the page never flashes the wrong theme. -->
+    <script is:inline>
+      try {
+        const stored = localStorage.getItem('ai-roadmap:theme');
+        if (stored === 'light' || stored === 'dark') {
+          document.documentElement.dataset.theme = stored;
+        } else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+          document.documentElement.dataset.theme = 'light';
+        }
+      } catch {}
+    </script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="site-header">
+      <a class="brand" href={href('/')}>
+        <span class="brand-mark" aria-hidden="true"></span>
+        AI Roadmap
+      </a>
+      <nav>
+        <a href={href('/')}>Roadmap</a>
+        <a href="https://github.com/sumitsingh4411/ai-roadmap" rel="noopener">GitHub</a>
+        <ThemeToggle />
+      </nav>
+    </header>
+
+    <main id="main" class={wide ? 'wide' : ''}>
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <p>
+        Free and open source. Code MIT, content CC BY 4.0 ·
+        <a href="https://github.com/sumitsingh4411/ai-roadmap" rel="noopener">Contribute on GitHub</a>
+      </p>
+    </footer>
+  </body>
+</html>
+
+<style>
+  .site-header {
+    align-items: center;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding: 1rem clamp(1rem, 4vw, 2.5rem);
+  }
+  .brand {
+    align-items: center;
+    color: var(--text);
+    display: flex;
+    font-weight: 700;
+    gap: 0.55rem;
+    letter-spacing: -0.01em;
+    text-decoration: none;
+  }
+  .brand-mark {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    border-radius: 6px;
+    box-shadow: 0 0 18px var(--glow-accent);
+    height: 18px;
+    width: 18px;
+  }
+  .site-header nav {
+    align-items: center;
+    display: flex;
+    gap: 1.1rem;
+  }
+  .site-header nav a {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+  .site-header nav a:hover { color: var(--text); }
+  main { margin: 0 auto; max-width: var(--max-width); padding: clamp(1.5rem, 5vw, 3rem) 1.25rem; }
+  main.wide { max-width: 1200px; }
+  .site-footer {
+    border-top: 1px solid var(--border);
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    padding: 2rem 1.25rem;
+    text-align: center;
+  }
+</style>
