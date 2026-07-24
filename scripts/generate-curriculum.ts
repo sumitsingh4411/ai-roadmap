@@ -3,6 +3,20 @@ import { lessonSchema } from '../src/lib/lesson';
 import { topologicalOrder, type Roadmap } from '../src/lib/roadmap';
 import { readRoadmap, readLessonFiles, type LessonFile } from './lib/content-io';
 
+/** "1 lesson" vs "3 lessons" — pluralizes a noun for a given count. */
+function pluralize(count: number, singular: string, plural = `${singular}s`): string {
+  return count === 1 ? singular : plural;
+}
+
+/** Formats a reading-time total as minutes when under an hour, hours otherwise. */
+function formatReadingTime(totalMinutes: number): string {
+  if (totalMinutes < 60) {
+    return `${totalMinutes} ${pluralize(totalMinutes, 'minute')}`;
+  }
+  const hours = Math.round(totalMinutes / 60);
+  return `${hours} ${pluralize(hours, 'hour')}`;
+}
+
 export function renderCurriculum(roadmap: Roadmap, lessons: LessonFile[]): string {
   const bySlug = new Map(lessons.map((l) => [l.slug, l]));
   const ordered = topologicalOrder(roadmap.nodes);
@@ -18,7 +32,7 @@ export function renderCurriculum(roadmap: Roadmap, lessons: LessonFile[]): strin
     '',
     '# Curriculum',
     '',
-    `**${lessons.length} lessons** · roughly ${Math.round(totalMinutes / 60)} hours of reading ·`,
+    `**${lessons.length} ${pluralize(lessons.length, 'lesson')}** · roughly ${formatReadingTime(totalMinutes)} of reading ·`,
     'free and open source.',
     '',
     'Work top to bottom. Each lesson lists what it assumes you already know, so if',
@@ -29,22 +43,24 @@ export function renderCurriculum(roadmap: Roadmap, lessons: LessonFile[]): strin
 
   for (const stage of roadmap.stages) {
     const stageNodes = ordered.filter((n) => n.stage === stage.id);
-    if (stageNodes.length === 0) continue;
 
-    lines.push(`## Stage ${stage.id} · ${stage.name}`, '');
-    lines.push('| # | Lesson | Time | Level | What it covers |');
-    lines.push('|---|---|---|---|---|');
-
+    const rows: string[] = [];
     for (const node of stageNodes) {
       const lesson = bySlug.get(node.id);
       if (!lesson) continue;
       const parsed = lessonSchema.safeParse(lesson.frontmatter);
       if (!parsed.success) continue;
       const { title, minutes, difficulty, summary, order } = parsed.data;
-      lines.push(
+      rows.push(
         `| ${String(order).padStart(2, '0')} | [${title}](${lesson.file}) | ${minutes} min | ${difficulty} | ${summary} |`,
       );
     }
+    if (rows.length === 0) continue;
+
+    lines.push(`## Stage ${stage.id} · ${stage.name}`, '');
+    lines.push('| # | Lesson | Time | Level | What it covers |');
+    lines.push('|---|---|---|---|---|');
+    lines.push(...rows);
     lines.push('');
   }
 

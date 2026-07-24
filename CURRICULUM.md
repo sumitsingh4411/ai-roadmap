@@ -3,7 +3,7 @@
 
 # Curriculum
 
-**2 lessons** · roughly 1 hours of reading ·
+**2 lessons** · roughly 35 minutes of reading ·
 free and open source.
 
 Work top to bottom. Each lesson lists what it assumes you already know, so if
@@ -16,36 +16,6 @@ you are ready.
 |---|---|---|---|---|
 | 00 | [What AI, ML, Deep Learning and GenAI Actually Are](content/lessons/00-what-is-ai.md) | 20 min | beginner | The four words everyone mixes up, sorted out once, with a mental model you can keep. |
 | 01 | [How to Learn AI Without Burning Out](content/lessons/01-how-to-learn-ai.md) | 15 min | beginner | A realistic schedule, the order to learn things in, and the three traps that stop most beginners. |
-
-## Stage 1 · Python & Data
-
-| # | Lesson | Time | Level | What it covers |
-|---|---|---|---|---|
-
-## Stage 2 · Math You Actually Need
-
-| # | Lesson | Time | Level | What it covers |
-|---|---|---|---|---|
-
-## Stage 3 · Classical ML
-
-| # | Lesson | Time | Level | What it covers |
-|---|---|---|---|---|
-
-## Stage 4 · Deep Learning
-
-| # | Lesson | Time | Level | What it covers |
-|---|---|---|---|---|
-
-## Stage 5 · Generative AI & LLMs
-
-| # | Lesson | Time | Level | What it covers |
-|---|---|---|---|---|
-
-## Stage 6 · Ship It
-
-| # | Lesson | Time | Level | What it covers |
-|---|---|---|---|---|
 
 ---
 
