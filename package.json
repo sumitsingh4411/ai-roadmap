@@ -1,0 +1,25 @@
+{
+  "name": "ai-roadmap",
+  "type": "module",
+  "version": "0.1.0",
+  "engines": { "node": ">=22.12.0" },
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "npm run validate && npm run gen:curriculum && npm run gen:search",
+    "build": "astro build",
+    "preview": "astro preview",
+    "validate": "tsx scripts/validate-content.ts",
+    "gen:curriculum": "tsx scripts/generate-curriculum.ts",
+    "gen:search": "tsx scripts/build-search-index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
+  },
+  "dependencies": {
+    "astro": "^7.1.3"
+  },
+  "devDependencies": {
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
