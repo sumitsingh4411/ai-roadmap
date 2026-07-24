@@ -37,6 +37,7 @@ const links = roadmap.nodes.flatMap((node) =>
     {links.map((link) => (
       <span
         class="link"
+        aria-hidden="true"
         data-link-to={link.to}
         style={`--lx:${link.x1}px; --ly:${link.y1}px; --len:${link.length}px; --angle:${link.angle}deg;`}
       ></span>
@@ -123,7 +124,7 @@ const links = roadmap.nodes.flatMap((node) =>
 <style>
   .stage {
     overflow: auto;
-    padding: 3rem 1rem 5rem;
+    padding: 3rem 1rem 2rem;
     perspective: 1600px;
   }
   .board {
@@ -131,6 +132,7 @@ const links = roadmap.nodes.flatMap((node) =>
     margin: 0 auto;
     position: relative;
     transform: rotateX(58deg) rotateZ(-45deg);
+    transform-origin: 50% 0;
     transform-style: preserve-3d;
     width: var(--board-w);
   }
