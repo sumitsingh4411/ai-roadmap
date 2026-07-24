@@ -9,13 +9,14 @@ import { href } from '../../lib/url';
 
 export async function getStaticPaths() {
   const lessons = await getCollection('lessons');
+  const titleById = new Map(lessons.map((l) => [l.id, l.data.title]));
   return lessons.map((lesson) => ({
     params: { slug: lesson.id },
-    props: { lesson },
+    props: { lesson, titleById },
   }));
 }
 
-const { lesson } = Astro.props;
+const { lesson, titleById } = Astro.props;
 const { Content, headings } = await render(lesson);
 
 const roadmap = roadmapSchema.parse(roadmapData);
@@ -28,8 +29,16 @@ const node = roadmap.nodes.find((n) => n.id === lesson.id);
 const stage = roadmap.stages.find((s) => s.id === node?.stage);
 const githubUrl = `https://github.com/sumitsingh4411/ai-roadmap/blob/main/content/lessons/${node?.lesson}.md`;
 
-const titleOf = (id: string) =>
+// Not every roadmap neighbor has a written lesson file yet (2 of 34 exist today).
+// When a neighbor's real frontmatter title isn't available, fall back to a
+// readable label derived from its roadmap id rather than rendering `undefined`.
+const fallbackLabel = (id: string) =>
   id.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
+
+const previousTitle = previous ? (titleById.get(previous.id) ?? fallbackLabel(previous.id)) : null;
+const nextTitle = next ? (titleById.get(next.id) ?? fallbackLabel(next.id)) : null;
+
+const tocHeadings = headings.filter((h) => h.depth === 2);
 ---
 <BaseLayout title={lesson.data.title} description={lesson.data.summary}>
   <LessonCard
@@ -42,11 +51,11 @@ const titleOf = (id: string) =>
     githubUrl={githubUrl}
   />
 
-  {headings.length > 2 && (
+  {tocHeadings.length > 2 && (
     <nav class="toc" aria-label="On this page">
       <p class="toc-title">On this page</p>
       <ul>
-        {headings.filter((h) => h.depth === 2).map((h) => (
+        {tocHeadings.map((h) => (
           <li><a href={`#${h.slug}`}>{h.text}</a></li>
         ))}
       </ul>
@@ -61,10 +70,10 @@ const titleOf = (id: string) =>
 
   <nav class="pager" aria-label="Lesson navigation">
     {previous
-      ? <a class="prev" href={href(`/lessons/${previous.id}`)}>← {titleOf(previous.id)}</a>
+      ? <a class="prev" href={href(`/lessons/${previous.id}`)}>← {previousTitle}</a>
       : <span></span>}
     {next
-      ? <a class="next" href={href(`/lessons/${next.id}`)}>{titleOf(next.id)} →</a>
+      ? <a class="next" href={href(`/lessons/${next.id}`)}>{nextTitle} →</a>
       : <span></span>}
   </nav>
 
