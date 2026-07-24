@@ -3,7 +3,7 @@
 
 # Curriculum
 
-**2 lessons** · roughly 35 minutes of reading ·
+**7 lessons** · roughly 5 hours of reading ·
 free and open source.
 
 Work top to bottom. Each lesson lists what it assumes you already know, so if
@@ -16,6 +16,16 @@ you are ready.
 |---|---|---|---|---|
 | 00 | [What AI, ML, Deep Learning and GenAI Actually Are](content/lessons/00-what-is-ai.md) | 20 min | beginner | The four words everyone mixes up, sorted out once, with a mental model you can keep. |
 | 01 | [How to Learn AI Without Burning Out](content/lessons/01-how-to-learn-ai.md) | 15 min | beginner | A realistic schedule, the order to learn things in, and the three traps that stop most beginners. |
+
+## Stage 1 · Python & Data
+
+| # | Lesson | Time | Level | What it covers |
+|---|---|---|---|---|
+| 02 | [Python Basics](content/lessons/02-python-basics.md) | 60 min | beginner | Variables, lists, dicts, loops, functions, imports, and how to read the error messages you'll see constantly. |
+| 03 | [NumPy](content/lessons/03-numpy.md) | 45 min | beginner | Why arrays beat lists for numeric work, plus shape, dtype, indexing, broadcasting, and vectorised math. |
+| 04 | [Pandas](content/lessons/04-pandas.md) | 50 min | beginner | Series and DataFrames, loading CSVs, selecting and filtering rows, grouping, and handling missing values. |
+| 05 | [Data Visualization](content/lessons/05-data-visualization.md) | 40 min | beginner | Choosing the right chart type, matplotlib basics, plotting straight from pandas, and reading what a histogram tells you. |
+| 06 | [Real Datasets](content/lessons/06-real-datasets.md) | 45 min | beginner | Where to find datasets, loading messy CSVs, fixing types and dates, removing duplicates, spotting outliers, and a reusable cleaning checklist. |
 
 ---
 
