@@ -1,7 +1,42 @@
 ---
+import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
+import IsometricBoard from '../components/IsometricBoard.astro';
+import ProgressBar from '../components/ProgressBar.astro';
+
+const lessons = await getCollection('lessons');
+const titles = Object.fromEntries(lessons.map((l) => [l.id, l.data.title]));
 ---
-<BaseLayout title="AI Roadmap" description="A free, open-source roadmap for learning AI from zero.">
-  <h1>AI Roadmap</h1>
-  <p>The interactive roadmap lands here in a later task.</p>
+<BaseLayout
+  title="AI Roadmap"
+  description="A free, open-source roadmap for learning AI from zero — 34 lessons from Python to LLMs."
+  wide
+>
+  <section class="hero">
+    <h1>Climb the <span class="grad">AI ladder</span></h1>
+    <p class="lede">
+      34 lessons from your first line of Python to shipping an LLM application.
+      Free, open source, and readable straight from GitHub.
+    </p>
+    <ProgressBar total={lessons.length} />
+  </section>
+
+  <IsometricBoard titles={titles} />
 </BaseLayout>
+
+<style>
+  .hero { margin: 0 auto; max-width: 62ch; padding: 2rem 0 0; text-align: center; }
+  .hero h1 {
+    font-size: clamp(2.2rem, 7vw, 3.6rem);
+    letter-spacing: -0.03em;
+    line-height: 1.05;
+    margin: 0;
+  }
+  .grad {
+    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  .lede { color: var(--text-muted); margin: 1rem auto 2rem; max-width: 46ch; }
+</style>
