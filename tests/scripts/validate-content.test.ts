@@ -46,6 +46,40 @@ describe('parseFrontmatter', () => {
     expect(frontmatter.tags).toEqual(['a', 'b']);
   });
 
+  it('parses an empty list', () => {
+    const { frontmatter } = parseFrontmatter('---\ntags: []\n---\nx');
+    expect(frontmatter.tags).toEqual([]);
+  });
+
+  it('parses a list of bare numbers', () => {
+    const { frontmatter } = parseFrontmatter('---\ntags: [1, 2]\n---\nx');
+    expect(frontmatter.tags).toEqual([1, 2]);
+  });
+
+  it('parses a list of unquoted bare words', () => {
+    const { frontmatter } = parseFrontmatter('---\ntags: [a, b]\n---\nx');
+    expect(frontmatter.tags).toEqual(['a', 'b']);
+  });
+
+  it('tolerates surrounding whitespace around list items', () => {
+    const { frontmatter } = parseFrontmatter('---\ntags: [ "a" ,  "b" ]\n---\nx');
+    expect(frontmatter.tags).toEqual(['a', 'b']);
+  });
+
+  it('does not split a double-quoted item on an internal comma', () => {
+    const { frontmatter } = parseFrontmatter('---\ntags: ["a, b", "c"]\n---\nx');
+    expect(frontmatter.tags).toEqual(['a, b', 'c']);
+  });
+
+  it('does not split a single-quoted item on an internal comma', () => {
+    const { frontmatter } = parseFrontmatter("---\ntags: ['a, b', 'c']\n---\nx");
+    expect(frontmatter.tags).toEqual(['a, b', 'c']);
+  });
+
+  it('throws a clear error for an unterminated quote in a list', () => {
+    expect(() => parseFrontmatter('---\ntags: ["a, b", "c]\n---\nx')).toThrow(/unterminated quote/i);
+  });
+
   it('throws when frontmatter is missing', () => {
     expect(() => parseFrontmatter('# No frontmatter')).toThrow(/frontmatter/i);
   });
@@ -95,6 +129,11 @@ describe('validateContent', () => {
   it('reports a stage mismatch between node and frontmatter', () => {
     const errors = validateContent(roadmap([node('a')]), [lesson('a', { stage: 3 })]);
     expect(errors.join('\n')).toMatch(/stage/i);
+  });
+
+  it('reports a node whose stage id is not declared in roadmap.stages', () => {
+    const errors = validateContent(roadmap([{ ...node('a'), stage: 9 }]), [lesson('a', { stage: 9 })]);
+    expect(errors.join('\n')).toMatch(/unknown stage/i);
   });
 
   it('reports a lesson whose frontmatter prerequisites disagree with the graph', () => {

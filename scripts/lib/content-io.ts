@@ -10,12 +10,47 @@ export interface LessonFile {
   body: string;
 }
 
+/**
+ * Splits a flow-sequence's inner content on commas, but only outside of
+ * quoted strings — so `"a, b", "c"` yields two items, not three. Supports
+ * both `"` and `'` quoting, matching the scalar parser below. An unterminated
+ * quote is a clear input error, so it throws rather than corrupting the split.
+ */
+function splitListItems(inner: string): string[] {
+  const items: string[] = [];
+  let current = '';
+  let quote: '"' | "'" | null = null;
+
+  for (const char of inner) {
+    if (quote) {
+      current += char;
+      if (char === quote) quote = null;
+      continue;
+    }
+    if (char === '"' || char === "'") {
+      quote = char;
+      current += char;
+      continue;
+    }
+    if (char === ',') {
+      items.push(current);
+      current = '';
+      continue;
+    }
+    current += char;
+  }
+
+  if (quote) throw new Error(`Unterminated quote (${quote}) in list value: ${inner}`);
+  items.push(current);
+  return items;
+}
+
 function parseScalar(raw: string): unknown {
   const value = raw.trim();
   if (value.startsWith('[') && value.endsWith(']')) {
     const inner = value.slice(1, -1).trim();
     if (inner === '') return [];
-    return inner.split(',').map((item) => parseScalar(item));
+    return splitListItems(inner).map((item) => parseScalar(item));
   }
   if (/^".*"$/.test(value) || /^'.*'$/.test(value)) return value.slice(1, -1);
   if (/^-?\d+$/.test(value)) return Number(value);
