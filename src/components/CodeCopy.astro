@@ -1,0 +1,47 @@
+---
+// Adds a copy button to every Shiki-rendered <pre> in the prose body.
+---
+<script>
+  for (const pre of document.querySelectorAll<HTMLElement>('.prose pre')) {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'copy-button';
+    button.textContent = 'Copy';
+    button.setAttribute('aria-label', 'Copy code to clipboard');
+
+    button.addEventListener('click', async () => {
+      const code = pre.querySelector('code')?.textContent ?? '';
+      try {
+        await navigator.clipboard.writeText(code);
+        button.textContent = 'Copied';
+      } catch {
+        button.textContent = 'Press ⌘C';
+      }
+      setTimeout(() => (button.textContent = 'Copy'), 1800);
+    });
+
+    pre.style.position = 'relative';
+    pre.appendChild(button);
+  }
+</script>
+
+<style is:global>
+  .prose pre .copy-button {
+    background: var(--surface-strong);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    opacity: 0;
+    padding: 0.25rem 0.55rem;
+    position: absolute;
+    right: 0.6rem;
+    top: 0.6rem;
+    transition: opacity 0.15s, color 0.15s;
+  }
+  .prose pre:hover .copy-button,
+  .prose pre .copy-button:focus-visible { opacity: 1; }
+  .prose pre .copy-button:hover { color: var(--text); }
+</style>

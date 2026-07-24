@@ -1,0 +1,119 @@
+---
+interface Props {
+  title: string;
+  stageName: string;
+  minutes: number;
+  difficulty: string;
+  tags: string[];
+  summary: string;
+  githubUrl: string;
+}
+const { title, stageName, minutes, difficulty, tags, summary, githubUrl } = Astro.props;
+---
+<div class="deck" data-tilt>
+  <div class="layer layer-back" aria-hidden="true"></div>
+  <div class="layer layer-mid" aria-hidden="true"></div>
+  <article class="layer card">
+    <div class="rim" aria-hidden="true"></div>
+    <p class="eyebrow">{stageName}</p>
+    <h1>{title}</h1>
+    <p class="summary">{summary}</p>
+    <ul class="meta">
+      <li>{minutes} min</li>
+      <li>{difficulty}</li>
+      {tags.map((tag) => <li class="tag">{tag}</li>)}
+    </ul>
+    <a class="github" href={githubUrl} rel="noopener">View this lesson on GitHub →</a>
+  </article>
+</div>
+
+<script>
+  // Cursor tilt. Skipped entirely when the user prefers reduced motion.
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+  if (!reduced.matches) {
+    for (const deck of document.querySelectorAll<HTMLElement>('[data-tilt]')) {
+      deck.addEventListener('pointermove', (event) => {
+        const box = deck.getBoundingClientRect();
+        const x = (event.clientX - box.left) / box.width - 0.5;
+        const y = (event.clientY - box.top) / box.height - 0.5;
+        deck.style.setProperty('--tilt-x', `${(-y * 6).toFixed(2)}deg`);
+        deck.style.setProperty('--tilt-y', `${(x * 8).toFixed(2)}deg`);
+      });
+      deck.addEventListener('pointerleave', () => {
+        deck.style.setProperty('--tilt-x', '0deg');
+        deck.style.setProperty('--tilt-y', '0deg');
+      });
+    }
+  }
+</script>
+
+<style>
+  .deck {
+    --tilt-x: 0deg;
+    --tilt-y: 0deg;
+    margin-bottom: 3rem;
+    perspective: 1000px;
+    position: relative;
+  }
+  .layer {
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    transform-style: preserve-3d;
+  }
+  .layer-back,
+  .layer-mid {
+    background: var(--surface);
+    inset: 0;
+    position: absolute;
+  }
+  .layer-back { opacity: 0.35; transform: translate3d(22px, 18px, -90px); }
+  .layer-mid { opacity: 0.6; transform: translate3d(11px, 9px, -45px); }
+  .card {
+    backdrop-filter: blur(14px);
+    background: linear-gradient(150deg, var(--surface-strong), var(--surface));
+    border-color: var(--border-bright);
+    box-shadow: var(--shadow-deep);
+    padding: 1.6rem 1.7rem;
+    position: relative;
+    transform: rotateX(var(--tilt-x)) rotateY(var(--tilt-y));
+    transition: transform 0.25s ease-out;
+  }
+  /* Rim light: a 1px gradient border drawn with a mask. */
+  .rim {
+    background: linear-gradient(
+      135deg,
+      var(--border-bright),
+      transparent 40%,
+      transparent 60%,
+      var(--glow-accent)
+    );
+    border-radius: 20px;
+    inset: -1px;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+    padding: 1px;
+    pointer-events: none;
+    position: absolute;
+  }
+  .eyebrow {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.5rem;
+    text-transform: uppercase;
+  }
+  .card h1 { font-size: clamp(1.6rem, 4vw, 2.2rem); letter-spacing: -0.025em; margin: 0; }
+  .summary { color: var(--text-muted); margin: 0.6rem 0 1rem; }
+  .meta { display: flex; flex-wrap: wrap; gap: 0.4rem; list-style: none; margin: 0 0 1.1rem; padding: 0; }
+  .meta li {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    padding: 0.2rem 0.6rem;
+  }
+  .github { color: var(--accent-2); font-size: 0.85rem; text-decoration: none; }
+  .github:hover { text-decoration: underline; }
+</style>

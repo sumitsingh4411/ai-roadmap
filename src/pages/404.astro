@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '../lib/url';
+---
+<BaseLayout title="Not found" description="That page does not exist.">
+  <h1>404</h1>
+  <p>That page does not exist — but the roadmap does.</p>
+  <p><a href={href('/')}>← Back to the roadmap</a></p>
+</BaseLayout>

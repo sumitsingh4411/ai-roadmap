@@ -1,0 +1,116 @@
+---
+import { getCollection, render } from 'astro:content';
+import roadmapData from '../../../content/roadmap.json';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import LessonCard from '../../components/LessonCard.astro';
+import CodeCopy from '../../components/CodeCopy.astro';
+import { roadmapSchema, topologicalOrder } from '../../lib/roadmap';
+import { href } from '../../lib/url';
+
+export async function getStaticPaths() {
+  const lessons = await getCollection('lessons');
+  return lessons.map((lesson) => ({
+    params: { slug: lesson.id },
+    props: { lesson },
+  }));
+}
+
+const { lesson } = Astro.props;
+const { Content, headings } = await render(lesson);
+
+const roadmap = roadmapSchema.parse(roadmapData);
+const ordered = topologicalOrder(roadmap.nodes);
+const index = ordered.findIndex((n) => n.id === lesson.id);
+const previous = index > 0 ? ordered[index - 1] : null;
+const next = index >= 0 && index < ordered.length - 1 ? ordered[index + 1] : null;
+
+const node = roadmap.nodes.find((n) => n.id === lesson.id);
+const stage = roadmap.stages.find((s) => s.id === node?.stage);
+const githubUrl = `https://github.com/sumitsingh4411/ai-roadmap/blob/main/content/lessons/${node?.lesson}.md`;
+
+const titleOf = (id: string) =>
+  id.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
+---
+<BaseLayout title={lesson.data.title} description={lesson.data.summary}>
+  <LessonCard
+    title={lesson.data.title}
+    stageName={`Stage ${stage?.id} · ${stage?.name}`}
+    minutes={lesson.data.minutes}
+    difficulty={lesson.data.difficulty}
+    tags={lesson.data.tags}
+    summary={lesson.data.summary}
+    githubUrl={githubUrl}
+  />
+
+  {headings.length > 2 && (
+    <nav class="toc" aria-label="On this page">
+      <p class="toc-title">On this page</p>
+      <ul>
+        {headings.filter((h) => h.depth === 2).map((h) => (
+          <li><a href={`#${h.slug}`}>{h.text}</a></li>
+        ))}
+      </ul>
+    </nav>
+  )}
+
+  <div class="prose"><Content /></div>
+
+  <button id="mark-complete" type="button" data-slug={lesson.id} aria-pressed="false">
+    Mark as complete
+  </button>
+
+  <nav class="pager" aria-label="Lesson navigation">
+    {previous
+      ? <a class="prev" href={href(`/lessons/${previous.id}`)}>← {titleOf(previous.id)}</a>
+      : <span></span>}
+    {next
+      ? <a class="next" href={href(`/lessons/${next.id}`)}>{titleOf(next.id)} →</a>
+      : <span></span>}
+  </nav>
+
+  <CodeCopy />
+</BaseLayout>
+
+<style>
+  .toc {
+    border-left: 2px solid var(--border);
+    margin-bottom: 2rem;
+    padding-left: 1rem;
+  }
+  .toc-title {
+    color: var(--text-muted);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    margin: 0 0 0.4rem;
+    text-transform: uppercase;
+  }
+  .toc ul { list-style: none; margin: 0; padding: 0; }
+  .toc a { color: var(--text-muted); font-size: 0.88rem; text-decoration: none; }
+  .toc a:hover { color: var(--accent); }
+  #mark-complete {
+    background: var(--surface);
+    border: 1px solid var(--border-bright);
+    border-radius: 999px;
+    color: var(--text);
+    cursor: pointer;
+    font-size: 0.9rem;
+    margin: 3rem 0 2rem;
+    padding: 0.6rem 1.3rem;
+    transition: background 0.2s, box-shadow 0.2s;
+  }
+  #mark-complete[aria-pressed='true'] {
+    background: linear-gradient(135deg, var(--accent), var(--accent-2));
+    box-shadow: 0 0 26px var(--glow-accent);
+    color: #0b0a15;
+    font-weight: 700;
+  }
+  .pager {
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 1rem;
+    justify-content: space-between;
+    padding-top: 1.5rem;
+  }
+  .pager a { color: var(--accent-2); font-size: 0.9rem; text-decoration: none; }
+  .pager a:hover { text-decoration: underline; }
+</style>
