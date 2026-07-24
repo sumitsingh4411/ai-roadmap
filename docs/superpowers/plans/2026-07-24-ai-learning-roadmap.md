@@ -2251,14 +2251,16 @@ git commit -m "feat: add localStorage progress tracking"
 - Modify: `src/pages/index.astro`
 
 **Interfaces:**
-- Consumes: `roadmapSchema` from `src/lib/roadmap.ts` (build time only); `createProgressStore` from `src/lib/progress.ts`; `href()`; `ProgressBar`.
-- Produces: the homepage. Tiles carry `data-node-id`, `data-prereqs` (space-separated), and `data-state`; the client script recomputes `data-state` from stored progress on load.
+- Consumes: `roadmapSchema`, `unlockedIds`, `nodeState` from `src/lib/roadmap.ts`; `createProgressStore` from `src/lib/progress.ts`; `href()`; `ProgressBar`.
+- Produces: the homepage. Tiles carry `data-node-id` and `data-state`; the client script recomputes `data-state` from stored progress on load.
 
-Note: the browser script deliberately recomputes unlock state from the
-`data-prereqs` attributes rather than importing `unlockedIds`/`nodeState`. Those
-functions need the full node array, which would mean shipping `roadmap.json` to
-the client for data already present in the DOM. The two implementations are kept
-honest by Task 3's tests plus the visual check in Step 5.
+**There must be exactly one implementation of the unlock rule.** The browser
+script imports `unlockedIds` and `nodeState` from `src/lib/roadmap.ts` — the
+same functions Task 3 unit-tested — and imports `content/roadmap.json`
+directly so Astro bundles the node array into the client script. Do **not**
+reimplement prerequisite checking inline from DOM attributes; a second copy of
+the rule can silently drift from the tested one. The ~4KB of bundled JSON is an
+accepted cost.
 
 - [ ] **Step 1: Create `src/components/RoadmapTile.astro`**
 
@@ -2271,16 +2273,14 @@ interface Props {
   title: string;
   x: number;
   y: number;
-  prerequisites: string[];
 }
-const { id, title, x, y, prerequisites } = Astro.props;
+const { id, title, x, y } = Astro.props;
 const CELL = 118;
 ---
 <a
   class="tile"
   href={href(`/lessons/${id}`)}
   data-node-id={id}
-  data-prereqs={prerequisites.join(' ')}
   data-state="locked"
   style={`--tx:${x * CELL}px; --ty:${y * CELL}px;`}
 >
@@ -2429,7 +2429,6 @@ const links = roadmap.nodes.flatMap((node) =>
         title={titles[node.id] ?? node.id}
         x={node.grid.x}
         y={node.grid.y}
-        prerequisites={node.prerequisites}
       />
     ))}
   </div>
@@ -2437,17 +2436,24 @@ const links = roadmap.nodes.flatMap((node) =>
 
 <script>
   import { createProgressStore } from '../lib/progress';
+  import { roadmapSchema, unlockedIds, nodeState } from '../lib/roadmap';
+  import roadmapData from '../../content/roadmap.json';
 
   const store = createProgressStore();
+  // The same functions Task 3 unit-tested — never reimplement the rule here.
+  const { nodes } = roadmapSchema.parse(roadmapData);
 
   function paintBoard() {
-    const done = new Set(store.completed());
+    const completed = store.completed();
+    const done = new Set(completed);
+    const unlocked = unlockedIds(nodes, completed);
+    const byId = new Map(nodes.map((n) => [n.id, n]));
 
     for (const tile of document.querySelectorAll<HTMLElement>('[data-node-id]')) {
       const id = tile.dataset.nodeId!;
-      const prereqs = (tile.dataset.prereqs ?? '').split(' ').filter(Boolean);
-      const unlocked = prereqs.every((p) => done.has(p));
-      tile.dataset.state = done.has(id) ? 'complete' : unlocked ? 'available' : 'locked';
+      const node = byId.get(id);
+      if (!node) continue;
+      tile.dataset.state = nodeState(node, completed, unlocked);
       tile.setAttribute('aria-current', done.has(id) ? 'true' : 'false');
     }
 
@@ -2456,7 +2462,7 @@ const links = roadmap.nodes.flatMap((node) =>
       link.dataset.active = String(done.has(target));
     }
 
-    const total = document.querySelectorAll('[data-node-id]').length;
+    const total = nodes.length;
     const fill = document.querySelector<HTMLElement>('[data-progress-fill]');
     const label = document.querySelector<HTMLElement>('[data-progress-label]');
     const bar = document.querySelector<HTMLElement>('[role="progressbar"]');
