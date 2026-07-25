@@ -1,7 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProgressBar from '../components/ProgressBar.astro';
+import Sidebar from '../components/Sidebar.astro';
 import { buildCurriculum, totalLessons } from '../lib/curriculum';
 import { href } from '../lib/url';
 
@@ -9,76 +9,128 @@ const lessons = await getCollection('lessons');
 const stages = buildCurriculum(lessons);
 const total = totalLessons(stages);
 const firstSlug = stages[0]?.lessons[0]?.slug;
+const totalMinutes = lessons.reduce((n, l) => n + (l.data.minutes ?? 0), 0);
+const totalHours = Math.round(totalMinutes / 60);
+
+// Per-stage hue (a violet→rose spectrum down the spine) and an editorial blurb.
+const HUE: Record<string, string> = {
+  violet: '#a78bfa', indigo: '#818cf8', sky: '#38bdf8', cyan: '#22d3ee',
+  teal: '#2dd4bf', amber: '#fbbf24', rose: '#fb7185',
+};
+const BLURB: Record<number, string> = {
+  0: 'Get the lay of the land before you write a line of code.',
+  1: "The tools you'll touch every day — Python, NumPy, pandas, plots.",
+  2: 'Just enough linear algebra, calculus, and statistics — taught through the problems they solve.',
+  3: 'Regression to random forests: how machines learn from tables of data.',
+  4: 'Neural networks, from a single neuron up to the transformer.',
+  5: 'How modern language models actually work, and how to build with them.',
+  6: 'Take a model off your laptop and put it in front of real users.',
+};
 ---
 <BaseLayout
   title="AI Roadmap"
-  description="A free, open-source roadmap for learning AI from zero — 34 lessons from Python to LLMs, readable on the web or straight from GitHub."
+  description="A free, open-source roadmap for learning AI from zero — 34 lessons from your first line of Python to shipping an LLM application."
   wide
 >
   <section class="hero">
-    <h1>Learn AI from zero — <span class="grad">one lesson at a time</span></h1>
-    <p class="lede">
-      {total} free lessons in dependency order, from your first line of Python to
-      shipping an LLM application. Read them here, or straight from the Markdown
-      on GitHub. Your progress is saved in your browser.
-    </p>
-    <div class="hero-actions">
-      {firstSlug && <a class="btn-primary" href={href(`/lessons/${firstSlug}`)}>Start the first lesson →</a>}
-      <a class="btn-ghost" href="https://github.com/sumitsingh4411/ai-roadmap" rel="noopener">View on GitHub</a>
+    <div class="hero-bg" aria-hidden="true">
+      <span class="bloom bloom-a"></span>
+      <span class="bloom bloom-b"></span>
+      <span class="bloom bloom-c"></span>
+      <span class="hero-grid"></span>
     </div>
-    <div class="hero-progress"><ProgressBar total={total} /></div>
+    <div class="hero-inner">
+      <p class="eyebrow"><span class="pulse" aria-hidden="true"></span>{total} lessons · dependency-ordered</p>
+      <h1>From your first line of Python<br />to <span class="grad">shipping AI</span>.</h1>
+      <p class="sub">
+        A free, open-source roadmap through the whole field. Read it here or straight
+        from the Markdown on GitHub — and your progress saves as you go.
+      </p>
+      <div class="cta-row">
+        {firstSlug && <a class="cta-primary" href={href(`/lessons/${firstSlug}`)}>Start the first lesson →</a>}
+        <a class="cta-ghost" href="https://github.com/sumitsingh4411/ai-roadmap" rel="noopener">Browse on GitHub</a>
+      </div>
+      <dl class="stats">
+        <div><dt data-progress-stat>0</dt><dd>completed</dd></div>
+        <div><dt>{total}</dt><dd>lessons</dd></div>
+        <div><dt>{stages.length}</dt><dd>stages</dd></div>
+        <div><dt>~{totalHours}h</dt><dd>of reading</dd></div>
+      </dl>
+      <div class="hero-track" aria-hidden="true"><span data-progress-fill></span></div>
+    </div>
   </section>
 
-  <div class="curriculum">
-    {stages.map((stage) => (
-      <section class="stage" aria-labelledby={`stage-${stage.id}`}>
-        <div class="stage-head">
-          <span class="stage-num">Stage {stage.id}</span>
-          <h2 id={`stage-${stage.id}`}>{stage.name}</h2>
-          <span class="stage-count">{stage.lessons.length} lessons</span>
-        </div>
-        <ul class="lesson-list">
-          {stage.lessons.map((lesson) => (
-            <li>
-              <a class="lesson-card" href={href(`/lessons/${lesson.slug}`)} data-card-slug={lesson.slug}>
-                <span class="card-check" aria-hidden="true"></span>
-                <span class="card-body">
-                  <span class="card-title">{lesson.title}</span>
-                  <span class="card-summary">{lesson.summary}</span>
-                  <span class="card-meta">
-                    <span>{lesson.minutes} min</span>
-                    <span class="dot" aria-hidden="true">·</span>
-                    <span class="card-difficulty">{lesson.difficulty}</span>
-                  </span>
-                </span>
-                <span class="card-arrow" aria-hidden="true">→</span>
-              </a>
-            </li>
-          ))}
-        </ul>
-      </section>
-    ))}
+  <div class="docs">
+    <aside class="home-nav"><Sidebar stages={stages} /></aside>
+
+    <div class="stages" role="region" aria-label="Curriculum">
+      {stages.map((stage, i) => (
+        <section
+          class="stage"
+          data-stage-id={stage.id}
+          style={`--hue:${HUE[stage.color] ?? '#a78bfa'}`}
+        >
+          <div class="rail" aria-hidden="true">
+            <span class="thread" data-first={i === 0 ? '' : undefined} data-last={i === stages.length - 1 ? '' : undefined}></span>
+            <span class="node"><span class="node-dot"></span></span>
+          </div>
+          <div class="stage-main">
+            <header class="stage-head">
+              <p class="stage-kicker"><span class="stage-num">Stage {String(stage.id).padStart(2, '0')}</span> · {stage.lessons.length} lessons</p>
+              <h2 id={`stage-${stage.id}`}>{stage.name}</h2>
+              <p class="stage-blurb">{BLURB[stage.id]}</p>
+            </header>
+            <ul class="cards">
+              {stage.lessons.map((lesson) => (
+                <li>
+                  <a class="card" href={href(`/lessons/${lesson.slug}`)} data-card-slug={lesson.slug}>
+                    <span class="card-tick" aria-hidden="true"></span>
+                    <span class="card-body">
+                      <span class="card-title">{lesson.title}</span>
+                      <span class="card-sum">{lesson.summary}</span>
+                    </span>
+                    <span class="card-foot">
+                      <span class="card-min">{lesson.minutes} min</span>
+                      <span class="card-diff">{lesson.difficulty}</span>
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+      ))}
+    </div>
   </div>
 </BaseLayout>
 
 <script>
   import { createProgressStore } from '../lib/progress';
-
   const store = createProgressStore();
 
   function paint() {
     const done = new Set(store.completed());
-    for (const card of document.querySelectorAll<HTMLElement>('[data-card-slug]')) {
-      card.dataset.done = String(done.has(card.dataset.cardSlug!));
+
+    // Lesson cards.
+    const cards = document.querySelectorAll<HTMLElement>('[data-card-slug]');
+    for (const c of cards) c.dataset.done = String(done.has(c.dataset.cardSlug!));
+
+    // Stage spine: a stage lights up once every lesson in it is complete.
+    for (const stage of document.querySelectorAll<HTMLElement>('.stage')) {
+      const slugs = [...stage.querySelectorAll<HTMLElement>('[data-card-slug]')].map((c) => c.dataset.cardSlug!);
+      const complete = slugs.length > 0 && slugs.every((s) => done.has(s));
+      const started = slugs.some((s) => done.has(s));
+      stage.dataset.done = String(complete);
+      stage.dataset.started = String(started && !complete);
     }
-    const total = document.querySelectorAll('[data-card-slug]').length;
+
+    // Hero stat + track.
+    const total = cards.length;
+    const pct = total === 0 ? 0 : Math.round((done.size / total) * 100);
+    const stat = document.querySelector<HTMLElement>('[data-progress-stat]');
     const fill = document.querySelector<HTMLElement>('[data-progress-fill]');
-    const label = document.querySelector<HTMLElement>('[data-progress-label]');
-    const bar = document.querySelector<HTMLElement>('[role="progressbar"]');
-    const percent = total === 0 ? 0 : Math.round((done.size / total) * 100);
-    if (fill) fill.style.width = `${percent}%`;
-    if (label) label.textContent = `${done.size} of ${total} lessons complete`;
-    if (bar) bar.setAttribute('aria-valuenow', String(percent));
+    if (stat) stat.textContent = String(done.size);
+    if (fill) fill.style.width = `${pct}%`;
   }
 
   paint();
@@ -87,118 +139,275 @@ const firstSlug = stages[0]?.lessons[0]?.slug;
 </script>
 
 <style>
+  /* ---------------- Hero ---------------- */
   .hero {
-    border-bottom: 1px solid var(--border);
-    margin: 0 auto 2.5rem;
-    max-width: 60ch;
-    padding: clamp(1rem, 4vw, 2.5rem) 0 2.5rem;
-    text-align: center;
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    margin-bottom: 3rem;
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-bg { inset: 0; position: absolute; }
+  .bloom { border-radius: 50%; filter: blur(60px); opacity: 0.75; position: absolute; }
+  .bloom-a { background: radial-gradient(circle, rgba(139,92,246,0.55), transparent 68%); height: 520px; left: -8%; top: -32%; width: 520px; }
+  .bloom-b { background: radial-gradient(circle, rgba(34,211,238,0.38), transparent 68%); height: 460px; right: -6%; top: -10%; width: 460px; }
+  .bloom-c { background: radial-gradient(circle, rgba(251,113,133,0.28), transparent 70%); bottom: -40%; height: 440px; left: 40%; width: 440px; }
+  .hero-grid {
+    inset: 0;
+    position: absolute;
+    background-image:
+      linear-gradient(var(--border) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border) 1px, transparent 1px);
+    background-size: 46px 46px;
+    mask-image: radial-gradient(120% 120% at 50% 0%, #000 30%, transparent 72%);
+    opacity: 0.6;
+  }
+  :root[data-theme='light'] .bloom { opacity: 0.5; }
+
+  .hero-inner {
+    padding: clamp(2rem, 5vw, 4rem) clamp(1.5rem, 5vw, 4rem) clamp(2rem, 4vw, 3rem);
+    position: relative;
+  }
+  .eyebrow {
+    align-items: center;
+    color: var(--text-muted);
+    display: inline-flex;
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    gap: 0.5rem;
+    letter-spacing: 0.04em;
+    margin: 0 0 1.1rem;
+    text-transform: uppercase;
+  }
+  .pulse {
+    background: var(--accent-2);
+    border-radius: 50%;
+    box-shadow: 0 0 0 0 var(--glow-accent-2);
+    height: 8px;
+    width: 8px;
+    animation: pulse 2.4s ease-out infinite;
+  }
+  @keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0.5); }
+    70% { box-shadow: 0 0 0 8px rgba(34, 211, 238, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(34, 211, 238, 0); }
   }
   .hero h1 {
-    font-size: clamp(1.9rem, 5vw, 3rem);
-    letter-spacing: -0.03em;
-    line-height: 1.08;
+    font-size: clamp(2.1rem, 5.5vw, 3.9rem);
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 1.04;
     margin: 0;
+    max-width: 18ch;
   }
   .grad {
-    background: linear-gradient(90deg, var(--accent), var(--accent-2));
+    background: linear-gradient(100deg, var(--violet-400), var(--cyan-300));
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
   }
-  .lede { color: var(--text-muted); margin: 1rem auto 1.6rem; max-width: 52ch; }
-  .hero-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.75rem;
-    justify-content: center;
-    margin-bottom: 1.75rem;
+  .sub {
+    color: var(--text-muted);
+    font-size: clamp(1rem, 2vw, 1.15rem);
+    line-height: 1.55;
+    margin: 1.15rem 0 1.75rem;
+    max-width: 52ch;
   }
-  .btn-primary,
-  .btn-ghost {
+  .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-bottom: 2rem; }
+  .cta-primary, .cta-ghost {
     border-radius: 999px;
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     font-weight: 600;
-    padding: 0.6rem 1.25rem;
+    padding: 0.7rem 1.4rem;
     text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
   }
-  .btn-primary {
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    box-shadow: 0 8px 24px var(--glow-accent);
-    color: #0b0a15;
+  .cta-primary {
+    background: linear-gradient(135deg, var(--violet-500), var(--cyan-400));
+    box-shadow: 0 10px 30px var(--glow-accent);
+    color: #08060f;
   }
-  .btn-ghost { border: 1px solid var(--border-bright); color: var(--text); }
-  .btn-ghost:hover { background: var(--surface); }
-  .hero-progress { margin: 0 auto; max-width: 34rem; }
+  .cta-primary:hover { box-shadow: 0 14px 40px var(--glow-accent); transform: translateY(-2px); }
+  .cta-ghost { border: 1px solid var(--border-bright); color: var(--text); }
+  .cta-ghost:hover { background: var(--surface); }
 
-  .curriculum { margin: 0 auto; max-width: 60rem; }
-  .stage { margin-bottom: 2.5rem; }
-  .stage-head {
-    align-items: baseline;
-    border-bottom: 1px solid var(--border);
+  .stats {
+    border-top: 1px solid var(--border);
     display: flex;
     flex-wrap: wrap;
-    gap: 0.6rem;
-    margin-bottom: 1rem;
-    padding-bottom: 0.5rem;
+    gap: clamp(1.5rem, 5vw, 3.5rem);
+    margin: 0 0 1.5rem;
+    padding-top: 1.5rem;
   }
-  .stage-num {
-    color: var(--accent);
-    font-size: 0.75rem;
+  .stats div { display: flex; flex-direction: column; gap: 0.15rem; }
+  .stats dt {
+    font-family: var(--font-mono);
+    font-size: clamp(1.5rem, 3vw, 2rem);
     font-weight: 700;
-    letter-spacing: 0.08em;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+  .stats dd { color: var(--text-muted); font-size: 0.78rem; letter-spacing: 0.02em; margin: 0; }
+  .hero-track { background: var(--surface-strong); border-radius: 999px; height: 4px; overflow: hidden; }
+  .hero-track span {
+    background: linear-gradient(90deg, var(--violet-400), var(--cyan-300));
+    border-radius: 999px;
+    display: block;
+    height: 100%;
+    transition: width 0.5s ease;
+    width: 0;
+  }
+
+  /* ---------------- Docs grid ---------------- */
+  .docs { display: grid; gap: clamp(1.5rem, 4vw, 3rem); grid-template-columns: 250px minmax(0, 1fr); }
+  .home-nav {
+    align-self: start;
+    border-right: 1px solid var(--border);
+    max-height: calc(100vh - 3rem);
+    overflow-y: auto;
+    padding-right: 1rem;
+    position: sticky;
+    top: 1.5rem;
+  }
+
+  /* ---------------- Stage + spine signature ---------------- */
+  .stages { min-width: 0; }
+  .stage { display: grid; grid-template-columns: 40px minmax(0, 1fr); }
+  .rail { position: relative; }
+  .thread {
+    background: var(--border-bright);
+    border-radius: 2px;
+    left: 19px;
+    position: absolute;
+    top: 0;
+    bottom: -1px;
+    width: 2px;
+  }
+  .thread[data-first] { top: 14px; }
+  .thread[data-last] { bottom: auto; height: 30px; }
+  .node {
+    align-items: center;
+    background: var(--bg);
+    border: 2px solid var(--border-bright);
+    border-radius: 50%;
+    display: flex;
+    height: 26px;
+    justify-content: center;
+    left: 7px;
+    position: absolute;
+    top: 4px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    width: 26px;
+    z-index: 1;
+  }
+  .node-dot { background: var(--border-bright); border-radius: 50%; height: 8px; transition: background 0.3s; width: 8px; }
+
+  /* stage in progress: node adopts the stage hue */
+  .stage[data-started='true'] .node { border-color: var(--hue); box-shadow: 0 0 14px -2px var(--hue); }
+  .stage[data-started='true'] .node-dot { background: var(--hue); }
+  /* stage complete: filled node + glowing thread */
+  .stage[data-done='true'] .node { background: var(--hue); border-color: var(--hue); box-shadow: 0 0 18px -2px var(--hue); }
+  .stage[data-done='true'] .node-dot { background: #08060f; }
+  .stage[data-done='true'] .thread { background: linear-gradient(180deg, var(--hue), color-mix(in srgb, var(--hue) 40%, var(--border-bright))); box-shadow: 0 0 12px -4px var(--hue); }
+
+  .stage-main { min-width: 0; padding-bottom: 2.75rem; }
+  .stage-head { margin-bottom: 1.1rem; }
+  .stage-kicker {
+    color: var(--text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.74rem;
+    letter-spacing: 0.03em;
+    margin: 0 0 0.3rem;
     text-transform: uppercase;
   }
-  .stage-head h2 { font-size: 1.35rem; letter-spacing: -0.02em; margin: 0; }
-  .stage-count { color: var(--text-muted); font-size: 0.8rem; margin-left: auto; }
+  .stage-num { color: var(--hue); }
+  .stage-head h2 { font-size: clamp(1.3rem, 2.5vw, 1.6rem); letter-spacing: -0.025em; margin: 0; }
+  .stage-blurb { color: var(--text-muted); font-size: 0.92rem; margin: 0.35rem 0 0; max-width: 60ch; }
 
-  .lesson-list { display: grid; gap: 0.6rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); list-style: none; margin: 0; padding: 0; }
-  .lesson-card {
-    align-items: flex-start;
-    background: var(--surface);
+  .cards { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fill, minmax(255px, 1fr)); list-style: none; margin: 0; padding: 0; }
+  .card {
+    background: linear-gradient(160deg, var(--surface-strong), var(--surface));
     border: 1px solid var(--border);
-    border-radius: var(--radius);
+    border-radius: 14px;
     color: var(--text);
-    display: flex;
-    gap: 0.75rem;
+    display: grid;
+    gap: 0.55rem;
+    grid-template-rows: auto 1fr auto;
     height: 100%;
-    padding: 0.9rem 1rem;
+    padding: 0.9rem 1rem 0.8rem;
+    position: relative;
     text-decoration: none;
-    transition: border-color 0.2s, background 0.2s, transform 0.2s;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
-  .lesson-card:hover {
-    background: var(--surface-strong);
-    border-color: var(--border-bright);
-    transform: translateY(-2px);
+  .card::before {
+    border-radius: 14px;
+    content: '';
+    inset: 0;
+    opacity: 0;
+    pointer-events: none;
+    position: absolute;
+    box-shadow: 0 12px 34px -12px var(--hue);
+    transition: opacity 0.2s;
   }
-  .card-check {
+  .card:hover { border-color: color-mix(in srgb, var(--hue) 55%, var(--border)); transform: translateY(-3px); }
+  .card:hover::before { opacity: 1; }
+  .card:focus-visible { outline: 2px solid var(--hue); outline-offset: 3px; }
+  .card-tick {
     border: 1.5px solid var(--border-bright);
     border-radius: 50%;
-    flex-shrink: 0;
-    height: 18px;
-    margin-top: 0.15rem;
+    height: 17px;
     position: relative;
-    width: 18px;
+    width: 17px;
   }
-  [data-card-slug][data-done='true'] .card-check {
-    background: linear-gradient(135deg, var(--accent), var(--accent-2));
-    border-color: transparent;
+  [data-card-slug][data-done='true'] .card-tick { background: var(--hue); border-color: transparent; }
+  [data-card-slug][data-done='true'] .card-tick::after {
+    color: #08060f; content: '✓'; font-size: 10px; font-weight: 900;
+    left: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%);
   }
-  [data-card-slug][data-done='true'] .card-check::after {
-    color: #0b0a15;
-    content: '✓';
-    font-size: 11px;
-    font-weight: 900;
-    left: 50%;
-    position: absolute;
-    top: 50%;
-    transform: translate(-50%, -50%);
-  }
-  .card-body { display: flex; flex-direction: column; gap: 0.2rem; min-width: 0; }
+  .card-body { display: flex; flex-direction: column; gap: 0.25rem; min-width: 0; }
   .card-title { font-size: 0.95rem; font-weight: 650; line-height: 1.25; }
-  .card-summary { color: var(--text-muted); font-size: 0.83rem; line-height: 1.4; }
-  .card-meta { color: var(--text-muted); display: flex; font-size: 0.75rem; gap: 0.4rem; margin-top: 0.15rem; }
-  .card-difficulty { text-transform: capitalize; }
-  .card-arrow { color: var(--text-muted); margin-left: auto; transition: transform 0.2s; }
-  .lesson-card:hover .card-arrow { color: var(--accent); transform: translateX(3px); }
+  .card-sum { color: var(--text-muted); font-size: 0.82rem; line-height: 1.4; }
+  .card-foot {
+    align-items: center;
+    color: var(--text-muted);
+    display: flex;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    gap: 0.6rem;
+    justify-content: space-between;
+    letter-spacing: 0.02em;
+    padding-top: 0.2rem;
+  }
+  .card-diff { text-transform: uppercase; }
+
+  /* ---------------- Motion + responsive ---------------- */
+  .hero-inner > * { animation: rise 0.6s cubic-bezier(0.2, 0.8, 0.25, 1) backwards; }
+  .hero-inner > :nth-child(2) { animation-delay: 0.06s; }
+  .hero-inner > :nth-child(3) { animation-delay: 0.12s; }
+  .hero-inner > :nth-child(4) { animation-delay: 0.18s; }
+  .hero-inner > :nth-child(5) { animation-delay: 0.24s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .bloom { animation: drift 16s ease-in-out infinite alternate; }
+  .bloom-b { animation-duration: 20s; }
+  .bloom-c { animation-duration: 24s; }
+  @keyframes drift { to { transform: translate3d(24px, 18px, 0) scale(1.08); } }
+
+  @media (max-width: 900px) {
+    .docs { display: block; }
+    .home-nav {
+      border-bottom: 1px solid var(--border);
+      border-right: none;
+      margin-bottom: 1.5rem;
+      max-height: none;
+      overflow: visible;
+      padding-right: 0;
+      position: static;
+    }
+    .stage { grid-template-columns: 28px minmax(0, 1fr); }
+    .thread { left: 13px; }
+    .node { left: 1px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .hero-inner > *, .bloom, .pulse { animation: none; }
+  }
 </style>

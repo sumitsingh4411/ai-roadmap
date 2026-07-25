@@ -13,6 +13,7 @@ export interface NavLesson {
 export interface NavStage {
   id: number;
   name: string;
+  color: string;
   lessons: NavLesson[];
 }
 
@@ -38,7 +39,7 @@ export function buildCurriculum(lessons: LessonEntry[]): NavStage[] {
   const ordered = topologicalOrder(roadmap.nodes);
   const byId = new Map(lessons.map((l) => [l.id, l]));
 
-  const stages: NavStage[] = roadmap.stages.map((s) => ({ id: s.id, name: s.name, lessons: [] }));
+  const stages: NavStage[] = roadmap.stages.map((s) => ({ id: s.id, name: s.name, color: s.color, lessons: [] }));
   const stageById = new Map(stages.map((s) => [s.id, s]));
 
   for (const node of ordered) {
