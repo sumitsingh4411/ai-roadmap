@@ -2,21 +2,23 @@
 import { getCollection, render } from 'astro:content';
 import roadmapData from '../../../content/roadmap.json';
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import LessonCard from '../../components/LessonCard.astro';
+import Sidebar from '../../components/Sidebar.astro';
 import CodeCopy from '../../components/CodeCopy.astro';
 import { roadmapSchema, topologicalOrder } from '../../lib/roadmap';
+import { buildCurriculum } from '../../lib/curriculum';
 import { href } from '../../lib/url';
 
 export async function getStaticPaths() {
   const lessons = await getCollection('lessons');
   const titleById = new Map(lessons.map((l) => [l.id, l.data.title]));
+  const stages = buildCurriculum(lessons);
   return lessons.map((lesson) => ({
     params: { slug: lesson.id },
-    props: { lesson, titleById },
+    props: { lesson, titleById, stages },
   }));
 }
 
-const { lesson, titleById } = Astro.props;
+const { lesson, titleById, stages } = Astro.props;
 const { Content, headings } = await render(lesson);
 
 const roadmap = roadmapSchema.parse(roadmapData);
@@ -45,28 +47,32 @@ const nextTitle = next ? (titleById.get(next.id) ?? fallbackLabel(next.id)) : nu
 const tocHeadings = headings.filter((h) => h.depth === 2);
 ---
 <BaseLayout title={lesson.data.title} description={lesson.data.summary}>
-  <LessonCard
-    title={lesson.data.title}
-    stageName={`Stage ${stage?.id} · ${stage?.name}`}
-    minutes={lesson.data.minutes}
-    difficulty={lesson.data.difficulty}
-    tags={lesson.data.tags}
-    summary={lesson.data.summary}
-    githubUrl={githubUrl}
-  />
+  <Sidebar slot="sidebar" stages={stages} currentSlug={lesson.id} />
 
-  {tocHeadings.length > 2 && (
-    <nav class="toc" aria-label="On this page">
-      <p class="toc-title">On this page</p>
-      <ul>
-        {tocHeadings.map((h) => (
-          <li><a href={`#${h.slug}`}>{h.text}</a></li>
-        ))}
-      </ul>
-    </nav>
-  )}
+  <article class="doc">
+    <header class="doc-header">
+      <p class="doc-eyebrow">Stage {stage?.id} · {stage?.name}</p>
+      <div class="doc-meta">
+        <span>{lesson.data.minutes} min read</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <span class="doc-difficulty">{lesson.data.difficulty}</span>
+        <span class="dot" aria-hidden="true">·</span>
+        <a href={githubUrl} rel="noopener">View source on GitHub ↗</a>
+      </div>
+    </header>
 
-  <div class="prose"><Content /></div>
+    {tocHeadings.length > 2 && (
+      <nav class="toc" aria-label="On this page">
+        <p class="toc-title">On this page</p>
+        <ul>
+          {tocHeadings.map((h) => (
+            <li><a href={`#${h.slug}`}>{h.text}</a></li>
+          ))}
+        </ul>
+      </nav>
+    )}
+
+    <div class="prose"><Content /></div>
 
   <button id="mark-complete" type="button" data-slug={lesson.id} aria-pressed="false">
     Mark as complete
@@ -74,21 +80,55 @@ const tocHeadings = headings.filter((h) => h.depth === 2);
 
   <nav class="pager" aria-label="Lesson navigation">
     {previous
-      ? <a class="prev" href={href(`/lessons/${previous.id}`)}>← {previousTitle}</a>
+      ? <a class="prev" href={href(`/lessons/${previous.id}`)}><span class="pager-dir">← Previous</span><span class="pager-title">{previousTitle}</span></a>
       : <span></span>}
     {next
-      ? <a class="next" href={href(`/lessons/${next.id}`)}>{nextTitle} →</a>
+      ? <a class="next" href={href(`/lessons/${next.id}`)}><span class="pager-dir">Next →</span><span class="pager-title">{nextTitle}</span></a>
       : <span></span>}
   </nav>
+  </article>
 
   <CodeCopy />
 </BaseLayout>
 
 <style>
+  .doc-header {
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.1rem;
+  }
+  .doc-eyebrow {
+    color: var(--accent);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    margin: 0 0 0.4rem;
+    text-transform: uppercase;
+  }
+  .doc-meta {
+    align-items: center;
+    color: var(--text-muted);
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.85rem;
+    gap: 0.5rem;
+  }
+  .doc-difficulty { text-transform: capitalize; }
+  .doc-meta a { color: var(--accent-2); text-decoration: none; }
+  .doc-meta a:hover { text-decoration: underline; }
+  /* The lesson body's own `# Title` is the document heading. */
+  .doc :global(.prose h1) {
+    font-size: clamp(1.7rem, 4vw, 2.3rem);
+    letter-spacing: -0.025em;
+    line-height: 1.12;
+    margin: 0 0 1.25rem;
+  }
   .toc {
-    border-left: 2px solid var(--border);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
     margin-bottom: 2rem;
-    padding-left: 1rem;
+    padding: 1rem 1.25rem;
   }
   .toc-title {
     color: var(--text-muted);
@@ -125,8 +165,22 @@ const tocHeadings = headings.filter((h) => h.depth === 2);
     justify-content: space-between;
     padding-top: 1.5rem;
   }
-  .pager a { color: var(--accent-2); font-size: 0.9rem; text-decoration: none; }
-  .pager a:hover { text-decoration: underline; }
+  .pager a {
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    display: flex;
+    flex-direction: column;
+    gap: 0.2rem;
+    max-width: 48%;
+    padding: 0.7rem 1rem;
+    text-decoration: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+  .pager a:hover { background: var(--surface); border-color: var(--border-bright); }
+  .pager .next { margin-left: auto; text-align: right; }
+  .pager-dir { color: var(--text-muted); font-size: 0.75rem; }
+  .pager-title { font-size: 0.9rem; font-weight: 600; }
 </style>
 
 <script>

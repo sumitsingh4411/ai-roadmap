@@ -13,6 +13,7 @@ interface Props {
 
 const { title, description, wide = false } = Astro.props;
 const fullTitle = title === 'AI Roadmap' ? title : `${title} · AI Roadmap`;
+const hasSidebar = Astro.slots.has('sidebar');
 ---
 <!doctype html>
 <html lang="en" data-theme="dark">
@@ -53,9 +54,22 @@ const fullTitle = title === 'AI Roadmap' ? title : `${title} · AI Roadmap`;
       </nav>
     </header>
 
-    <main id="main" class={wide ? 'wide' : ''}>
-      <slot />
-    </main>
+    {hasSidebar ? (
+      <div class="docs-shell">
+        <aside class="docs-aside">
+          <div class="docs-aside-inner">
+            <slot name="sidebar" />
+          </div>
+        </aside>
+        <main id="main">
+          <slot />
+        </main>
+      </div>
+    ) : (
+      <main id="main" class={wide ? 'wide' : ''}>
+        <slot />
+      </main>
+    )}
 
     <footer class="site-footer">
       <p>
@@ -106,6 +120,43 @@ const fullTitle = title === 'AI Roadmap' ? title : `${title} · AI Roadmap`;
   .site-header nav a:hover { color: var(--text); }
   main { margin: 0 auto; max-width: var(--max-width); padding: clamp(1.5rem, 5vw, 3rem) 1.25rem; }
   main.wide { max-width: 1200px; }
+
+  /* Documentation two-column shell: sticky sidebar + reading column. */
+  .docs-shell {
+    display: grid;
+    gap: clamp(1.5rem, 4vw, 3rem);
+    grid-template-columns: 260px minmax(0, 1fr);
+    margin: 0 auto;
+    max-width: 1180px;
+    padding: 0 clamp(1rem, 4vw, 2rem);
+  }
+  .docs-shell main { margin: 0; max-width: 74ch; padding: clamp(1.5rem, 5vw, 2.75rem) 0; }
+  .docs-aside {
+    border-right: 1px solid var(--border);
+  }
+  .docs-aside-inner {
+    max-height: calc(100vh - 4rem);
+    overflow-y: auto;
+    padding: clamp(1.5rem, 5vw, 2.75rem) 1rem 2rem 0;
+    position: sticky;
+    top: 0;
+  }
+  @media (max-width: 900px) {
+    .docs-shell { display: block; padding: 0 1.25rem; }
+    .docs-aside {
+      border-bottom: 1px solid var(--border);
+      border-right: none;
+      margin: 0 -1.25rem;
+      padding: 0 1.25rem;
+    }
+    .docs-aside-inner {
+      max-height: none;
+      overflow: visible;
+      padding: 0.75rem 0;
+      position: static;
+    }
+    .docs-shell main { max-width: none; }
+  }
   .site-footer {
     border-top: 1px solid var(--border);
     color: var(--text-muted);
