@@ -1,0 +1,139 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '../lib/url';
+
+const SITE = 'https://sumitsingh4411.github.io/ai-roadmap';
+
+interface Project { title: string; blurb: string; effort: string; tags: string[]; lesson: string; lessonName: string; }
+interface Level { name: string; hue: string; blurb: string; projects: Project[]; }
+
+const levels: Level[] = [
+  {
+    name: 'Start here — beginner projects', hue: '#22d3ee',
+    blurb: 'Small, finishable projects that lock in the basics. Build them as you reach each lesson.',
+    projects: [
+      { title: 'Stats-from-scratch CLI', blurb: 'Read a list of numbers from the user and report the mean, min, and max — no libraries, just Python.', effort: 'an hour', tags: ['Python'], lesson: 'python-basics', lessonName: 'Python Basics' },
+      { title: 'Dataset detective', blurb: 'Load a messy CSV with pandas, answer three real questions with groupby, and back each up with a chart.', effort: 'an afternoon', tags: ['pandas', 'matplotlib'], lesson: 'pandas', lessonName: 'Pandas' },
+      { title: 'Titanic survival predictor', blurb: 'Your first real model: predict who survived from passenger data, then read what the model learned.', effort: 'an afternoon', tags: ['scikit-learn', 'classification'], lesson: 'classification', lessonName: 'Classification' },
+      { title: 'House-price estimator', blurb: 'Predict prices with linear regression and interpret the coefficients — which features actually matter?', effort: 'an afternoon', tags: ['scikit-learn', 'regression'], lesson: 'regression', lessonName: 'Regression' },
+      { title: 'Handwritten-digit recognizer', blurb: 'Train a small neural network to read MNIST digits — your first taste of deep learning that works.', effort: 'a weekend', tags: ['PyTorch', 'MNIST'], lesson: 'neural-networks', lessonName: 'Neural Networks' },
+    ],
+  },
+  {
+    name: 'Level up — intermediate projects', hue: '#a78bfa',
+    blurb: 'Bigger, portfolio-worthy builds that combine several skills end to end.',
+    projects: [
+      { title: 'Spam / sentiment classifier', blurb: 'Turn raw text into features and classify it as spam-or-not or positive-or-negative. Measure it honestly.', effort: 'a weekend', tags: ['scikit-learn', 'NLP'], lesson: 'model-evaluation', lessonName: 'Model Evaluation' },
+      { title: 'Image classifier with transfer learning', blurb: 'Fine-tune a pretrained CNN on your own images — a few hundred photos is enough to get real accuracy.', effort: 'a weekend', tags: ['PyTorch', 'transfer learning'], lesson: 'cnns-vision', lessonName: 'CNNs & Vision' },
+      { title: 'Customer churn, end to end', blurb: 'Clean → engineer features → model → evaluate, then ship it as a public repo with a proper README.', effort: 'a week', tags: ['pandas', 'scikit-learn'], lesson: 'first-ml-project', lessonName: 'First ML Project' },
+      { title: 'Semantic search engine', blurb: 'Search 50+ documents by meaning, not keywords, using embeddings and cosine similarity in NumPy.', effort: 'a weekend', tags: ['embeddings', 'numpy'], lesson: 'embeddings', lessonName: 'Embeddings' },
+      { title: 'Recommender system', blurb: 'Recommend movies, books, or products by similarity over embeddings — the engine behind every "you might like".', effort: 'a weekend', tags: ['embeddings', 'clustering'], lesson: 'clustering-pca', lessonName: 'Clustering & PCA' },
+    ],
+  },
+  {
+    name: 'Go big — advanced & GenAI projects', hue: '#fb7185',
+    blurb: 'The projects that make a portfolio stand out — and teach you how modern AI products are actually built.',
+    projects: [
+      { title: 'RAG chatbot over your own docs', blurb: 'Answer questions grounded in your notes or a PDF library — retrieve the right chunks, then let an LLM write the answer.', effort: 'a week', tags: ['RAG', 'embeddings', 'LLM'], lesson: 'rag', lessonName: 'RAG' },
+      { title: 'Fine-tune a small LLM with LoRA', blurb: 'Teach an open model a new task or style cheaply, then evaluate whether it actually improved.', effort: 'a week', tags: ['LoRA', 'PyTorch'], lesson: 'fine-tuning', lessonName: 'Fine-tuning' },
+      { title: 'An AI agent with tools', blurb: 'Build an agent that plans and calls two tools to answer questions it couldn’t on its own.', effort: 'a week', tags: ['agents', 'tool use'], lesson: 'ai-agents', lessonName: 'AI Agents' },
+      { title: 'Deploy a model as an API', blurb: 'Wrap a model in FastAPI, Dockerize it, and put it live — a working demo beats a dozen certificates.', effort: 'a weekend', tags: ['FastAPI', 'Docker'], lesson: 'deploying-models', lessonName: 'Deploying a Model' },
+      { title: 'Build an eval suite for an LLM app', blurb: 'Write tests that catch quality regressions before your users do — the skill that separates hobby from production.', effort: 'a weekend', tags: ['evals', 'testing'], lesson: 'evals-guardrails', lessonName: 'Evals & Guardrails' },
+    ],
+  },
+];
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'AI project ideas to build for learning',
+  itemListElement: levels.flatMap((lv, li) =>
+    lv.projects.map((pr, pi) => ({ '@type': 'ListItem', position: li * 10 + pi + 1, name: pr.title, url: `${SITE}/lessons/${pr.lesson}` })),
+  ),
+};
+---
+<BaseLayout
+  title="Projects — build AI to learn it"
+  description="Learn AI by building. 15 hands-on project ideas from beginner to advanced — Titanic, image classifiers, semantic search, RAG chatbots, fine-tuning, and deploying models — each mapped to the lesson it builds on."
+  keywords="AI project ideas, machine learning projects for beginners, deep learning projects, LLM project ideas, AI portfolio projects, hands-on machine learning, build AI projects"
+  jsonLd={itemListSchema}
+  wide
+>
+  <header class="pj-head">
+    <p class="pj-eyebrow">Learn by building</p>
+    <h1>Don’t just read it — <span class="grad">build it</span>.</h1>
+    <p class="pj-sub">
+      You learn AI by making things, breaking them, and fixing them. Here are 15 projects, from
+      your first hour of Python to shipping an LLM app. Each one maps to the lesson that
+      teaches what you need — build them as you go.
+    </p>
+    <a class="pj-cta" href={href('/roadmap')}>See the full roadmap →</a>
+  </header>
+
+  <div class="pj-levels">
+    {levels.map((lv) => (
+      <section class="pj-level" style={`--hue:${lv.hue}`}>
+        <div class="pj-level-head">
+          <span class="pj-bar" aria-hidden="true"></span>
+          <div>
+            <h2>{lv.name}</h2>
+            <p>{lv.blurb}</p>
+          </div>
+        </div>
+        <ul class="pj-cards">
+          {lv.projects.map((pr) => (
+            <li class="pj-card">
+              <h3>{pr.title}</h3>
+              <p class="pj-blurb">{pr.blurb}</p>
+              <div class="pj-tags">
+                <span class="pj-effort">⏱ {pr.effort}</span>
+                {pr.tags.map((t) => <span class="pj-tag">{t}</span>)}
+              </div>
+              <a class="pj-lesson" href={href(`/lessons/${pr.lesson}`)}>Builds on: {pr.lessonName} →</a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+  <p class="pj-foot">
+    Built something? Add it to your portfolio, then head to
+    <a href={href('/advanced')}>What’s next →</a> to keep going.
+  </p>
+</BaseLayout>
+
+<style>
+  .pj-head { border-bottom: 1px solid var(--border); margin: 0 auto 2.5rem; max-width: 60ch; padding-bottom: 2rem; text-align: center; }
+  .pj-eyebrow { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; margin: 0 0 0.6rem; text-transform: uppercase; }
+  .pj-head h1 { font-size: clamp(1.9rem, 5vw, 3rem); letter-spacing: -0.03em; line-height: 1.08; margin: 0; }
+  .grad { background: linear-gradient(100deg, var(--violet-400), var(--cyan-300)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .pj-sub { color: var(--text-muted); font-size: 1.02rem; margin: 1rem auto 1.25rem; max-width: 56ch; }
+  .pj-cta { color: var(--accent-2); font-size: 0.9rem; text-decoration: none; }
+  .pj-cta:hover { text-decoration: underline; }
+
+  .pj-levels { display: flex; flex-direction: column; gap: 2.75rem; margin: 0 auto; max-width: 62rem; }
+  .pj-level-head { align-items: flex-start; display: flex; gap: 0.9rem; margin-bottom: 1rem; }
+  .pj-bar { background: var(--hue); border-radius: 3px; box-shadow: 0 0 14px -2px var(--hue); flex-shrink: 0; height: 46px; margin-top: 0.1rem; width: 5px; }
+  .pj-level-head h2 { font-size: 1.3rem; letter-spacing: -0.02em; margin: 0.1rem 0 0.25rem; }
+  .pj-level-head p { color: var(--text-muted); font-size: 0.92rem; margin: 0; max-width: 60ch; }
+
+  .pj-cards { display: grid; gap: 0.8rem; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); list-style: none; margin: 0; padding: 0; }
+  .pj-card {
+    background: linear-gradient(160deg, var(--surface-strong), var(--surface)); border: 1px solid var(--border);
+    border-radius: 14px; display: flex; flex-direction: column; gap: 0.45rem; padding: 1rem 1.1rem 0.9rem;
+    transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .pj-card:hover { border-color: color-mix(in srgb, var(--hue) 50%, var(--border)); box-shadow: 0 12px 30px -14px var(--hue); transform: translateY(-3px); }
+  .pj-card h3 { font-size: 1.02rem; letter-spacing: -0.01em; margin: 0; }
+  .pj-blurb { color: var(--text-muted); font-size: 0.86rem; line-height: 1.45; margin: 0; }
+  .pj-tags { align-items: center; display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.15rem; }
+  .pj-effort { color: color-mix(in srgb, var(--hue) 75%, var(--text)); font-family: var(--font-mono); font-size: 0.68rem; }
+  .pj-tag { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; color: var(--text-muted); font-family: var(--font-mono); font-size: 0.66rem; padding: 0.08rem 0.5rem; }
+  .pj-lesson { color: var(--hue); font-size: 0.8rem; font-weight: 600; margin-top: auto; padding-top: 0.4rem; text-decoration: none; }
+  .pj-lesson:hover { text-decoration: underline; }
+
+  .pj-foot { border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; margin: 3rem auto 0; max-width: 62rem; padding-top: 1.5rem; text-align: center; }
+  .pj-foot a { color: var(--accent-2); text-decoration: none; }
+  .pj-foot a:hover { text-decoration: underline; }
+</style>
