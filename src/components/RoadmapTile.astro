@@ -56,7 +56,7 @@ const CELL = 118;
   /* Counter-rotate so the text reads flat against the tilted board. */
   .label {
     color: var(--text);
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 600;
     line-height: 1.2;
     padding: 0 8px;
@@ -65,8 +65,10 @@ const CELL = 118;
   }
   .check { display: none; }
 
-  .tile[data-state='locked'] .face { filter: saturate(0.25) brightness(0.6); }
-  .tile[data-state='locked'] .label { color: var(--text-muted); }
+  /* Locked tiles still read as dimmer/inactive, but the label stays legible —
+     a faint grey on a nearly-black face was effectively invisible. */
+  .tile[data-state='locked'] .face { filter: saturate(0.5) brightness(0.9); }
+  .tile[data-state='locked'] .label { color: var(--text); opacity: 0.72; }
 
   .tile[data-state='available'] .face {
     border-color: var(--accent-2);

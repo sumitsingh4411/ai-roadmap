@@ -25,7 +25,7 @@ const titles = Object.fromEntries(lessons.map((l) => [l.id, l.data.title]));
 </BaseLayout>
 
 <style>
-  .hero { margin: 0 auto; max-width: 62ch; padding: 2rem 0 0; text-align: center; }
+  .hero { margin: 0 auto; max-width: 62ch; padding: 0.5rem 0 0; text-align: center; }
   .hero h1 {
     font-size: clamp(2.2rem, 7vw, 3.6rem);
     letter-spacing: -0.03em;
@@ -38,5 +38,5 @@ const titles = Object.fromEntries(lessons.map((l) => [l.id, l.data.title]));
     background-clip: text;
     color: transparent;
   }
-  .lede { color: var(--text-muted); margin: 1rem auto 2rem; max-width: 46ch; }
+  .lede { color: var(--text-muted); margin: 0.85rem auto 1.5rem; max-width: 46ch; }
 </style>
