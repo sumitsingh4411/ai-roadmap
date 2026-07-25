@@ -37,9 +37,9 @@ because each one asked you to make a judgment call the lesson didn't
 make for you (which metric matters, whether to fix an outlier, what
 `k` to retrieve). Second, it has an honest number and an honest limit —
 "72% accuracy, and here's specifically the case where it fails" reads as
-far more credible than an unqualified "it works," the same lesson
-13's precision/recall work and lesson 17's write-up template already
-drilled in. Third, it's runnable by someone who isn't you — clear setup
+far more credible than an unqualified "it works," which is exactly what
+lesson 13's precision/recall work and lesson 17's write-up template
+already drilled in. Third, it's runnable by someone who isn't you — clear setup
 steps, pinned dependencies (lesson 31's reproducibility habit, paying off
 again here), and ideally a live demo or deployed endpoint (lesson 32) so
 a reviewer can try it without touching your code at all. Fourth, depth
@@ -187,4 +187,4 @@ move isn't a 35th lesson — it's picking one of your three projects and
 making it a little better, or picking one Stage that pulled at you and
 going deeper. If you want to see how everything you just learned fits
 together, or figure out where to send someone else who's just starting,
-[the full curriculum](../CURRICULUM.md) is the map.
+[the full curriculum](../../CURRICULUM.md) is the map.

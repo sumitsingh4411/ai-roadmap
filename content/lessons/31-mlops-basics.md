@@ -225,9 +225,10 @@ Best run by cv_roc_auc: logreg_default
 
 This is the entire point of tracking made concrete: `random_forest` looks
 respectable on accuracy alone (70.3%) but has the worst `cv_roc_auc` of
-the three (0.4724 — barely better than random) — exactly the accuracy-can-
-mislead trap from lesson 13, now caught by a comparison table instead of
-a single glance at one run's printout.
+the three (0.4724 — essentially uninformative, even slightly below the
+0.5 random baseline from lesson 13, i.e. worse than a coin flip) —
+exactly the accuracy-can-mislead trap from lesson 13, now caught by a
+comparison table instead of a single glance at one run's printout.
 
 **Part 3 — reproducibility, demonstrated rather than asserted:**
 

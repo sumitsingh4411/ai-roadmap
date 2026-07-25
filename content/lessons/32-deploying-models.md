@@ -79,12 +79,15 @@ presented honestly as illustrative, with no invented container output.
 squarely at ML demos — the most direct route from "I have a Dockerfile"
 to "there's a public URL." **Render**'s free web-service tier will run a
 small FastAPI app directly from a repo, with a real, honest cost: free
-services spin down after a period of inactivity and take tens of seconds
-to cold-start on the next request, which is fine for a portfolio demo and
-wrong for anything latency-sensitive. Other providers (Railway, Fly.io,
-Google Cloud Run) offer similar free or low-cost tiers with their own
-tradeoffs — the pattern to evaluate for any of them is the same: how much
-compute is free, and what happens to latency after idle time.
+services spin down after a period of inactivity and take up to about a
+minute to cold-start on the next request, which is fine for a portfolio
+demo and wrong for anything latency-sensitive. Free tiers change often,
+so check current pricing before relying on one — **Google Cloud Run**
+currently has a genuine perpetual free tier (2 million requests/month),
+while providers like Railway and Fly.io have dropped their persistent
+free tiers in favor of trial credit or a card requirement. Whichever
+provider you pick, the pattern to evaluate is the same: how much compute
+is actually free right now, and what happens to latency after idle time.
 
 ## In code
 
