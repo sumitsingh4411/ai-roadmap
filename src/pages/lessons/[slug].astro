@@ -45,8 +45,40 @@ const previousTitle = previous ? (titleById.get(previous.id) ?? fallbackLabel(pr
 const nextTitle = next ? (titleById.get(next.id) ?? fallbackLabel(next.id)) : null;
 
 const tocHeadings = headings.filter((h) => h.depth === 2);
+
+const SITE = 'https://sumitsingh4411.github.io/ai-roadmap';
+const lessonSchema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'LearningResource',
+    name: lesson.data.title,
+    description: lesson.data.summary,
+    url: `${SITE}/lessons/${lesson.id}`,
+    learningResourceType: 'lesson',
+    educationalLevel: lesson.data.difficulty,
+    timeRequired: `PT${lesson.data.minutes}M`,
+    inLanguage: 'en',
+    isAccessibleForFree: true,
+    keywords: lesson.data.tags?.join(', '),
+    isPartOf: { '@type': 'Course', name: 'AI Roadmap', url: `${SITE}/` },
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'AI Roadmap', item: `${SITE}/` },
+      { '@type': 'ListItem', position: 2, name: `Stage ${stage?.id} · ${stage?.name}`, item: `${SITE}/roadmap` },
+      { '@type': 'ListItem', position: 3, name: lesson.data.title, item: `${SITE}/lessons/${lesson.id}` },
+    ],
+  },
+];
 ---
-<BaseLayout title={lesson.data.title} description={lesson.data.summary}>
+<BaseLayout
+  title={lesson.data.title}
+  description={lesson.data.summary}
+  keywords={lesson.data.tags?.join(', ')}
+  jsonLd={lessonSchema}
+>
   <Sidebar slot="sidebar" stages={stages} currentSlug={lesson.id} />
 
   <article class="doc">

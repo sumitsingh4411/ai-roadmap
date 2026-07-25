@@ -9,10 +9,41 @@ interface Props {
   title: string;
   description: string;
   wide?: boolean;
+  /** Extra search keywords for this page, appended to the site defaults. */
+  keywords?: string;
+  /** Page-specific schema.org JSON-LD object(s). */
+  jsonLd?: Record<string, unknown> | Record<string, unknown>[];
 }
 
-const { title, description, wide = false } = Astro.props;
-const fullTitle = title === 'AI Roadmap' ? title : `${title} · AI Roadmap`;
+const { title, description, wide = false, keywords, jsonLd } = Astro.props;
+const fullTitle = title === 'AI Roadmap'
+  ? 'AI Roadmap — Learn AI from zero: 34 free lessons, Python to LLMs'
+  : `${title} · AI Roadmap`;
+const canonical = new URL(Astro.url.pathname, Astro.site).toString();
+
+const DEFAULT_KEYWORDS =
+  'learn AI, AI roadmap, machine learning roadmap, how to learn AI, AI for beginners, ' +
+  'learn machine learning, deep learning tutorial, LLM tutorial, generative AI course, ' +
+  'python for AI, free AI course, AI study plan, neural networks tutorial, transformers explained, ' +
+  'RAG tutorial, PyTorch tutorial, data science roadmap';
+const allKeywords = keywords ? `${keywords}, ${DEFAULT_KEYWORDS}` : DEFAULT_KEYWORDS;
+
+// Site-wide structured data. Google understands this site is a learning resource.
+const siteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'AI Roadmap',
+  url: 'https://sumitsingh4411.github.io/ai-roadmap/',
+  description:
+    'A free, open-source roadmap to learn AI from zero — 34 lessons from your first line of Python to shipping an LLM app.',
+  inLanguage: 'en',
+  potentialAction: {
+    '@type': 'SearchAction',
+    target: 'https://sumitsingh4411.github.io/ai-roadmap/?q={search_term_string}',
+    'query-input': 'required name=search_term_string',
+  },
+};
+const schemas = [siteSchema, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [])];
 const hasSidebar = Astro.slots.has('sidebar');
 ---
 <!doctype html>
@@ -22,10 +53,28 @@ const hasSidebar = Astro.slots.has('sidebar');
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
+    <meta name="keywords" content={allKeywords} />
+    <meta name="author" content="AI Roadmap" />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href={canonical} />
+
+    <!-- Open Graph -->
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
-    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="AI Roadmap" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+
+    <!-- Structured data for search engines -->
+    {schemas.map((s) => (
+      <script type="application/ld+json" set:html={JSON.stringify(s)} />
+    ))}
     <!-- Applied before first paint so the page never flashes the wrong theme. -->
     <script is:inline>
       try {

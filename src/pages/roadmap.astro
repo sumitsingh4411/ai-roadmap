@@ -13,6 +13,23 @@ const HUE: Record<string, string> = {
   teal: '#2dd4bf', amber: '#fbbf24', rose: '#fb7185',
 };
 
+const SITE = 'https://sumitsingh4411.github.io/ai-roadmap';
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'AI Roadmap — the full learning path',
+  numberOfItems: total,
+  itemListOrder: 'https://schema.org/ItemListOrderAscending',
+  itemListElement: stages.flatMap((s) =>
+    s.lessons.map((l, idx) => ({
+      '@type': 'ListItem',
+      position: idx + 1,
+      name: l.title,
+      url: `${SITE}/lessons/${l.slug}`,
+    })),
+  ),
+};
+
 // Flatten into an ordered stream of rows: a stage marker, then its lessons.
 // A global counter alternates lessons left / right of the centre line.
 type Row =
@@ -31,7 +48,9 @@ for (const stage of stages) {
 ---
 <BaseLayout
   title="Roadmap"
-  description="The full AI learning path as one flowing roadmap — click any topic to jump straight into the lesson."
+  description="The complete AI learning path as one interactive roadmap — 34 topics from Python to LLMs, in dependency order. Click any topic to jump straight into the lesson."
+  keywords="AI learning path, machine learning roadmap, AI topics list, what to learn for AI"
+  jsonLd={itemListSchema}
   wide
 >
   <header class="rm-head">

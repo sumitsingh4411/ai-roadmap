@@ -5,8 +5,9 @@ node_modules/
 dist/
 .astro/
 
-# generated at build time by `npm run gen:search` (see prebuild)
+# generated at build time (see prebuild)
 public/search-index.json
+public/sitemap.xml
 
 # brainstorming companion artifacts
 .superpowers/

@@ -17,6 +17,28 @@ const HUE: Record<string, string> = {
   violet: '#a78bfa', indigo: '#818cf8', sky: '#38bdf8', cyan: '#22d3ee',
   teal: '#2dd4bf', amber: '#fbbf24', rose: '#fb7185',
 };
+const SITE = 'https://sumitsingh4411.github.io/ai-roadmap';
+const courseSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Course',
+  name: 'AI Roadmap — Learn AI from Zero',
+  description:
+    `A free, open-source roadmap to learn AI: ${total} dependency-ordered lessons from your first line of Python through classical ML, deep learning, and large language models, to shipping an LLM app.`,
+  url: `${SITE}/`,
+  inLanguage: 'en',
+  isAccessibleForFree: true,
+  educationalLevel: 'Beginner to Advanced',
+  teaches: ['Python', 'NumPy', 'pandas', 'Machine Learning', 'Deep Learning', 'PyTorch', 'Transformers', 'Large Language Models', 'RAG', 'MLOps'],
+  provider: { '@type': 'Organization', name: 'AI Roadmap', url: `${SITE}/` },
+  offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD', category: 'Free' },
+  hasCourseInstance: {
+    '@type': 'CourseInstance',
+    courseMode: 'Online',
+    courseWorkload: `PT${totalHours}H`,
+    instructor: { '@type': 'Organization', name: 'AI Roadmap' },
+  },
+};
+
 const BLURB: Record<number, string> = {
   0: 'Get the lay of the land before you write a line of code.',
   1: "The tools you'll touch every day — Python, NumPy, pandas, plots.",
@@ -29,7 +51,9 @@ const BLURB: Record<number, string> = {
 ---
 <BaseLayout
   title="AI Roadmap"
-  description="A free, open-source roadmap for learning AI from zero — 34 lessons from your first line of Python to shipping an LLM application."
+  description="A free, open-source roadmap to learn AI from zero — 34 lessons from your first line of Python through machine learning and deep learning to shipping an LLM app. Read on the web or straight from GitHub."
+  keywords="AI roadmap for beginners, learn AI free, machine learning course, LLM roadmap"
+  jsonLd={courseSchema}
   wide
 >
   <section class="hero">
