@@ -1,0 +1,14 @@
+{
+  "name": "AI Roadmap — Learn AI from zero",
+  "short_name": "AI Roadmap",
+  "description": "A free, open-source roadmap to learn AI from zero: 34 lessons from Python to LLMs.",
+  "start_url": "/ai-roadmap/",
+  "scope": "/ai-roadmap/",
+  "display": "standalone",
+  "background_color": "#07070c",
+  "theme_color": "#07070c",
+  "icons": [
+    { "src": "/ai-roadmap/favicon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" },
+    { "src": "/ai-roadmap/apple-touch-icon.png", "sizes": "180x180", "type": "image/png" }
+  ]
+}

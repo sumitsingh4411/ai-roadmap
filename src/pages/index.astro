@@ -25,9 +25,13 @@ const courseSchema = {
   description:
     `A free, open-source roadmap to learn AI: ${total} dependency-ordered lessons from your first line of Python through classical ML, deep learning, and large language models, to shipping an LLM app.`,
   url: `${SITE}/`,
+  image: `${SITE}/og.png`,
   inLanguage: 'en',
   isAccessibleForFree: true,
   educationalLevel: 'Beginner to Advanced',
+  datePublished: '2026-07-24',
+  keywords: 'learn AI, AI roadmap, machine learning, deep learning, LLM, generative AI, Python',
+  about: ['Artificial Intelligence', 'Machine Learning', 'Deep Learning', 'Large Language Models', 'Data Science'],
   teaches: ['Python', 'NumPy', 'pandas', 'Machine Learning', 'Deep Learning', 'PyTorch', 'Transformers', 'Large Language Models', 'RAG', 'MLOps'],
   provider: { '@type': 'Organization', name: 'AI Roadmap', url: `${SITE}/` },
   offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD', category: 'Free' },
@@ -37,6 +41,23 @@ const courseSchema = {
     courseWorkload: `PT${totalHours}H`,
     instructor: { '@type': 'Organization', name: 'AI Roadmap' },
   },
+  hasPart: stages.map((s) => ({ '@type': 'Course', name: `Stage ${s.id}: ${s.name}`, url: `${SITE}/roadmap` })),
+};
+
+// FAQ targets real questions people search for — and earns FAQ rich results.
+const faqs = [
+  { q: 'Is this AI roadmap free?', a: 'Yes — completely free and open source. All 34 lessons are free to read on the site or straight from the Markdown on GitHub, with no sign-up, paywall, or ads.' },
+  { q: 'How long does it take to learn AI with this roadmap?', a: `The ${total} lessons are about ${totalHours} hours of reading, plus time to run the code and do the exercises. Most people spread it over a few months of steady study — you can go faster or slower, and your progress saves as you go.` },
+  { q: 'Do I need a math or computer science degree to learn AI?', a: 'No. The roadmap starts from zero and teaches the math you actually need — linear algebra, calculus, and statistics — through the problems it solves, not as abstract theory.' },
+  { q: 'What should I learn first for AI?', a: 'Start with what AI, machine learning, and deep learning actually are, then Python and working with data. Everything here is ordered by dependency, so you always know exactly what to learn next.' },
+  { q: 'Can I learn AI on my own as a self-taught beginner?', a: 'Yes — this is built for self-taught learners: a clear ordered path, runnable code examples, and exercises, so you never have to guess what to study or in what order.' },
+  { q: 'Do I need to know Python before starting?', a: 'No. Python is the first hands-on stage of the roadmap. If you already know it, you can skip ahead — every lesson lists its prerequisites.' },
+  { q: 'Does it cover LLMs like ChatGPT?', a: 'Yes. The later stages cover how large language models work, prompt engineering, embeddings, RAG, fine-tuning, and building AI agents.' },
+];
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
 };
 
 const BLURB: Record<number, string> = {
@@ -53,7 +74,7 @@ const BLURB: Record<number, string> = {
   title="AI Roadmap"
   description="A free, open-source roadmap to learn AI from zero — 34 lessons from your first line of Python through machine learning and deep learning to shipping an LLM app. Read on the web or straight from GitHub."
   keywords="AI roadmap for beginners, learn AI free, machine learning course, LLM roadmap"
-  jsonLd={courseSchema}
+  jsonLd={[courseSchema, faqSchema]}
   wide
 >
   <section class="hero">
@@ -126,6 +147,18 @@ const BLURB: Record<number, string> = {
       ))}
     </div>
   </div>
+
+  <section class="faq" aria-labelledby="faq-title">
+    <h2 id="faq-title">Frequently asked questions</h2>
+    <div class="faq-list">
+      {faqs.map((f) => (
+        <details class="faq-item">
+          <summary>{f.q}</summary>
+          <p>{f.a}</p>
+        </details>
+      ))}
+    </div>
+  </section>
 </BaseLayout>
 
 <script>
@@ -434,4 +467,16 @@ const BLURB: Record<number, string> = {
   @media (prefers-reduced-motion: reduce) {
     .hero-inner > *, .bloom, .pulse { animation: none; }
   }
+
+  /* FAQ */
+  .faq { border-top: 1px solid var(--border); margin: 3rem auto 0; max-width: 46rem; padding-top: 2.5rem; }
+  .faq h2 { font-size: 1.5rem; letter-spacing: -0.02em; margin: 0 0 1.25rem; text-align: center; }
+  .faq-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .faq-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0 1.1rem; transition: border-color 0.2s; }
+  .faq-item[open] { border-color: var(--border-bright); }
+  .faq-item summary { cursor: pointer; font-size: 1rem; font-weight: 600; list-style: none; padding: 1rem 1.6rem 1rem 0; position: relative; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-item summary::after { color: var(--accent); content: '+'; font-size: 1.4rem; position: absolute; right: 0.2rem; top: 50%; transform: translateY(-50%); }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-item p { color: var(--text-muted); line-height: 1.6; margin: 0; padding: 0 0 1.1rem; }
 </style>
