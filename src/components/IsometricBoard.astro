@@ -75,6 +75,16 @@ const links = roadmap.nodes.flatMap((node) =>
       if (!node) continue;
       tile.dataset.state = nodeState(node, completed, unlocked);
       tile.setAttribute('aria-current', done.has(id) ? 'true' : 'false');
+
+      // State is shown by colour + icon alone otherwise — this text carries
+      // the same information to screen readers.
+      const stateText = tile.querySelector<HTMLElement>('[data-state-text]');
+      if (stateText) {
+        stateText.textContent =
+          tile.dataset.state === 'complete' ? ' (completed)'
+          : tile.dataset.state === 'available' ? ' (ready to start)'
+          : ' (locked — finish the earlier lessons first)';
+      }
     }
 
     for (const link of document.querySelectorAll<HTMLElement>('[data-link-to]')) {
@@ -98,18 +108,28 @@ const links = roadmap.nodes.flatMap((node) =>
   window.addEventListener('storage', paintBoard);
   window.addEventListener('pageshow', paintBoard);
 
-  // Camera drift: the board's tilt eases as the reader scrolls down.
+  // Camera drift: the board's tilt eases as the reader scrolls down. Disabled
+  // outright below the 720px breakpoint (the board goes flat) or when the
+  // reader prefers reduced motion — and re-checked on every scroll tick, not
+  // just once at load, so a resize across 720px or an OS reduced-motion
+  // toggle (no reload) can't leave a stale inline transform fighting the
+  // CSS rule that wants `.board { transform: none }` in either case.
   const board = document.querySelector<HTMLElement>('.board');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const narrowViewport = window.matchMedia('(max-width: 720px)');
 
-  if (board && !reducedMotion.matches && window.innerWidth > 720) {
+  if (board) {
     let ticking = false;
     const applyDrift = () => {
+      ticking = false;
+      if (reducedMotion.matches || narrowViewport.matches) {
+        board.style.transform = '';
+        return;
+      }
       const progress = Math.min(window.scrollY / 900, 1);
       // 58deg -> 46deg, -45deg -> -38deg: the board flattens slightly as you read.
       board.style.transform =
         `rotateX(${58 - progress * 12}deg) rotateZ(${-45 + progress * 7}deg)`;
-      ticking = false;
     };
     window.addEventListener('scroll', () => {
       if (!ticking) {
@@ -117,6 +137,8 @@ const links = roadmap.nodes.flatMap((node) =>
         requestAnimationFrame(applyDrift);
       }
     }, { passive: true });
+    reducedMotion.addEventListener('change', applyDrift);
+    narrowViewport.addEventListener('change', applyDrift);
     applyDrift();
   }
 </script>

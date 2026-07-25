@@ -71,7 +71,8 @@ const fullTitle = title === 'AI Roadmap' ? title : `${title} · AI Roadmap`;
     align-items: center;
     border-bottom: 1px solid var(--border);
     display: flex;
-    gap: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem 1.25rem;
     justify-content: space-between;
     padding: 1rem clamp(1rem, 4vw, 2.5rem);
   }
@@ -94,7 +95,8 @@ const fullTitle = title === 'AI Roadmap' ? title : `${title} · AI Roadmap`;
   .site-header nav {
     align-items: center;
     display: flex;
-    gap: 1.1rem;
+    flex-wrap: wrap;
+    gap: 0.7rem 1.1rem;
   }
   .site-header nav a {
     color: var(--text-muted);

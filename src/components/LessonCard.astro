@@ -69,6 +69,7 @@ const { title, stageName, minutes, difficulty, tags, summary, githubUrl } = Astr
   .layer-back { opacity: 0.35; transform: translate3d(22px, 18px, -90px); }
   .layer-mid { opacity: 0.6; transform: translate3d(11px, 9px, -45px); }
   .card {
+    -webkit-backdrop-filter: blur(14px);
     backdrop-filter: blur(14px);
     background: linear-gradient(150deg, var(--surface-strong), var(--surface));
     border-color: var(--border-bright);
@@ -89,6 +90,10 @@ const { title, stageName, minutes, difficulty, tags, summary, githubUrl } = Astr
     );
     border-radius: 20px;
     inset: -1px;
+    /* Safari (pre-unified `mask`) needs the -webkit- prefixed pair, whose
+       `xor` composite value is the equivalent of the standard `exclude`. */
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
     mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
     mask-composite: exclude;
     padding: 1px;

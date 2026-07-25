@@ -194,6 +194,18 @@ body {
   outline-offset: 2px;
 }
 
+/* Visually hidden but still available to assistive tech — used for state
+   text that must not rely on colour/icon alone (see RoadmapTile). */
+.sr-only {
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
 /* Skip link, visible only when focused */
 .skip-link {
   background: var(--bg-raised);

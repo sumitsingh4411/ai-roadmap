@@ -43,7 +43,10 @@
   --text: #14102b;
   --text-muted: #5b5478;
   --accent: var(--violet-600);
-  --accent-2: #0891b2;
+  /* Darkened from the original #0891b2 (3.38:1 on --bg, fails WCAG AA for
+     normal text) to #0e7490 (~4.9:1 on --bg, ~5.4:1 on --bg-raised) — used
+     as text colour in LessonCard's GitHub link and the lesson pager. */
+  --accent-2: #0e7490;
   --glow-accent: rgba(124, 58, 237, 0.24);
   --glow-accent-2: rgba(8, 145, 178, 0.2);
   --tile-face: linear-gradient(135deg, #ffffff, #ece8f8);
