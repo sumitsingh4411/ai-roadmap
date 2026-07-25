@@ -152,9 +152,8 @@ Using the `scores` array above, **normalise it column-wise without writing a
 loop**: for each column, subtract that column's mean and divide by that
 column's standard deviation, so every column ends up with mean 0. You'll need
 `scores.mean(axis=0)` and `scores.std(axis=0)` — broadcasting handles the rest
-in one expression. Convert `scores` to floats first (`scores.astype(float)`)
-so the division doesn't round to whole numbers. Print the result and confirm
-`result.mean(axis=0)` comes out as (approximately) all zeros.
+in one expression. Print the result and confirm `result.mean(axis=0)` comes
+out as (approximately) all zeros.
 
 **Stretch:** do the same normalisation row-wise instead (`axis=1`), and write
 one sentence explaining why row-wise wouldn't make sense for this particular

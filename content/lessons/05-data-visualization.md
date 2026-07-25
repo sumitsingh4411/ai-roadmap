@@ -73,6 +73,14 @@ example, salaries from two very different job levels lumped together. Learning
 to read these shapes at a glance is most of what "exploring" a dataset means
 in practice.
 
+**Reading a correlation coefficient.** A scatter plot shows a relationship
+visually; a correlation coefficient (what `np.corrcoef` and pandas' `.corr()`
+compute) puts a number on it, from −1 to +1. A value near +1 means that as one
+column rises, the other tends to rise too; near −1 means that as one rises,
+the other tends to fall; near 0 means little to no straight-line relationship
+between them. As a rough rule of thumb, a magnitude above about 0.7–0.8 is
+usually considered a strong relationship.
+
 ## In code
 
 Matplotlib basics — a labelled line plot:
@@ -132,9 +140,10 @@ mean score: 71.7
 std dev: 8.8
 ```
 
-The counts rise smoothly from 6 up to a peak of 41 and back down to 1 — a
-single central hump with a slightly longer tail on the low side. That's what
-a roughly-normal distribution centred near 72 looks like as a histogram.
+The counts climb sharply from 6 up to a peak of 41, then taper off more
+gradually back down to 1 — a single central hump with a slightly longer tail
+on the high side. That's what a roughly-normal distribution centred near 72
+looks like as a histogram.
 
 Plotting straight from a pandas `groupby` result:
 
