@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '../lib/url';
+
+const SITE = 'https://sumitsingh4411.github.io/ai-roadmap';
+
+interface Item { name: string; desc: string; url: string; }
+interface Section { icon: string; hue: string; title: string; lead: string; items: Item[]; }
+
+const sections: Section[] = [
+  {
+    icon: '🚀', hue: '#a78bfa', title: 'Build & ship real projects',
+    lead: 'The fastest way to level up after the fundamentals is to build things end to end and put them in a portfolio.',
+    items: [
+      { name: 'Kaggle — datasets & notebooks', desc: 'Free datasets and public notebooks to practice on real data.', url: 'https://www.kaggle.com/' },
+      { name: 'Hugging Face Spaces', desc: 'Deploy and share ML demos for free — great for a portfolio.', url: 'https://huggingface.co/spaces' },
+      { name: 'Project ideas: build a RAG app, a fine-tuned model, an agent', desc: 'Revisit lessons 27–29 and ship one as a public repo with a README.', url: `${SITE}/lessons/rag` },
+    ],
+  },
+  {
+    icon: '🧠', hue: '#818cf8', title: 'Specialize — go deeper on a track',
+    lead: 'Pick a direction and go deep. These are the advanced areas people most often move into next.',
+    items: [
+      { name: 'Computer Vision — Stanford CS231n', desc: 'Object detection, segmentation, and modern vision architectures. Free notes.', url: 'https://cs231n.github.io/' },
+      { name: 'NLP — Hugging Face NLP Course', desc: 'Transformers, tokenizers, and fine-tuning for language, hands-on and free.', url: 'https://huggingface.co/learn/nlp-course' },
+      { name: 'Reinforcement Learning — HF Deep RL Course', desc: 'Train agents that learn from reward. Free, project-based.', url: 'https://huggingface.co/learn/deep-rl-course' },
+      { name: 'Diffusion & image generation — HF Diffusion Course', desc: 'How Stable-Diffusion-style models actually work, and how to build them.', url: 'https://huggingface.co/learn/diffusion-course' },
+      { name: 'LLMs from scratch — Karpathy: Zero to Hero', desc: 'Build a GPT by hand. The best deep dive into how LLMs work.', url: 'https://karpathy.ai/zero-to-hero.html' },
+      { name: 'Graph Neural Networks — Stanford CS224W', desc: 'Learning on graphs — recommendations, molecules, social networks.', url: 'https://web.stanford.edu/class/cs224w/' },
+    ],
+  },
+  {
+    icon: '🏆', hue: '#38bdf8', title: 'Practice & compete',
+    lead: 'Sharpen your instincts against real problems and other people’s solutions.',
+    items: [
+      { name: 'Kaggle Competitions', desc: 'Compete on real problems; read the winning write-ups.', url: 'https://www.kaggle.com/competitions' },
+      { name: 'Papers with Code', desc: 'State-of-the-art methods with the code to reproduce them.', url: 'https://paperswithcode.com/' },
+      { name: 'Hugging Face Hub', desc: 'Thousands of open models and datasets to fine-tune and remix.', url: 'https://huggingface.co/models' },
+    ],
+  },
+  {
+    icon: '📚', hue: '#22d3ee', title: 'Read the field',
+    lead: 'Stay current and build depth with the writing practitioners actually read.',
+    items: [
+      { name: "Lil’Log (Lilian Weng)", desc: 'Deep, clear explainers on diffusion, attention, agents, and more.', url: 'https://lilianweng.github.io/' },
+      { name: 'The Batch — DeepLearning.AI', desc: 'A weekly, readable digest of what’s happening in AI.', url: 'https://www.deeplearning.ai/the-batch/' },
+      { name: 'MIT 6.S191 — Intro to Deep Learning', desc: 'A polished, free university deep-learning course, updated yearly.', url: 'http://introtodeeplearning.com/' },
+      { name: 'fast.ai — Practical Deep Learning', desc: 'A famously effective top-down, code-first course.', url: 'https://course.fast.ai/' },
+    ],
+  },
+  {
+    icon: '⚙️', hue: '#2dd4bf', title: 'Production & MLOps',
+    lead: 'Turn notebooks into systems that run reliably for real users.',
+    items: [
+      { name: 'Made With ML', desc: 'A free, practical MLOps course — design, develop, and deploy.', url: 'https://madewithml.com/' },
+      { name: 'Full Stack Deep Learning', desc: 'Building and shipping ML-powered products, end to end.', url: 'https://fullstackdeeplearning.com/' },
+      { name: 'Google — Rules of Machine Learning', desc: 'Hard-won best practices for ML engineering in production.', url: 'https://developers.google.com/machine-learning/guides/rules-of-ml' },
+    ],
+  },
+  {
+    icon: '💬', hue: '#fbbf24', title: 'Join the community',
+    lead: 'Learning with others keeps you going — ask questions, share projects, get feedback.',
+    items: [
+      { name: 'r/learnmachinelearning', desc: 'Beginner-friendly questions, advice, and project feedback.', url: 'https://www.reddit.com/r/learnmachinelearning/' },
+      { name: 'r/MachineLearning', desc: 'Research, discussion, and news from the wider field.', url: 'https://www.reddit.com/r/MachineLearning/' },
+      { name: 'Hugging Face Forums', desc: 'Active, friendly help on models, datasets, and training.', url: 'https://discuss.huggingface.co/' },
+    ],
+  },
+  {
+    icon: '💼', hue: '#fb7185', title: 'Turn it into a career',
+    lead: 'Know the roles, build proof, and get hired.',
+    items: [
+      { name: 'Roadmap lesson: Portfolio & Career', desc: 'Job families, what each actually does, and how to keep learning.', url: `${SITE}/lessons/portfolio-career` },
+      { name: 'Ship 3 portfolio projects', desc: 'A cleaning-to-model project, a deep-learning project, and an LLM app.', url: `${SITE}/lessons/first-ml-project` },
+      { name: 'Deploy something people can use', desc: 'A live demo beats a dozen certificates. See the deployment lesson.', url: `${SITE}/lessons/deploying-models` },
+    ],
+  },
+];
+
+const itemListSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: 'What to learn after the AI roadmap — advanced topics & resources',
+  itemListElement: sections.flatMap((s, si) =>
+    s.items.map((it, ii) => ({ '@type': 'ListItem', position: si * 10 + ii + 1, name: it.name, url: it.url })),
+  ),
+};
+---
+<BaseLayout
+  title="What's next — Advanced AI topics"
+  description="Finished the roadmap? Here's what to do next: advanced AI topics people search for — computer vision, reinforcement learning, diffusion models, LLMs, MLOps — plus projects, competitions, and communities, with curated free resources."
+  keywords="advanced AI topics, what to do after learning AI, AI project ideas, learn reinforcement learning, computer vision course, diffusion models, MLOps course, machine learning projects, how to specialize in AI"
+  jsonLd={itemListSchema}
+  wide
+>
+  <header class="adv-head">
+    <p class="adv-eyebrow">After the roadmap</p>
+    <h1>You know the fundamentals. <span class="grad">Now go build.</span></h1>
+    <p class="adv-sub">
+      Finishing the 34 lessons means you can read, write, and reason about AI. This is where
+      you turn that into real skill — pick a track, ship projects, and keep leveling up.
+      Every link here is free.
+    </p>
+    <a class="adv-cta" href={href('/roadmap')}>← Still working through the roadmap?</a>
+  </header>
+
+  <div class="adv-sections">
+    {sections.map((s) => (
+      <section class="adv-block" style={`--hue:${s.hue}`}>
+        <div class="adv-block-head">
+          <span class="adv-icon" aria-hidden="true">{s.icon}</span>
+          <div>
+            <h2>{s.title}</h2>
+            <p>{s.lead}</p>
+          </div>
+        </div>
+        <ul class="adv-cards">
+          {s.items.map((it) => (
+            <li>
+              <a class="adv-card" href={it.url} rel={it.url.startsWith(SITE) ? undefined : 'noopener'}>
+                <span class="adv-card-title">{it.name} <span class="adv-arrow" aria-hidden="true">↗</span></span>
+                <span class="adv-card-desc">{it.desc}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </div>
+
+  <p class="adv-foot">
+    Keep this page bookmarked — and if you build something great,
+    <a href="https://github.com/sumitsingh4411/ai-roadmap" rel="noopener">share it back on GitHub</a>.
+  </p>
+</BaseLayout>
+
+<style>
+  .adv-head { border-bottom: 1px solid var(--border); margin: 0 auto 2.5rem; max-width: 60ch; padding-bottom: 2rem; text-align: center; }
+  .adv-eyebrow { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; margin: 0 0 0.6rem; text-transform: uppercase; }
+  .adv-head h1 { font-size: clamp(1.9rem, 5vw, 3rem); letter-spacing: -0.03em; line-height: 1.08; margin: 0; }
+  .grad { background: linear-gradient(100deg, var(--violet-400), var(--cyan-300)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .adv-sub { color: var(--text-muted); font-size: 1.02rem; margin: 1rem auto 1.25rem; max-width: 54ch; }
+  .adv-cta { color: var(--accent-2); font-size: 0.9rem; text-decoration: none; }
+  .adv-cta:hover { text-decoration: underline; }
+
+  .adv-sections { display: flex; flex-direction: column; gap: 2.75rem; margin: 0 auto; max-width: 62rem; }
+  .adv-block-head { align-items: flex-start; display: flex; gap: 0.9rem; margin-bottom: 1rem; }
+  .adv-icon {
+    align-items: center; background: color-mix(in srgb, var(--hue) 16%, transparent);
+    border: 1px solid color-mix(in srgb, var(--hue) 40%, var(--border)); border-radius: 12px;
+    display: flex; flex-shrink: 0; font-size: 1.3rem; height: 46px; justify-content: center; width: 46px;
+  }
+  .adv-block-head h2 { font-size: 1.3rem; letter-spacing: -0.02em; margin: 0.1rem 0 0.25rem; }
+  .adv-block-head p { color: var(--text-muted); font-size: 0.92rem; margin: 0; max-width: 60ch; }
+
+  .adv-cards { display: grid; gap: 0.7rem; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); list-style: none; margin: 0; padding: 0; }
+  .adv-card {
+    background: linear-gradient(160deg, var(--surface-strong), var(--surface)); border: 1px solid var(--border);
+    border-radius: 14px; color: var(--text); display: flex; flex-direction: column; gap: 0.3rem; height: 100%;
+    padding: 0.9rem 1rem; text-decoration: none; transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+  }
+  .adv-card:hover { border-color: color-mix(in srgb, var(--hue) 55%, var(--border)); box-shadow: 0 12px 30px -14px var(--hue); transform: translateY(-3px); }
+  .adv-card:focus-visible { outline: 2px solid var(--hue); outline-offset: 3px; }
+  .adv-card-title { font-size: 0.92rem; font-weight: 650; line-height: 1.3; }
+  .adv-arrow { color: var(--hue); font-size: 0.8rem; }
+  .adv-card-desc { color: var(--text-muted); font-size: 0.82rem; line-height: 1.4; }
+
+  .adv-foot { border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; margin: 3rem auto 0; max-width: 62rem; padding-top: 1.5rem; text-align: center; }
+  .adv-foot a { color: var(--accent-2); text-decoration: none; }
+  .adv-foot a:hover { text-decoration: underline; }
+</style>

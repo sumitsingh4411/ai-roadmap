@@ -1,4 +1,10 @@
+<div align="center">
+
+<a href="https://sumitsingh4411.github.io/ai-roadmap"><img src="https://sumitsingh4411.github.io/ai-roadmap/og.png" alt="AI Roadmap — learn AI from zero to shipping an LLM app" width="820" /></a>
+
 # 🧠 AI Roadmap
+
+</div>
 
 **A free, open-source path from your first line of Python to shipping an LLM app.** 34 lessons in dependency order — read them on the polished web app, or straight from the Markdown right here.
 
@@ -148,6 +154,18 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
   <sub>What makes a project worth showing, writing a README that gets read, the real AI job families, and how to keep learning after this roadmap.</sub>
 
 </details>
+
+## How to get the most out of it
+
+- **Follow the order, but skip what you know.** Each lesson lists its prerequisites — if you already have them, jump ahead.
+- **Run every code sample.** Don't just read it. Type it, break it, change the numbers. That's where the learning is.
+- **Do the "Build this" exercise** at the end of each lesson before moving on. A little friction now saves a lot of confusion later.
+- **Ship three projects** as you go (a data project, a deep-learning project, an LLM app). A public repo with a good README beats any certificate.
+- **A few focused hours a week beats cramming.** The whole path is ~29 hours of reading — steady wins.
+
+## Where to go next
+
+Finished the 34 lessons? The **[What's next →](https://sumitsingh4411.github.io/ai-roadmap/advanced)** page is a curated guide to going further — specializing (computer vision, NLP, reinforcement learning, diffusion models, LLMs from scratch), practicing on Kaggle, reading the field, MLOps, communities, and turning it all into a career. Every resource there is free.
 
 ## How your progress works
 
