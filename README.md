@@ -1,6 +1,10 @@
 # AI Roadmap
 
+[![Deploy](https://github.com/sumitsingh4411/ai-roadmap/actions/workflows/deploy.yml/badge.svg)](https://github.com/sumitsingh4411/ai-roadmap/actions/workflows/deploy.yml)
+
 A free, structured path from "what is AI?" to shipping your own model — 34 lessons, in dependency order, that you can read as plain files or as an interactive site.
+
+**Live site:** [sumitsingh4411.github.io/ai-roadmap](https://sumitsingh4411.github.io/ai-roadmap)
 
 ## Learn straight from GitHub — no website needed
 
