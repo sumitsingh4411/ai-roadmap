@@ -155,8 +155,11 @@ plus post-training actually optimizes for. Post-training partially helps
 (some RLHF signal rewards saying "I don't know" over confidently
 fabricating), but it doesn't fix the underlying mechanism, and can even
 make it worse if the reward signal implicitly favors confident-sounding
-answers over hedged-but-honest ones — a failure mode called
-**sycophancy**. Two lessons from now, RAG (lesson 27) is the standard
+answers over hedged-but-honest ones — a **reward-model bias toward fluent
+overconfidence**. (This is distinct from *sycophancy*, a related RLHF
+failure mode where the model shapes its answer toward what it thinks the
+*user* wants to hear — agreeing when challenged, mirroring your stated
+opinion — rather than toward what is true.) Two lessons from now, RAG (lesson 27) is the standard
 mitigation — give the model real, retrieved text to condition on instead
 of asking it to recall from weights alone — and it genuinely reduces
 hallucination by grounding the answer in something checkable. It does not
