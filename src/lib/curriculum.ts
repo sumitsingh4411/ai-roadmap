@@ -8,6 +8,7 @@ export interface NavLesson {
   minutes: number;
   difficulty: string;
   summary: string;
+  tags: string[];
 }
 
 export interface NavStage {
@@ -26,6 +27,7 @@ interface LessonEntry {
     difficulty: string;
     summary: string;
     stage: number;
+    tags?: string[];
   };
 }
 
@@ -52,6 +54,7 @@ export function buildCurriculum(lessons: LessonEntry[]): NavStage[] {
       minutes: lesson.data.minutes,
       difficulty: lesson.data.difficulty,
       summary: lesson.data.summary,
+      tags: lesson.data.tags ?? [],
     });
   }
 

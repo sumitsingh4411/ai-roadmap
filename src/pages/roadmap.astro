@@ -21,44 +21,38 @@ const itemListSchema = {
   numberOfItems: total,
   itemListOrder: 'https://schema.org/ItemListOrderAscending',
   itemListElement: stages.flatMap((s) =>
-    s.lessons.map((l, idx) => ({
-      '@type': 'ListItem',
-      position: idx + 1,
-      name: l.title,
-      url: `${SITE}/lessons/${l.slug}`,
-    })),
+    s.lessons.map((l, idx) => ({ '@type': 'ListItem', position: idx + 1, name: l.title, url: `${SITE}/lessons/${l.slug}` })),
   ),
 };
 
-// Flatten into an ordered stream of rows: a stage marker, then its lessons.
-// A global counter alternates lessons left / right of the centre line.
+// Ordered stream: a stage marker, then its lessons, alternating sides.
 type Row =
   | { kind: 'stage'; id: number; name: string; count: number; hue: string }
-  | { kind: 'lesson'; slug: string; title: string; minutes: number; difficulty: string; hue: string; side: 'left' | 'right' };
+  | { kind: 'lesson'; slug: string; title: string; minutes: number; difficulty: string; tags: string[]; hue: string; side: 'left' | 'right' };
 const rows: Row[] = [];
 let i = 0;
 for (const stage of stages) {
   const hue = HUE[stage.color] ?? '#a78bfa';
   rows.push({ kind: 'stage', id: stage.id, name: stage.name, count: stage.lessons.length, hue });
   for (const l of stage.lessons) {
-    rows.push({ kind: 'lesson', slug: l.slug, title: l.title, minutes: l.minutes, difficulty: l.difficulty, hue, side: i % 2 === 0 ? 'left' : 'right' });
+    rows.push({ kind: 'lesson', slug: l.slug, title: l.title, minutes: l.minutes, difficulty: l.difficulty, tags: l.tags.slice(0, 2), hue, side: i % 2 === 0 ? 'left' : 'right' });
     i++;
   }
 }
 ---
 <BaseLayout
   title="Roadmap"
-  description="The complete AI learning path as one interactive roadmap — 34 topics from Python to LLMs, in dependency order. Click any topic to jump straight into the lesson."
+  description="The complete AI learning path as one interactive winding roadmap — 34 topics from Python to LLMs, in dependency order. Click any topic to jump straight into the lesson."
   keywords="AI learning path, machine learning roadmap, AI topics list, what to learn for AI"
   jsonLd={itemListSchema}
   wide
 >
   <header class="rm-head">
     <p class="rm-eyebrow">The path</p>
-    <h1>Follow the line, <span class="grad">one topic at a time</span></h1>
+    <h1>Follow the road, <span class="grad">one topic at a time</span></h1>
     <p class="rm-sub">
       Every lesson in order, wired together the way it depends. Click any stop to jump
-      straight into it — completed lessons light up as you go.
+      straight into it — the road lights up behind you as you complete lessons.
     </p>
     <p class="rm-legend">
       <span><i class="lg lg-done"></i> completed</span>
@@ -68,41 +62,102 @@ for (const stage of stages) {
     </p>
   </header>
 
-  <div class="timeline" role="list">
-    <div class="rail" aria-hidden="true"></div>
-    <div class="pulse" aria-hidden="true"></div>
+  <div class="timeline" data-timeline>
+    <svg class="road" aria-hidden="true" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="roadGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="#a78bfa" />
+          <stop offset="0.5" stop-color="#22d3ee" />
+          <stop offset="1" stop-color="#fb7185" />
+        </linearGradient>
+      </defs>
+      <path class="road-base" fill="none" />
+      <path class="road-done" fill="none" />
+    </svg>
+    <span class="runner" aria-hidden="true"></span>
 
     {rows.map((row) => (
       row.kind === 'stage' ? (
         <div class="tl-stage" style={`--hue:${row.hue}`} data-stage-id={row.id}>
-          <span class="tl-stage-node" aria-hidden="true"><b>{row.id}</b></span>
+          <span class="tl-stage-node" data-anchor aria-hidden="true"><b>{row.id}</b></span>
           <span class="tl-stage-label">Stage {row.id} — {row.name} <em>· {row.count}</em></span>
         </div>
       ) : (
-        <div class={`tl-item ${row.side}`} style={`--hue:${row.hue}`} role="listitem">
+        <div class={`tl-item ${row.side}`} style={`--hue:${row.hue}`}>
+          <span class="tl-node" data-anchor aria-hidden="true"></span>
           <a class="tl-card" href={href(`/lessons/${row.slug}`)} data-rm-slug={row.slug}>
-            <span class="tl-tick" aria-hidden="true"></span>
             <span class="tl-title">{row.title}</span>
             <span class="tl-meta">{row.minutes} min · {row.difficulty}</span>
+            {row.tags.length > 0 && (
+              <span class="tl-tags">{row.tags.map((t) => <span class="tl-tag">{t}</span>)}</span>
+            )}
           </a>
-          <span class="tl-dot" aria-hidden="true"></span>
         </div>
       )
     ))}
 
-    <div class="tl-finish" aria-hidden="true"><span>🎓 You made it</span></div>
+    <div class="tl-finish"><span>🎓 You made it</span></div>
   </div>
 </BaseLayout>
 
 <script>
   import { createProgressStore } from '../lib/progress';
   const store = createProgressStore();
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  // Smooth Catmull-Rom path through the anchor points.
+  function smooth(pts: { x: number; y: number }[]): string {
+    if (pts.length < 2) return '';
+    let d = `M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)}`;
+    for (let i = 0; i < pts.length - 1; i++) {
+      const p0 = pts[i - 1] || pts[i], p1 = pts[i], p2 = pts[i + 1], p3 = pts[i + 2] || p2;
+      const c1x = p1.x + (p2.x - p0.x) / 6, c1y = p1.y + (p2.y - p0.y) / 6;
+      const c2x = p2.x - (p3.x - p1.x) / 6, c2y = p2.y - (p3.y - p1.y) / 6;
+      d += ` C${c1x.toFixed(1)},${c1y.toFixed(1)} ${c2x.toFixed(1)},${c2y.toFixed(1)} ${p2.x.toFixed(1)},${p2.y.toFixed(1)}`;
+    }
+    return d;
+  }
+
+  const tl = document.querySelector<HTMLElement>('[data-timeline]');
+  const svg = document.querySelector<SVGSVGElement>('.road');
+  const base = document.querySelector<SVGPathElement>('.road-base');
+  const doneP = document.querySelector<SVGPathElement>('.road-done');
+  const runner = document.querySelector<HTMLElement>('.runner');
+
+  function drawRoad() {
+    if (!tl || !svg || !base || !doneP) return;
+    const anchors = [...tl.querySelectorAll<HTMLElement>('[data-anchor]')];
+    const box = tl.getBoundingClientRect();
+    const pts = anchors.map((a) => {
+      const r = a.getBoundingClientRect();
+      return { x: r.left + r.width / 2 - box.left, y: r.top + r.height / 2 - box.top };
+    });
+    if (pts.length < 2) return;
+
+    const w = tl.clientWidth, h = tl.clientHeight;
+    svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+    svg.setAttribute('width', String(w));
+    svg.setAttribute('height', String(h));
+
+    const full = smooth(pts);
+    base.setAttribute('d', full);
+
+    // Light the road up to (and including) the last completed lesson.
+    const done = new Set(store.completed());
+    const lessonAnchors = anchors.map((a, idx) => ({ idx, slug: a.parentElement?.querySelector<HTMLElement>('[data-rm-slug]')?.dataset.rmSlug }));
+    let lastDone = -1;
+    for (const la of lessonAnchors) if (la.slug && done.has(la.slug)) lastDone = la.idx;
+    doneP.setAttribute('d', lastDone >= 1 ? smooth(pts.slice(0, lastDone + 1)) : '');
+
+    if (runner && !reduce.matches) {
+      runner.style.setProperty('offset-path', `path('${full}')`);
+      runner.style.opacity = '1';
+    }
+  }
 
   function paint() {
     const done = new Set(store.completed());
     const items = [...document.querySelectorAll<HTMLElement>('[data-rm-slug]')];
-
-    // Item states: done, the first incomplete one is "next", the rest "todo".
     let markedNext = false;
     for (const item of items) {
       const parent = item.closest<HTMLElement>('.tl-item')!;
@@ -110,9 +165,6 @@ for (const stage of stages) {
       parent.dataset.state = isDone ? 'done' : (!markedNext ? 'next' : 'todo');
       if (!isDone) markedNext = true;
     }
-
-    // A stage marker lights up when every lesson between it and the next marker
-    // (its own lessons) is complete.
     const markers = [...document.querySelectorAll<HTMLElement>('.tl-stage')];
     markers.forEach((marker, idx) => {
       const next = markers[idx + 1] ?? null;
@@ -125,22 +177,22 @@ for (const stage of stages) {
       }
       marker.dataset.done = String(slugs.length > 0 && slugs.every((s) => done.has(s)));
     });
-
     const count = document.querySelector<HTMLElement>('[data-rm-count]');
     if (count) count.textContent = `${done.size} / ${items.length}`;
+    drawRoad();
   }
 
-  paint();
-  window.addEventListener('storage', paint);
-  window.addEventListener('pageshow', paint);
+  const redraw = () => requestAnimationFrame(paint);
+  redraw();
+  window.addEventListener('load', redraw);
+  window.addEventListener('resize', () => { clearTimeout((window as any).__rt); (window as any).__rt = setTimeout(redraw, 150); });
+  window.addEventListener('storage', redraw);
+  window.addEventListener('pageshow', redraw);
 </script>
 
 <style>
-  .rm-head { margin: 0 auto 2.5rem; max-width: 62ch; text-align: center; }
-  .rm-eyebrow {
-    color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem;
-    letter-spacing: 0.14em; margin: 0 0 0.6rem; text-transform: uppercase;
-  }
+  .rm-head { margin: 0 auto 2rem; max-width: 62ch; text-align: center; }
+  .rm-eyebrow { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; margin: 0 0 0.6rem; text-transform: uppercase; }
   .rm-head h1 { font-size: clamp(1.9rem, 5vw, 3rem); letter-spacing: -0.03em; line-height: 1.08; margin: 0; }
   .grad { background: linear-gradient(100deg, var(--violet-400), var(--cyan-300)); -webkit-background-clip: text; background-clip: text; color: transparent; }
   .rm-sub { color: var(--text-muted); font-size: 1.02rem; margin: 1rem auto 1.4rem; max-width: 52ch; }
@@ -152,106 +204,73 @@ for (const stage of stages) {
   .lg-todo { border: 1.5px solid var(--border-bright); }
   .rm-count { color: var(--text); font-family: var(--font-mono); font-weight: 600; }
 
-  /* ---------- Timeline ---------- */
-  .timeline { margin: 0 auto; max-width: 820px; padding: 1rem 0 3rem; position: relative; }
-  .rail {
-    background: linear-gradient(180deg, var(--violet-500), var(--cyan-400), var(--violet-500), var(--cyan-400));
-    background-size: 100% 400%;
-    border-radius: 3px;
-    bottom: 60px;
-    left: 50%;
-    position: absolute;
-    top: 8px;
-    transform: translateX(-50%);
-    width: 3px;
-    animation: flow 7s linear infinite;
-    opacity: 0.85;
+  /* ---------- Winding road ---------- */
+  .timeline { margin: 0 auto; max-width: 760px; padding: 1.5rem 0 3rem; position: relative; }
+  .road { inset: 0; pointer-events: none; position: absolute; z-index: 0; }
+  .road-base { stroke: url(#roadGrad); stroke-width: 3; stroke-linecap: round; opacity: 0.32; }
+  .road-done { stroke: url(#roadGrad); stroke-width: 4; stroke-linecap: round; filter: drop-shadow(0 0 6px rgba(139, 92, 246, 0.6)); transition: none; }
+  .runner {
+    background: #fff; border-radius: 50%; box-shadow: 0 0 10px 3px var(--cyan-300), 0 0 20px 6px rgba(34, 211, 238, 0.4);
+    height: 11px; left: 0; opacity: 0; position: absolute; top: 0; width: 11px; z-index: 1;
+    offset-anchor: 50% 50%; offset-rotate: 0deg; animation: run 9s linear infinite;
   }
-  @keyframes flow { to { background-position: 0 -400%; } }
-  .pulse {
-    background: #fff;
-    border-radius: 50%;
-    box-shadow: 0 0 14px 4px var(--cyan-300);
-    height: 9px;
-    left: 50%;
-    margin-left: -4.5px;
-    position: absolute;
-    top: 8px;
-    width: 9px;
-    animation: travel 5s ease-in-out infinite;
-  }
-  @keyframes travel {
-    0% { top: 8px; opacity: 0; }
-    8% { opacity: 1; }
-    92% { opacity: 1; }
-    100% { top: calc(100% - 60px); opacity: 0; }
-  }
+  @keyframes run { from { offset-distance: 0%; } to { offset-distance: 100%; } }
 
   /* Stage marker */
-  .tl-stage { align-items: center; display: flex; flex-direction: column; gap: 0.5rem; margin: 2.25rem 0 1.25rem; position: relative; z-index: 2; }
+  .tl-stage { align-items: center; display: flex; flex-direction: column; gap: 0.5rem; margin: 2rem 0 1.25rem; position: relative; z-index: 2; }
   .tl-stage-node {
-    align-items: center; background: var(--bg); border: 2px solid var(--hue);
-    border-radius: 50%; box-shadow: 0 0 18px -4px var(--hue); color: var(--hue);
-    display: flex; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 700;
-    height: 38px; justify-content: center; transition: background 0.3s, color 0.3s, box-shadow 0.3s; width: 38px;
+    align-items: center; background: var(--bg-raised); border: 2px solid var(--hue); border-radius: 50%;
+    box-shadow: 0 0 20px -4px var(--hue); color: var(--hue); display: flex; font-family: var(--font-mono);
+    font-size: 0.9rem; font-weight: 700; height: 42px; justify-content: center; transition: background 0.3s, color 0.3s, box-shadow 0.3s; width: 42px;
   }
-  .tl-stage[data-done='true'] .tl-stage-node { background: var(--hue); box-shadow: 0 0 26px -3px var(--hue); color: #08060f; }
-  .tl-stage-label { color: var(--text); font-size: 0.82rem; font-weight: 700; letter-spacing: 0.02em; }
+  .tl-stage[data-done='true'] .tl-stage-node { background: var(--hue); box-shadow: 0 0 30px -3px var(--hue); color: #08060f; }
+  .tl-stage-label { color: var(--text); font-size: 0.82rem; font-weight: 700; }
   .tl-stage-label em { color: var(--text-muted); font-style: normal; }
 
-  /* Lesson node */
-  .tl-item { align-items: center; display: grid; grid-template-columns: 1fr 40px 1fr; margin: 0.55rem 0; position: relative; z-index: 1; }
-  .tl-dot {
-    background: var(--bg); border: 2px solid var(--border-bright); border-radius: 50%;
-    grid-column: 2; height: 15px; justify-self: center; transition: background 0.25s, border-color 0.25s, box-shadow 0.25s; width: 15px; z-index: 2;
+  /* Lesson node: card on its side, anchor dot woven onto the road */
+  .tl-item { margin: 0.4rem 0; position: relative; z-index: 1; }
+  .tl-node {
+    background: var(--bg-raised); border: 2px solid var(--border-bright); border-radius: 50%;
+    height: 16px; left: 41%; position: absolute; top: 50%; transform: translate(-50%, -50%); transition: background 0.25s, border-color 0.25s, box-shadow 0.25s; width: 16px; z-index: 2;
   }
+  .tl-item.right .tl-node { left: 59%; }
   .tl-card {
-    align-items: flex-start; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; color: var(--text); display: flex; flex-direction: column; gap: 0.15rem;
-    padding: 0.7rem 0.95rem; position: relative; text-decoration: none;
+    background: linear-gradient(160deg, var(--surface-strong), var(--surface)); border: 1px solid var(--border);
+    border-radius: 12px; color: var(--text); display: inline-flex; flex-direction: column; gap: 0.2rem;
+    max-width: 38%; padding: 0.7rem 0.95rem; position: relative; text-decoration: none;
     transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
   }
-  .tl-item.left .tl-card { grid-column: 1; text-align: right; align-items: flex-end; margin-right: 0.4rem; }
-  .tl-item.right .tl-card { grid-column: 3; margin-left: 0.4rem; }
-  /* connector nub from card to centre dot */
-  .tl-card::after { background: var(--border); content: ''; height: 2px; position: absolute; top: 50%; width: 18px; }
-  .tl-item.left .tl-card::after { right: -18px; }
-  .tl-item.right .tl-card::after { left: -18px; }
-  .tl-card:hover { border-color: color-mix(in srgb, var(--hue) 60%, var(--border)); box-shadow: 0 12px 30px -14px var(--hue); transform: translateY(-2px); }
+  .tl-item.left .tl-card { margin-right: 62%; text-align: right; align-items: flex-end; }
+  .tl-item.right .tl-card { margin-left: 62%; }
+  .tl-card:hover { border-color: color-mix(in srgb, var(--hue) 60%, var(--border)); box-shadow: 0 14px 34px -14px var(--hue); transform: translateY(-2px); }
   .tl-card:focus-visible { outline: 2px solid var(--hue); outline-offset: 3px; }
   .tl-title { font-size: 0.92rem; font-weight: 650; line-height: 1.25; }
   .tl-meta { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.7rem; }
-  .tl-tick {
-    background: var(--bg); border: 1.5px solid var(--border-bright); border-radius: 50%;
-    height: 15px; margin-bottom: 0.15rem; position: relative; width: 15px;
+  .tl-tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-top: 0.35rem; }
+  .tl-item.left .tl-tags { justify-content: flex-end; }
+  .tl-tag {
+    background: color-mix(in srgb, var(--hue) 14%, transparent); border: 1px solid color-mix(in srgb, var(--hue) 35%, var(--border));
+    border-radius: 999px; color: color-mix(in srgb, var(--hue) 75%, var(--text)); font-family: var(--font-mono);
+    font-size: 0.62rem; letter-spacing: 0.02em; padding: 0.1rem 0.5rem;
   }
 
-  /* states (painted client-side) */
-  .tl-item[data-state='done'] .tl-dot { background: var(--hue); border-color: var(--hue); box-shadow: 0 0 14px -2px var(--hue); }
-  .tl-item[data-state='done'] .tl-card::after { background: var(--hue); }
-  .tl-item[data-state='done'] .tl-tick { background: var(--hue); border-color: transparent; }
-  .tl-item[data-state='done'] .tl-tick::after { color: #08060f; content: '✓'; font-size: 9px; font-weight: 900; left: 50%; position: absolute; top: 50%; transform: translate(-50%, -50%); }
+  /* completion states */
+  .tl-item[data-state='done'] .tl-node { background: var(--hue); border-color: var(--hue); box-shadow: 0 0 16px -2px var(--hue); }
   .tl-item[data-state='done'] .tl-title { color: var(--text-muted); }
-  .tl-item[data-state='next'] .tl-dot { border-color: var(--cyan-400); box-shadow: 0 0 12px -1px var(--cyan-400); }
+  .tl-item[data-state='next'] .tl-node { border-color: var(--cyan-400); box-shadow: 0 0 14px -1px var(--cyan-400); }
   .tl-item[data-state='next'] .tl-card { border-color: color-mix(in srgb, var(--cyan-400) 55%, var(--border)); }
 
   .tl-finish { margin-top: 1.5rem; position: relative; text-align: center; z-index: 2; }
-  .tl-finish span {
-    background: linear-gradient(135deg, var(--violet-500), var(--cyan-400)); border-radius: 999px;
-    color: #08060f; display: inline-block; font-size: 0.85rem; font-weight: 700; padding: 0.5rem 1.1rem;
-  }
+  .tl-finish span { background: linear-gradient(135deg, var(--violet-500), var(--cyan-400)); border-radius: 999px; color: #08060f; display: inline-block; font-size: 0.85rem; font-weight: 700; padding: 0.5rem 1.1rem; }
 
   @media (max-width: 640px) {
-    .rail, .pulse { left: 19px; }
-    .tl-stage { align-items: flex-start; padding-left: 3rem; }
-    .tl-stage-node { left: 0; position: absolute; }
-    .tl-item { grid-template-columns: 40px 1fr; }
-    .tl-item.left .tl-card, .tl-item.right .tl-card { align-items: flex-start; grid-column: 2; margin: 0 0 0 0.4rem; text-align: left; }
-    .tl-dot { grid-column: 1; }
-    .tl-item.left .tl-card::after, .tl-item.right .tl-card::after { left: -18px; right: auto; }
+    .tl-node, .tl-item.right .tl-node { left: 22px; }
+    .tl-stage { align-items: flex-start; padding-left: 3.2rem; }
+    .tl-stage-node { left: 1px; position: absolute; }
+    .tl-card, .tl-item.left .tl-card, .tl-item.right .tl-card { align-items: flex-start; margin: 0 0 0 3.2rem; max-width: calc(100% - 3.4rem); text-align: left; }
+    .tl-item.left .tl-tags { justify-content: flex-start; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .rail { animation: none; }
-    .pulse { display: none; }
+    .runner { display: none; }
   }
 </style>
