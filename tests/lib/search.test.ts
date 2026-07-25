@@ -45,4 +45,16 @@ describe('searchDocs', () => {
   it('respects the result limit', () => {
     expect(searchDocs(docs, 'a', 1).length).toBeLessThanOrEqual(1);
   });
+
+  it('ranks a word-boundary match above a mid-word match in an equal-weight field', () => {
+    // Slugs are deliberately reverse-alphabetical to the expected ranking, so
+    // this only passes because of the boundary score bonus — not because of
+    // the slug tiebreaker in searchDocs' sort.
+    const boundaryDocs: SearchDoc[] = [
+      { slug: 'zzz-boundary', title: 'x', stage: 1, summary: 's', headings: [], text: 'gen ai basics' },
+      { slug: 'aaa-midword', title: 'x', stage: 1, summary: 's', headings: [], text: 'imagen ai basics' },
+    ];
+    const results = searchDocs(boundaryDocs, 'gen');
+    expect(results.map((d) => d.slug)).toEqual(['zzz-boundary', 'aaa-midword']);
+  });
 });

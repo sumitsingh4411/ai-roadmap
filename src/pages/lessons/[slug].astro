@@ -33,7 +33,11 @@ const githubUrl = `https://github.com/sumitsingh4411/ai-roadmap/blob/main/conten
 // When a neighbor's real frontmatter title isn't available, fall back to a
 // readable label derived from its roadmap id rather than rendering `undefined`.
 const fallbackLabel = (id: string) =>
-  id.split('-').map((w) => w[0].toUpperCase() + w.slice(1)).join(' ');
+  id
+    .split('-')
+    .filter((w) => w.length > 0)
+    .map((w) => w[0].toUpperCase() + w.slice(1))
+    .join(' ');
 
 const previousTitle = previous ? (titleById.get(previous.id) ?? fallbackLabel(previous.id)) : null;
 const nextTitle = next ? (titleById.get(next.id) ?? fallbackLabel(next.id)) : null;

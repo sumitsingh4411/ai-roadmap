@@ -1,4 +1,4 @@
-import { lessonSchema } from '../src/lib/lesson';
+import { lessonSchema, stripOrderPrefix } from '../src/lib/lesson';
 import { detectCycle, type Roadmap } from '../src/lib/roadmap';
 import { readRoadmap, readLessonFiles, type LessonFile } from './lib/content-io';
 
@@ -23,6 +23,12 @@ export function validateContent(roadmap: Roadmap, lessons: LessonFile[]): string
       if (!nodeIds.has(prereq)) {
         errors.push(`Node "${node.id}" lists unknown prerequisite "${prereq}".`);
       }
+    }
+    const resolved = stripOrderPrefix(node.lesson);
+    if (resolved !== node.id) {
+      errors.push(
+        `Node "${node.id}" lesson field "${node.lesson}" does not resolve to its id (got "${resolved}").`,
+      );
     }
   }
 

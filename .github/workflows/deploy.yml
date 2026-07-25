@@ -12,7 +12,7 @@ permissions:
 
 concurrency:
   group: pages
-  cancel-in-progress: true
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -29,6 +29,11 @@ jobs:
 
       - name: Validate content
         run: npm run validate -- --strict
+
+      - name: Check CURRICULUM.md is up to date
+        run: |
+          npm run gen:curriculum
+          git diff --exit-code CURRICULUM.md
 
       - name: Run tests
         run: npm test

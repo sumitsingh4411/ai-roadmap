@@ -143,6 +143,21 @@ describe('validateContent', () => {
     );
     expect(errors.join('\n')).toMatch(/prerequisite/i);
   });
+
+  it('reports a node whose lesson field does not resolve to its id', () => {
+    const errors = validateContent(
+      roadmap([{ ...node('numpy'), lesson: '03-wrong' }]),
+      [lesson('numpy')],
+    );
+    expect(errors.join('\n')).toContain(
+      'Node "numpy" lesson field "03-wrong" does not resolve to its id (got "wrong").',
+    );
+  });
+
+  it('does not report a node whose lesson field correctly resolves to its id', () => {
+    const errors = validateContent(roadmap([node('numpy')]), [lesson('numpy')]);
+    expect(errors.join('\n')).not.toMatch(/does not resolve to its id/);
+  });
 });
 
 describe('isPendingLesson', () => {
