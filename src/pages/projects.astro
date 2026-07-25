@@ -13,8 +13,11 @@ const levels: Level[] = [
     blurb: 'Small, finishable projects that lock in the basics. Build them as you reach each lesson.',
     projects: [
       { title: 'Stats-from-scratch CLI', blurb: 'Read a list of numbers from the user and report the mean, min, and max — no libraries, just Python.', effort: 'an hour', tags: ['Python'], lesson: 'python-basics', lessonName: 'Python Basics' },
+      { title: 'Tic-tac-toe AI (minimax)', blurb: 'Code an unbeatable opponent with the minimax algorithm — the "classic AI" that predates machine learning.', effort: 'an afternoon', tags: ['Python', 'search'], lesson: 'what-is-ai', lessonName: 'What AI Actually Is' },
       { title: 'Dataset detective', blurb: 'Load a messy CSV with pandas, answer three real questions with groupby, and back each up with a chart.', effort: 'an afternoon', tags: ['pandas', 'matplotlib'], lesson: 'pandas', lessonName: 'Pandas' },
-      { title: 'Titanic survival predictor', blurb: 'Your first real model: predict who survived from passenger data, then read what the model learned.', effort: 'an afternoon', tags: ['scikit-learn', 'classification'], lesson: 'classification', lessonName: 'Classification' },
+      { title: 'Coin-flip probability simulator', blurb: 'Simulate thousands of trials to see the law of large numbers and p-values with your own eyes.', effort: 'an hour', tags: ['numpy', 'statistics'], lesson: 'probability-stats', lessonName: 'Probability & Statistics' },
+      { title: 'Gradient descent by hand', blurb: 'Fit a line to points by nudging weights downhill — watch a model actually learn, no library doing the magic.', effort: 'an afternoon', tags: ['numpy', 'calculus'], lesson: 'calculus', lessonName: 'Calculus' },
+      { title: 'Iris flower classifier', blurb: 'The "hello world" of ML: classify flowers and plot the decision boundary.', effort: 'an hour', tags: ['scikit-learn'], lesson: 'classification', lessonName: 'Classification' },
       { title: 'House-price estimator', blurb: 'Predict prices with linear regression and interpret the coefficients — which features actually matter?', effort: 'an afternoon', tags: ['scikit-learn', 'regression'], lesson: 'regression', lessonName: 'Regression' },
       { title: 'Handwritten-digit recognizer', blurb: 'Train a small neural network to read MNIST digits — your first taste of deep learning that works.', effort: 'a weekend', tags: ['PyTorch', 'MNIST'], lesson: 'neural-networks', lessonName: 'Neural Networks' },
     ],
@@ -24,10 +27,14 @@ const levels: Level[] = [
     blurb: 'Bigger, portfolio-worthy builds that combine several skills end to end.',
     projects: [
       { title: 'Spam / sentiment classifier', blurb: 'Turn raw text into features and classify it as spam-or-not or positive-or-negative. Measure it honestly.', effort: 'a weekend', tags: ['scikit-learn', 'NLP'], lesson: 'model-evaluation', lessonName: 'Model Evaluation' },
-      { title: 'Image classifier with transfer learning', blurb: 'Fine-tune a pretrained CNN on your own images — a few hundred photos is enough to get real accuracy.', effort: 'a weekend', tags: ['PyTorch', 'transfer learning'], lesson: 'cnns-vision', lessonName: 'CNNs & Vision' },
+      { title: 'Customer segmentation', blurb: 'Cluster customers with k-means, then describe each segment in plain English for a "marketing team".', effort: 'a weekend', tags: ['scikit-learn', 'k-means'], lesson: 'clustering-pca', lessonName: 'Clustering & PCA' },
+      { title: 'Kaggle-style boosted model', blurb: 'Beat your baseline with gradient boosting (XGBoost/LightGBM) and explain its top features.', effort: 'a weekend', tags: ['XGBoost', 'feature engineering'], lesson: 'trees-ensembles', lessonName: 'Trees & Ensembles' },
+      { title: 'Image classifier w/ transfer learning', blurb: 'Fine-tune a pretrained CNN on your own images — a few hundred photos is enough for real accuracy.', effort: 'a weekend', tags: ['PyTorch', 'transfer learning'], lesson: 'cnns-vision', lessonName: 'CNNs & Vision' },
+      { title: 'Face detection app', blurb: 'Detect and box faces in photos or a webcam feed — a satisfying, visual first computer-vision build.', effort: 'a weekend', tags: ['OpenCV', 'vision'], lesson: 'cnns-vision', lessonName: 'CNNs & Vision' },
       { title: 'Customer churn, end to end', blurb: 'Clean → engineer features → model → evaluate, then ship it as a public repo with a proper README.', effort: 'a week', tags: ['pandas', 'scikit-learn'], lesson: 'first-ml-project', lessonName: 'First ML Project' },
+      { title: 'A/B test analyzer', blurb: 'Take two variants and decide, with real statistics, whether the difference is signal or noise.', effort: 'an afternoon', tags: ['statistics', 'pandas'], lesson: 'probability-stats', lessonName: 'Probability & Statistics' },
       { title: 'Semantic search engine', blurb: 'Search 50+ documents by meaning, not keywords, using embeddings and cosine similarity in NumPy.', effort: 'a weekend', tags: ['embeddings', 'numpy'], lesson: 'embeddings', lessonName: 'Embeddings' },
-      { title: 'Recommender system', blurb: 'Recommend movies, books, or products by similarity over embeddings — the engine behind every "you might like".', effort: 'a weekend', tags: ['embeddings', 'clustering'], lesson: 'clustering-pca', lessonName: 'Clustering & PCA' },
+      { title: 'Recommender system', blurb: 'Recommend movies, books, or products by similarity — the engine behind every "you might like".', effort: 'a weekend', tags: ['embeddings'], lesson: 'clustering-pca', lessonName: 'Clustering & PCA' },
     ],
   },
   {
@@ -37,12 +44,27 @@ const levels: Level[] = [
       { title: 'RAG chatbot over your own docs', blurb: 'Answer questions grounded in your notes or a PDF library — retrieve the right chunks, then let an LLM write the answer.', effort: 'a week', tags: ['RAG', 'embeddings', 'LLM'], lesson: 'rag', lessonName: 'RAG' },
       { title: 'Fine-tune a small LLM with LoRA', blurb: 'Teach an open model a new task or style cheaply, then evaluate whether it actually improved.', effort: 'a week', tags: ['LoRA', 'PyTorch'], lesson: 'fine-tuning', lessonName: 'Fine-tuning' },
       { title: 'An AI agent with tools', blurb: 'Build an agent that plans and calls two tools to answer questions it couldn’t on its own.', effort: 'a week', tags: ['agents', 'tool use'], lesson: 'ai-agents', lessonName: 'AI Agents' },
+      { title: 'Chatbot with long-term memory', blurb: 'Give an assistant memory across sessions so it remembers you — the difference between a demo and a product.', effort: 'a week', tags: ['LLM', 'vector DB'], lesson: 'prompt-engineering', lessonName: 'Prompt Engineering' },
+      { title: 'Semantic image search (CLIP)', blurb: 'Search a photo library with plain-English queries by embedding images and text into the same space.', effort: 'a week', tags: ['CLIP', 'multimodal'], lesson: 'embeddings', lessonName: 'Embeddings' },
+      { title: 'Reproduce nanoGPT', blurb: 'Build and train a tiny GPT from scratch, following Karpathy — the single best way to truly get transformers.', effort: 'a week', tags: ['PyTorch', 'transformers'], lesson: 'transformers', lessonName: 'Transformers' },
       { title: 'Deploy a model as an API', blurb: 'Wrap a model in FastAPI, Dockerize it, and put it live — a working demo beats a dozen certificates.', effort: 'a weekend', tags: ['FastAPI', 'Docker'], lesson: 'deploying-models', lessonName: 'Deploying a Model' },
-      { title: 'Build an eval suite for an LLM app', blurb: 'Write tests that catch quality regressions before your users do — the skill that separates hobby from production.', effort: 'a weekend', tags: ['evals', 'testing'], lesson: 'evals-guardrails', lessonName: 'Evals & Guardrails' },
+      { title: 'Build an eval suite for an LLM app', blurb: 'Write tests that catch quality regressions before users do — the skill that separates hobby from production.', effort: 'a weekend', tags: ['evals', 'testing'], lesson: 'evals-guardrails', lessonName: 'Evals & Guardrails' },
+    ],
+  },
+  {
+    name: 'Capstone — portfolio centerpieces', hue: '#fbbf24',
+    blurb: 'One big, finished, public project that proves you can take AI from idea to something people use. Pick one and go deep.',
+    projects: [
+      { title: 'A full-stack AI product', blurb: 'Frontend + API + model, deployed and usable by a stranger. The single most convincing thing on a résumé.', effort: 'weeks', tags: ['end-to-end', 'product'], lesson: 'deploying-models', lessonName: 'Deploying a Model' },
+      { title: 'Enter a Kaggle competition', blurb: 'Pick an active competition, iterate to a real leaderboard score, and write up what worked.', effort: 'weeks', tags: ['Kaggle', 'modeling'], lesson: 'first-ml-project', lessonName: 'First ML Project' },
+      { title: 'Reproduce a research paper', blurb: 'Read a paper and rebuild its core result. Nothing teaches depth like making someone else’s claim run.', effort: 'weeks', tags: ['research', 'PyTorch'], lesson: 'transformers', lessonName: 'Transformers' },
+      { title: 'Ship an end-to-end MLOps pipeline', blurb: 'Data → training → tracking → deployment → monitoring, automated and reproducible.', effort: 'weeks', tags: ['MLOps', 'automation'], lesson: 'mlops-basics', lessonName: 'MLOps Basics' },
+      { title: 'Contribute to an open-source AI project', blurb: 'Fix a real bug or add a feature to a library you use. Proof you can work in a real codebase.', effort: 'ongoing', tags: ['open source', 'collaboration'], lesson: 'portfolio-career', lessonName: 'Portfolio & Career' },
     ],
   },
 ];
 
+const totalProjects = levels.reduce((n, lv) => n + lv.projects.length, 0);
 const itemListSchema = {
   '@context': 'https://schema.org',
   '@type': 'ItemList',
@@ -54,7 +76,7 @@ const itemListSchema = {
 ---
 <BaseLayout
   title="Projects — build AI to learn it"
-  description="Learn AI by building. 15 hands-on project ideas from beginner to advanced — Titanic, image classifiers, semantic search, RAG chatbots, fine-tuning, and deploying models — each mapped to the lesson it builds on."
+  description="Learn AI by building. Nearly 30 hands-on project ideas from beginner to advanced — Titanic, image classifiers, semantic search, RAG chatbots, fine-tuning, deploying models, and capstone builds — each mapped to the lesson it builds on."
   keywords="AI project ideas, machine learning projects for beginners, deep learning projects, LLM project ideas, AI portfolio projects, hands-on machine learning, build AI projects"
   jsonLd={itemListSchema}
   wide
@@ -63,8 +85,8 @@ const itemListSchema = {
     <p class="pj-eyebrow">Learn by building</p>
     <h1>Don’t just read it — <span class="grad">build it</span>.</h1>
     <p class="pj-sub">
-      You learn AI by making things, breaking them, and fixing them. Here are 15 projects, from
-      your first hour of Python to shipping an LLM app. Each one maps to the lesson that
+      You learn AI by making things, breaking them, and fixing them. Here are {totalProjects} projects, from
+      your first hour of Python to shipping a full AI product. Each one maps to the lesson that
       teaches what you need — build them as you go.
     </p>
     <a class="pj-cta" href={href('/roadmap')}>See the full roadmap →</a>

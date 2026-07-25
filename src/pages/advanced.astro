@@ -27,6 +27,10 @@ const sections: Section[] = [
       { name: 'Diffusion & image generation — HF Diffusion Course', desc: 'How Stable-Diffusion-style models actually work, and how to build them.', url: 'https://huggingface.co/learn/diffusion-course' },
       { name: 'LLMs from scratch — Karpathy: Zero to Hero', desc: 'Build a GPT by hand. The best deep dive into how LLMs work.', url: 'https://karpathy.ai/zero-to-hero.html' },
       { name: 'Graph Neural Networks — Stanford CS224W', desc: 'Learning on graphs — recommendations, molecules, social networks.', url: 'https://web.stanford.edu/class/cs224w/' },
+      { name: 'Audio & speech — HF Audio Course', desc: 'Speech recognition, text-to-speech, and audio classification, hands-on.', url: 'https://huggingface.co/learn/audio-course' },
+      { name: 'Time series & forecasting — Forecasting: Principles & Practice', desc: 'The free, canonical book on predicting what happens next.', url: 'https://otexts.com/fpp3/' },
+      { name: 'Recommender systems — Google course', desc: 'How the systems that drive most of the internet actually work.', url: 'https://developers.google.com/machine-learning/recommendation' },
+      { name: 'AI safety & alignment — AI Safety Fundamentals', desc: 'Free, structured courses on making powerful AI systems safe.', url: 'https://aisafetyfundamentals.com/' },
     ],
   },
   {
@@ -67,11 +71,62 @@ const sections: Section[] = [
     ],
   },
   {
+    icon: '🎓', hue: '#818cf8', title: 'Free courses & certificates',
+    lead: 'Structured, free courses from the best sources — several give a shareable certificate.',
+    items: [
+      { name: 'DeepLearning.AI — short courses', desc: 'Free, focused 1-hour courses on RAG, agents, fine-tuning, and more.', url: 'https://www.deeplearning.ai/short-courses/' },
+      { name: "Google — Machine Learning Crash Course", desc: 'A polished, free intro to ML with interactive exercises.', url: 'https://developers.google.com/machine-learning/crash-course' },
+      { name: 'Kaggle Learn', desc: 'Bite-size, hands-on micro-courses with a certificate each.', url: 'https://www.kaggle.com/learn' },
+      { name: 'Hugging Face Learn', desc: 'Free courses on NLP, deep RL, audio, and diffusion.', url: 'https://huggingface.co/learn' },
+      { name: 'Elements of AI', desc: 'A gentle, free university intro for the non-technical side of AI.', url: 'https://www.elementsofai.com/' },
+    ],
+  },
+  {
+    icon: '📖', hue: '#22d3ee', title: 'Books you can read free',
+    lead: 'Full textbooks, online and free — for when you want depth, not a video.',
+    items: [
+      { name: 'Dive into Deep Learning (d2l.ai)', desc: 'Interactive, code-first deep-learning book used at 500+ universities.', url: 'https://d2l.ai/' },
+      { name: 'Mathematics for Machine Learning', desc: 'The exact linear algebra, calculus, and probability ML needs — free PDF.', url: 'https://mml-book.github.io/' },
+      { name: 'Understanding Deep Learning (Prince)', desc: 'A modern, beautifully illustrated deep-learning textbook — free PDF.', url: 'https://udlbook.github.io/udlbook/' },
+      { name: 'Neural Networks and Deep Learning (Nielsen)', desc: 'The classic, intuitive intro to how neural nets learn.', url: 'http://neuralnetworksanddeeplearning.com/' },
+    ],
+  },
+  {
+    icon: '🎧', hue: '#2dd4bf', title: 'Watch & listen',
+    lead: 'Channels, newsletters, and podcasts to keep learning in the background.',
+    items: [
+      { name: '3Blue1Brown', desc: 'The most beautiful visual explanations of the math behind AI.', url: 'https://www.youtube.com/@3blue1brown' },
+      { name: 'StatQuest with Josh Starmer', desc: 'ML concepts explained clearly, one bite at a time.', url: 'https://www.youtube.com/@statquest' },
+      { name: 'Andrej Karpathy — Zero to Hero', desc: 'Build neural nets and GPTs from scratch on video.', url: 'https://www.youtube.com/@AndrejKarpathy' },
+      { name: 'The Batch (DeepLearning.AI)', desc: 'A calm weekly newsletter on what actually matters in AI.', url: 'https://www.deeplearning.ai/the-batch/' },
+      { name: 'Latent Space podcast', desc: 'Deep, practical conversations on building with AI.', url: 'https://www.latent.space/' },
+    ],
+  },
+  {
+    icon: '🗂️', hue: '#fbbf24', title: 'Datasets & tools',
+    lead: 'Where to find data to practice on, and the platforms practitioners actually use.',
+    items: [
+      { name: 'Hugging Face Datasets', desc: 'Tens of thousands of ready-to-use datasets, one line to load.', url: 'https://huggingface.co/datasets' },
+      { name: 'Google Dataset Search', desc: 'A search engine just for datasets across the whole web.', url: 'https://datasetsearch.research.google.com/' },
+      { name: 'UCI Machine Learning Repository', desc: 'The classic home of clean, well-documented ML datasets.', url: 'https://archive.ics.uci.edu/' },
+      { name: 'Google Colab', desc: 'Free notebooks with a GPU — no setup, run everything in the browser.', url: 'https://colab.research.google.com/' },
+    ],
+  },
+  {
+    icon: '🛠️', hue: '#a78bfa', title: 'Contribute to open source',
+    lead: 'Working in a real codebase with real reviewers is a level-up nothing else gives you.',
+    items: [
+      { name: 'scikit-learn — contributing guide', desc: 'A famously welcoming project with "good first issue" labels.', url: 'https://scikit-learn.org/stable/developers/contributing.html' },
+      { name: 'Hugging Face on GitHub', desc: 'Transformers, datasets, and more — active and beginner-friendly.', url: 'https://github.com/huggingface' },
+      { name: 'This roadmap', desc: 'Spot a bug or a clearer explanation? Open a PR — it’s open source.', url: 'https://github.com/sumitsingh4411/ai-roadmap' },
+    ],
+  },
+  {
     icon: '💼', hue: '#fb7185', title: 'Turn it into a career',
     lead: 'Know the roles, build proof, and get hired.',
     items: [
       { name: 'Roadmap lesson: Portfolio & Career', desc: 'Job families, what each actually does, and how to keep learning.', url: `${SITE}/lessons/portfolio-career` },
-      { name: 'Ship 3 portfolio projects', desc: 'A cleaning-to-model project, a deep-learning project, and an LLM app.', url: `${SITE}/lessons/first-ml-project` },
+      { name: 'Build portfolio projects', desc: 'A cleaning-to-model project, a deep-learning project, and an LLM app.', url: `${SITE}/projects` },
       { name: 'Deploy something people can use', desc: 'A live demo beats a dozen certificates. See the deployment lesson.', url: `${SITE}/lessons/deploying-models` },
     ],
   },
