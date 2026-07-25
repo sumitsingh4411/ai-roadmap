@@ -3,7 +3,7 @@
 
 # Curriculum
 
-**18 lessons** · roughly 14 hours of reading ·
+**24 lessons** · roughly 20 hours of reading ·
 free and open source.
 
 Work top to bottom. Each lesson lists what it assumes you already know, so if
@@ -47,6 +47,17 @@ you are ready.
 | 15 | [Clustering & PCA](content/lessons/15-clustering-pca.md) | 45 min | intermediate | k-means clustering, choosing k with the elbow method, hierarchical clustering, and PCA as compression with explained variance. |
 | 16 | [Trees & Ensembles](content/lessons/16-trees-ensembles.md) | 50 min | intermediate | Decision trees and how splits are chosen, random forests as bagging, gradient boosting, and feature importance. |
 | 17 | [First ML Project](content/lessons/17-first-ml-project.md) | 90 min | intermediate | A full guided ML pipeline end to end: problem framing, EDA, cleaning, features, baseline, iteration, evaluation, and writing up results. |
+
+## Stage 4 · Deep Learning
+
+| # | Lesson | Time | Level | What it covers |
+|---|---|---|---|---|
+| 18 | [Neural Networks](content/lessons/18-neural-networks.md) | 55 min | intermediate | What one neuron computes, why nonlinear activations are non-negotiable, how depth builds representations, and the universal approximation intuition. |
+| 19 | [Backprop & Training](content/lessons/19-backprop-training.md) | 60 min | intermediate | How the chain rule turns one output error into a gradient for every weight in a network, and how learning rate, epochs and batches shape training. |
+| 20 | [PyTorch](content/lessons/20-pytorch.md) | 60 min | intermediate | Tensors, autograd, nn.Module, optimisers, and the canonical training loop — the framework that automates the backprop you just wrote by hand. |
+| 21 | [CNNs & Vision](content/lessons/21-cnns-vision.md) | 55 min | intermediate | Convolution as a learned filter, stride, padding and pooling, how a CNN's shapes flow layer to layer, and transfer learning with a pretrained backbone. |
+| 22 | [Sequence Models](content/lessons/22-sequence-models.md) | 50 min | advanced | Why order matters, how RNNs process sequences step by step, the vanishing gradient problem, LSTM/GRU, and why attention replaced them. |
+| 23 | [Transformers](content/lessons/23-transformers.md) | 70 min | advanced | Attention as a learned lookup over query, key and value, self-attention and multi-head attention, positional encoding, and the encoder/decoder split. |
 
 ---
 
