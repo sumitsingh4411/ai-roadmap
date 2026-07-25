@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { stripMarkdown, buildSearchIndex } from '../../scripts/build-search-index';
+import { stripMarkdown, buildSearchIndex, extractHeadings } from '../../scripts/build-search-index';
 import { readLessonFiles } from '../../scripts/lib/content-io';
 
 describe('stripMarkdown', () => {
@@ -40,6 +40,39 @@ describe('stripMarkdown', () => {
   });
 });
 
+describe('extractHeadings', () => {
+  it('extracts real h2 headings', () => {
+    expect(extractHeadings('## Real Heading\ntext')).toEqual(['Real Heading']);
+  });
+
+  it('ignores lines that look like headings inside fenced code blocks', () => {
+    const markdown = [
+      '## Real Heading',
+      'intro text',
+      '```markdown',
+      '## Not A Heading',
+      '```',
+      'more text',
+    ].join('\n');
+    expect(extractHeadings(markdown)).toEqual(['Real Heading']);
+  });
+
+  it('ignores fenced blocks that specify a language', () => {
+    const markdown = ['```python', '## not a heading either', '```', '## Real One'].join('\n');
+    expect(extractHeadings(markdown)).toEqual(['Real One']);
+  });
+
+  it('resumes extracting headings after a fence closes', () => {
+    const markdown = ['```', '## inside fence', '```', '## Real Heading', 'text'].join('\n');
+    expect(extractHeadings(markdown)).toEqual(['Real Heading']);
+  });
+
+  it('handles an odd number of fences by treating trailing content as still fenced', () => {
+    const markdown = ['## Before', '```', '## After unterminated fence'].join('\n');
+    expect(extractHeadings(markdown)).toEqual(['Before']);
+  });
+});
+
 describe('buildSearchIndex', () => {
   const docs = buildSearchIndex(readLessonFiles());
 
@@ -50,6 +83,12 @@ describe('buildSearchIndex', () => {
   it('captures the h2 headings of each lesson', () => {
     const doc = docs.find((d) => d.slug === 'what-is-ai')!;
     expect(doc.headings).toContain('Why this matters');
+  });
+
+  it('does not capture headings that live inside a fenced code block', () => {
+    // lesson 01 has a fenced ```markdown template containing "## Week 01"
+    const doc = docs.find((d) => d.slug === 'how-to-learn-ai')!;
+    expect(doc.headings).not.toContain('Week 01');
   });
 
   it('stores body text with no code fences', () => {

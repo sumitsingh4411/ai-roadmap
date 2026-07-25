@@ -34,8 +34,25 @@ export function stripMarkdown(markdown: string): string {
     .trim();
 }
 
-function extractHeadings(markdown: string): string[] {
-  return [...markdown.matchAll(/^##\s+(.+)$/gm)].map((m) => m[1].trim());
+/**
+ * Extracts `## ` headings, skipping any line inside a fenced code block
+ * (``` or ```lang). Lessons embed fenced templates/snippets whose lines can
+ * themselves start with `## ` (a README template, a commented-out Markdown
+ * example) — those must not be mistaken for real headings.
+ */
+export function extractHeadings(markdown: string): string[] {
+  const headings: string[] = [];
+  let inFence = false;
+  for (const line of markdown.split(/\r?\n/)) {
+    if (/^\s{0,3}```/.test(line)) {
+      inFence = !inFence;
+      continue;
+    }
+    if (inFence) continue;
+    const match = /^##\s+(.+)$/.exec(line);
+    if (match) headings.push(match[1].trim());
+  }
+  return headings;
 }
 
 export function buildSearchIndex(lessons: LessonFile[]): SearchDoc[] {
