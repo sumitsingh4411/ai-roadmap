@@ -3,7 +3,7 @@
 
 # Curriculum
 
-**7 lessons** · roughly 5 hours of reading ·
+**18 lessons** · roughly 14 hours of reading ·
 free and open source.
 
 Work top to bottom. Each lesson lists what it assumes you already know, so if
@@ -26,6 +26,27 @@ you are ready.
 | 04 | [Pandas](content/lessons/04-pandas.md) | 50 min | beginner | Series and DataFrames, loading CSVs, selecting and filtering rows, grouping, and handling missing values. |
 | 05 | [Data Visualization](content/lessons/05-data-visualization.md) | 40 min | beginner | Choosing the right chart type, matplotlib basics, plotting straight from pandas, and reading what a histogram tells you. |
 | 06 | [Real Datasets](content/lessons/06-real-datasets.md) | 45 min | beginner | Where to find datasets, loading messy CSVs, fixing types and dates, removing duplicates, spotting outliers, and a reusable cleaning checklist. |
+
+## Stage 2 · Math You Actually Need
+
+| # | Lesson | Time | Level | What it covers |
+|---|---|---|---|---|
+| 07 | [Linear Algebra](content/lessons/07-linear-algebra.md) | 50 min | beginner | Vectors and matrices as the data structures behind every model, dot products as weighted sums, and matrix multiplication as batch prediction. |
+| 08 | [Calculus](content/lessons/08-calculus.md) | 50 min | intermediate | Derivatives as slope, the chain rule, and gradient descent implemented by hand in NumPy — how a model actually learns. |
+| 09 | [Probability & Statistics](content/lessons/09-probability-stats.md) | 50 min | beginner | Distributions, mean and variance, conditional probability, Bayes' theorem, sampling, and what a p-value actually means. |
+
+## Stage 3 · Classical ML
+
+| # | Lesson | Time | Level | What it covers |
+|---|---|---|---|---|
+| 10 | [ML Fundamentals](content/lessons/10-ml-fundamentals.md) | 45 min | beginner | Supervised vs unsupervised learning, the train/validation/test split, and overfitting vs underfitting through the bias-variance tradeoff. |
+| 11 | [Regression](content/lessons/11-regression.md) | 50 min | beginner | Linear regression from the normal equation to scikit-learn, the MSE/MAE/R² metrics, and Ridge/Lasso regularisation to fight overfitting. |
+| 12 | [Classification](content/lessons/12-classification.md) | 50 min | beginner | Logistic regression and the sigmoid, decision boundaries, k-nearest neighbours, and strategies for more than two classes. |
+| 13 | [Model Evaluation](content/lessons/13-model-evaluation.md) | 45 min | intermediate | The confusion matrix, precision, recall, F1, ROC-AUC, cross-validation, and why accuracy alone can make a worthless model look great. |
+| 14 | [Feature Engineering](content/lessons/14-feature-engineering.md) | 45 min | intermediate | Scaling, encoding categoricals, dates, binning, interaction terms, and data leakage — raising a model's score with features, not a new algorithm. |
+| 15 | [Clustering & PCA](content/lessons/15-clustering-pca.md) | 45 min | intermediate | k-means clustering, choosing k with the elbow method, hierarchical clustering, and PCA as compression with explained variance. |
+| 16 | [Trees & Ensembles](content/lessons/16-trees-ensembles.md) | 50 min | intermediate | Decision trees and how splits are chosen, random forests as bagging, gradient boosting, and feature importance. |
+| 17 | [First ML Project](content/lessons/17-first-ml-project.md) | 90 min | intermediate | A full guided ML pipeline end to end: problem framing, EDA, cleaning, features, baseline, iteration, evaluation, and writing up results. |
 
 ---
 
