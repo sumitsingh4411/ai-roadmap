@@ -3,7 +3,7 @@
 
 # Curriculum
 
-**24 lessons** · roughly 20 hours of reading ·
+**31 lessons** · roughly 26 hours of reading ·
 free and open source.
 
 Work top to bottom. Each lesson lists what it assumes you already know, so if
@@ -58,6 +58,18 @@ you are ready.
 | 21 | [CNNs & Vision](content/lessons/21-cnns-vision.md) | 55 min | intermediate | Convolution as a learned filter, stride, padding and pooling, how a CNN's shapes flow layer to layer, and transfer learning with a pretrained backbone. |
 | 22 | [Sequence Models](content/lessons/22-sequence-models.md) | 50 min | advanced | Why order matters, how RNNs process sequences step by step, the vanishing gradient problem, LSTM/GRU, and why attention replaced them. |
 | 23 | [Transformers](content/lessons/23-transformers.md) | 70 min | advanced | Attention as a learned lookup over query, key and value, self-attention and multi-head attention, positional encoding, and the encoder/decoder split. |
+
+## Stage 5 · Generative AI & LLMs
+
+| # | Lesson | Time | Level | What it covers |
+|---|---|---|---|---|
+| 24 | [How LLMs Work](content/lessons/24-how-llms-work.md) | 55 min | intermediate | Tokenization, next-token prediction, pretraining vs post-training, context windows, temperature and sampling, and why models hallucinate. |
+| 25 | [Prompt Engineering](content/lessons/25-prompt-engineering.md) | 45 min | beginner | Clear instructions, few-shot examples, chain-of-thought, structured output, system prompts, and fixing a failing prompt in documented iterations. |
+| 26 | [Embeddings](content/lessons/26-embeddings.md) | 45 min | intermediate | Text as vectors, cosine similarity, embedding models, vector databases, and chunking strategy, with a real semantic search built in NumPy. |
+| 27 | [Retrieval-Augmented Generation (RAG)](content/lessons/27-rag.md) | 60 min | intermediate | Why retrieval beats stuffing the context window, the ingest-chunk-embed-retrieve-generate pipeline, chunk sizing, and common RAG failure modes. |
+| 28 | [Fine-tuning](content/lessons/28-fine-tuning.md) | 60 min | advanced | When fine-tuning beats RAG or prompting, full fine-tuning vs LoRA/PEFT, dataset preparation, and evaluating the result, with a real LoRA parameter-count demo. |
+| 29 | [AI Agents](content/lessons/29-ai-agents.md) | 60 min | advanced | Tool use, the reason-act loop, planning, memory, multi-step failure modes, and cost control, with a real non-LLM demo of the loop mechanics. |
+| 30 | [Evals & Guardrails](content/lessons/30-evals-guardrails.md) | 50 min | advanced | Why manual spot-checking doesn't scale, building an eval set, LLM-as-judge and its biases, regression testing, and input/output guardrails. |
 
 ---
 
