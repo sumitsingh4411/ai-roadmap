@@ -71,6 +71,7 @@ for (const stage of stages) {
           <stop offset="1" stop-color="#fb7185" />
         </linearGradient>
       </defs>
+      <g class="road-connectors"></g>
       <path class="road-base" fill="none" />
       <path class="road-done" fill="none" />
     </svg>
@@ -142,8 +143,35 @@ for (const stage of stages) {
     const full = smooth(pts);
     base.setAttribute('d', full);
 
-    // Light the road up to (and including) the last completed lesson.
+    // A connector from each topic card to its node on the road, in the stage hue.
     const done = new Set(store.completed());
+    const conns = svg.querySelector('.road-connectors');
+    if (conns) {
+      conns.innerHTML = '';
+      for (const item of tl.querySelectorAll<HTMLElement>('.tl-item')) {
+        const card = item.querySelector<HTMLElement>('.tl-card');
+        const node = item.querySelector<HTMLElement>('.tl-node');
+        if (!card || !node) continue;
+        const cr = card.getBoundingClientRect(), nr = node.getBoundingClientRect();
+        const isLeft = item.classList.contains('left');
+        const cx = (isLeft ? cr.right : cr.left) - box.left;
+        const cy = cr.top + cr.height / 2 - box.top;
+        const nx = nr.left + nr.width / 2 - box.left;
+        const ny = nr.top + nr.height / 2 - box.top;
+        const hue = getComputedStyle(item).getPropertyValue('--hue').trim() || '#a78bfa';
+        const isDone = done.has(item.querySelector<HTMLElement>('[data-rm-slug]')?.dataset.rmSlug ?? '');
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        line.setAttribute('d', `M${cx.toFixed(1)},${cy.toFixed(1)} Q${((cx + nx) / 2).toFixed(1)},${cy.toFixed(1)} ${nx.toFixed(1)},${ny.toFixed(1)}`);
+        line.setAttribute('stroke', hue);
+        line.setAttribute('stroke-width', '1.5');
+        line.setAttribute('fill', 'none');
+        line.setAttribute('stroke-linecap', 'round');
+        line.setAttribute('opacity', isDone ? '0.9' : '0.4');
+        conns.appendChild(line);
+      }
+    }
+
+    // Light the road up to (and including) the last completed lesson.
     const lessonAnchors = anchors.map((a, idx) => ({ idx, slug: a.parentElement?.querySelector<HTMLElement>('[data-rm-slug]')?.dataset.rmSlug }));
     let lastDone = -1;
     for (const la of lessonAnchors) if (la.slug && done.has(la.slug)) lastDone = la.idx;
