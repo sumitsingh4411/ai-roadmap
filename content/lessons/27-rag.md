@@ -230,11 +230,27 @@ top = retrieve("When does cutover happen?", k=2)
 print(build_prompt("When does cutover happen?", top))
 ```
 
-The instruction to answer *only* from the provided context, and to say so
-plainly when the context doesn't cover the question, is the RAG-level
-mitigation for lesson 24's hallucination mechanism — it doesn't eliminate
-the risk, but it gives the model an explicit, honest alternative to
-guessing.
+```
+Answer the question using ONLY the context below. If the context
+doesn't contain the answer, say you don't have enough information --
+do not guess.
+
+Context:
+- Cutover happens once dual-write has run clean for two full weeks. At that point we flip a feature flag and the new service becomes the source of truth. The old billing code stays in place for one more release as a rollba
+
+- Project Aurora kicked off in March. The goal is to migrate the billing service from a monolith to a set of small services. The team agreed to split the work into three phases: extraction, dual-write, and cutover.
+
+Question: When does cutover happen?
+Answer:
+```
+
+That's the real, complete prompt a generation call would receive — including,
+honestly, the "rollba" truncation artifact flowing straight through from
+retrieval into the context the model would see. The instruction to answer
+*only* from the provided context, and to say so plainly when the context
+doesn't cover the question, is the RAG-level mitigation for lesson 24's
+hallucination mechanism — it doesn't eliminate the risk, but it gives the
+model an explicit, honest alternative to guessing.
 
 Sending that prompt to a real model needs your own API key — shown here as
 idiomatic code, **not run**, no response text shown as if captured. Using
