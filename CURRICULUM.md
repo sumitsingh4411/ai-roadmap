@@ -3,7 +3,7 @@
 
 # Curriculum
 
-**34 lessons** · roughly 29 hours of reading ·
+**37 lessons** · roughly 31 hours of reading ·
 free and open source.
 
 Work top to bottom. Each lesson lists what it assumes you already know, so if
@@ -70,6 +70,9 @@ you are ready.
 | 28 | [Fine-tuning](content/lessons/28-fine-tuning.md) | 60 min | advanced | When fine-tuning beats RAG or prompting, full fine-tuning vs LoRA/PEFT, dataset preparation, and evaluating the result, with a real LoRA parameter-count demo. |
 | 29 | [AI Agents](content/lessons/29-ai-agents.md) | 60 min | advanced | Tool use, the reason-act loop, planning, memory, multi-step failure modes, and cost control, with a real non-LLM demo of the loop mechanics. |
 | 30 | [Evals & Guardrails](content/lessons/30-evals-guardrails.md) | 50 min | advanced | Why manual spot-checking doesn't scale, building an eval set, LLM-as-judge and its biases, regression testing, and input/output guardrails. |
+| 34 | [Run Open LLMs Locally with Ollama](content/lessons/34-run-local-llm.md) | 45 min | intermediate | Run real language models on your own machine — private, free, offline — and call them from Python like an API. |
+| 35 | [Build an Agent Harness](content/lessons/35-agent-harness.md) | 60 min | advanced | The scaffolding that turns a raw language model into an agent: the tool loop, parsing, dispatch, and history — built from scratch. |
+| 36 | [Loop Engineering](content/lessons/36-loop-engineering.md) | 55 min | advanced | The naive agent loop breaks in a dozen ways. The engineering that makes it reliable: budgets, loop detection, context control, and error recovery. |
 
 ## Stage 6 · Ship It
 

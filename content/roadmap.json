@@ -45,6 +45,9 @@
     { "id": "fine-tuning",         "lesson": "28-fine-tuning",         "stage": 5, "grid": { "x": 4, "y": 5 }, "prerequisites": ["how-llms-work", "pytorch"] },
     { "id": "ai-agents",           "lesson": "29-ai-agents",           "stage": 5, "grid": { "x": 5, "y": 5 }, "prerequisites": ["rag"] },
     { "id": "evals-guardrails",    "lesson": "30-evals-guardrails",    "stage": 5, "grid": { "x": 6, "y": 5 }, "prerequisites": ["ai-agents"] },
+    { "id": "run-local-llm",       "lesson": "34-run-local-llm",       "stage": 5, "grid": { "x": 7, "y": 5 }, "prerequisites": ["how-llms-work"] },
+    { "id": "agent-harness",       "lesson": "35-agent-harness",       "stage": 5, "grid": { "x": 8, "y": 5 }, "prerequisites": ["ai-agents"] },
+    { "id": "loop-engineering",    "lesson": "36-loop-engineering",    "stage": 5, "grid": { "x": 9, "y": 5 }, "prerequisites": ["agent-harness"] },
 
     { "id": "mlops-basics",        "lesson": "31-mlops-basics",        "stage": 6, "grid": { "x": 0, "y": 6 }, "prerequisites": ["first-ml-project"] },
     { "id": "deploying-models",    "lesson": "32-deploying-models",    "stage": 6, "grid": { "x": 1, "y": 6 }, "prerequisites": ["mlops-basics"] },
