@@ -182,7 +182,8 @@ describe('the real content directory', () => {
   });
 
   it('reports one pending error per unwritten lesson', () => {
+    const nodeCount = readRoadmap().nodes.length;
     const written = readLessonFiles().length;
-    expect(errors.filter(isPendingLesson)).toHaveLength(34 - written);
+    expect(errors.filter(isPendingLesson)).toHaveLength(nodeCount - written);
   });
 });

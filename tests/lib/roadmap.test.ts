@@ -81,16 +81,18 @@ describe('content/roadmap.json', () => {
   const raw = JSON.parse(readFileSync('content/roadmap.json', 'utf8'));
   const roadmap = roadmapSchema.parse(raw);
 
-  it('has 34 nodes', () => {
-    expect(roadmap.nodes).toHaveLength(34);
+  it('has a substantial, growing set of nodes with unique ids', () => {
+    expect(roadmap.nodes.length).toBeGreaterThanOrEqual(34);
+    const ids = roadmap.nodes.map((n) => n.id);
+    expect(new Set(ids).size).toBe(ids.length); // no duplicate ids
   });
 
   it('is acyclic', () => {
     expect(detectCycle(roadmap.nodes)).toBeNull();
   });
 
-  it('can be ordered topologically', () => {
-    expect(topologicalOrder(roadmap.nodes)).toHaveLength(34);
+  it('can be ordered topologically without dropping a node', () => {
+    expect(topologicalOrder(roadmap.nodes)).toHaveLength(roadmap.nodes.length);
   });
 
   it('has exactly one starting node', () => {
