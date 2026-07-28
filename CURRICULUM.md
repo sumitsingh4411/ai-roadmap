@@ -3,7 +3,7 @@
 
 # Curriculum
 
-**37 lessons** · roughly 31 hours of reading ·
+**45 lessons** · roughly 38 hours of reading ·
 free and open source.
 
 Work top to bottom. Each lesson lists what it assumes you already know, so if
@@ -47,6 +47,8 @@ you are ready.
 | 15 | [Clustering & PCA](content/lessons/15-clustering-pca.md) | 45 min | intermediate | k-means clustering, choosing k with the elbow method, hierarchical clustering, and PCA as compression with explained variance. |
 | 16 | [Trees & Ensembles](content/lessons/16-trees-ensembles.md) | 50 min | intermediate | Decision trees and how splits are chosen, random forests as bagging, gradient boosting, and feature importance. |
 | 17 | [First ML Project](content/lessons/17-first-ml-project.md) | 90 min | intermediate | A full guided ML pipeline end to end: problem framing, EDA, cleaning, features, baseline, iteration, evaluation, and writing up results. |
+| 37 | [Explainable AI — Opening the Black Box](content/lessons/37-explainable-ai.md) | 45 min | intermediate | Why a model made a prediction — feature importance, permutation importance, and reading a model you can't see inside. |
+| 38 | [Time-Series Forecasting](content/lessons/38-time-series.md) | 50 min | intermediate | Predicting what happens next — why time data breaks normal ML, lag features, a proper time-aware split, and honest baselines. |
 
 ## Stage 4 · Deep Learning
 
@@ -58,6 +60,7 @@ you are ready.
 | 21 | [CNNs & Vision](content/lessons/21-cnns-vision.md) | 55 min | intermediate | Convolution as a learned filter, stride, padding and pooling, how a CNN's shapes flow layer to layer, and transfer learning with a pretrained backbone. |
 | 22 | [Sequence Models](content/lessons/22-sequence-models.md) | 50 min | advanced | Why order matters, how RNNs process sequences step by step, the vanishing gradient problem, LSTM/GRU, and why attention replaced them. |
 | 23 | [Transformers](content/lessons/23-transformers.md) | 70 min | advanced | Attention as a learned lookup over query, key and value, self-attention and multi-head attention, positional encoding, and the encoder/decoder split. |
+| 39 | [Reinforcement Learning](content/lessons/39-reinforcement-learning.md) | 55 min | advanced | Learning from reward instead of labels — agents, states, actions, rewards, and Q-learning taught by making an agent solve a tiny grid world. |
 
 ## Stage 5 · Generative AI & LLMs
 
@@ -73,6 +76,11 @@ you are ready.
 | 34 | [Run Open LLMs Locally with Ollama](content/lessons/34-run-local-llm.md) | 45 min | intermediate | Run real language models on your own machine — private, free, offline — and call them from Python like an API. |
 | 35 | [Build an Agent Harness](content/lessons/35-agent-harness.md) | 60 min | advanced | The scaffolding that turns a raw language model into an agent: the tool loop, parsing, dispatch, and history — built from scratch. |
 | 36 | [Loop Engineering](content/lessons/36-loop-engineering.md) | 55 min | advanced | The naive agent loop breaks in a dozen ways. The engineering that makes it reliable: budgets, loop detection, context control, and error recovery. |
+| 40 | [Diffusion Models & Image Generation](content/lessons/40-diffusion-models.md) | 55 min | advanced | How Stable-Diffusion-style models turn noise into images — the forward noising process, learning to denoise, and why it works. |
+| 41 | [Vector Databases](content/lessons/41-vector-databases.md) | 45 min | intermediate | Where embeddings live at scale — similarity search, why brute force stops scaling, and how approximate nearest neighbors makes it fast. |
+| 42 | [Structured Outputs & Function Calling](content/lessons/42-structured-outputs.md) | 45 min | intermediate | Getting reliable JSON out of an LLM — schemas, validation, function/tool calling, and what to do when the model returns something wrong. |
+| 43 | [Model Context Protocol (MCP)](content/lessons/43-model-context-protocol.md) | 45 min | advanced | The USB-C of AI tools — a standard protocol that lets any agent connect to any tool or data source without custom glue for each one. |
+| 44 | [AI Ethics & Responsible AI](content/lessons/44-ai-ethics.md) | 45 min | intermediate | Building AI that doesn't cause harm — bias and fairness, privacy, transparency, misuse, and the responsibility that comes with shipping models. |
 
 ## Stage 6 · Ship It
 
