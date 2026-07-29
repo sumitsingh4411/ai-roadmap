@@ -140,19 +140,27 @@ const itemListSchema = {
     s.items.map((it, ii) => ({ '@type': 'ListItem', position: si * 10 + ii + 1, name: it.name, url: it.url })),
   ),
 };
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Roadmap", item: `${SITE}/` },
+    { "@type": "ListItem", position: 2, name: "What's next", item: `${SITE}/advanced` },
+  ],
+};
 ---
 <BaseLayout
   title="What's next — Advanced AI topics"
   description="Finished the roadmap? Here's what to do next: advanced AI topics people search for — computer vision, reinforcement learning, diffusion models, LLMs, MLOps — plus projects, competitions, and communities, with curated free resources."
   keywords="advanced AI topics, what to do after learning AI, AI project ideas, learn reinforcement learning, computer vision course, diffusion models, MLOps course, machine learning projects, how to specialize in AI"
-  jsonLd={itemListSchema}
+  jsonLd={[itemListSchema, breadcrumbSchema]}
   wide
 >
   <header class="adv-head">
     <p class="adv-eyebrow">After the roadmap</p>
     <h1>You know the fundamentals. <span class="grad">Now go build.</span></h1>
     <p class="adv-sub">
-      Finishing the 34 lessons means you can read, write, and reason about AI. This is where
+      Finishing the roadmap means you can read, write, and reason about AI. This is where
       you turn that into real skill — pick a track, ship projects, and keep leveling up.
       Every link here is free.
     </p>

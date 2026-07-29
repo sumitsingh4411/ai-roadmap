@@ -46,7 +46,7 @@ const courseSchema = {
 
 // FAQ targets real questions people search for — and earns FAQ rich results.
 const faqs = [
-  { q: 'Is this AI roadmap free?', a: 'Yes — completely free and open source. All 34 lessons are free to read on the site or straight from the Markdown on GitHub, with no sign-up, paywall, or ads.' },
+  { q: 'Is this AI roadmap free?', a: `Yes — completely free and open source. All ${total} lessons are free to read on the site or straight from the Markdown on GitHub, with no sign-up, paywall, or ads.` },
   { q: 'How long does it take to learn AI with this roadmap?', a: `The ${total} lessons are about ${totalHours} hours of reading, plus time to run the code and do the exercises. Most people spread it over a few months of steady study — you can go faster or slower, and your progress saves as you go.` },
   { q: 'Do I need a math or computer science degree to learn AI?', a: 'No. The roadmap starts from zero and teaches the math you actually need — linear algebra, calculus, and statistics — through the problems it solves, not as abstract theory.' },
   { q: 'What should I learn first for AI?', a: 'Start with what AI, machine learning, and deep learning actually are, then Python and working with data. Everything here is ordered by dependency, so you always know exactly what to learn next.' },
@@ -72,7 +72,7 @@ const BLURB: Record<number, string> = {
 ---
 <BaseLayout
   title="AI Roadmap"
-  description="A free, open-source roadmap to learn AI from zero — 34 lessons from your first line of Python through machine learning and deep learning to shipping an LLM app. Read on the web or straight from GitHub."
+  description={`A free, open-source roadmap to learn AI from zero — ${total} lessons from your first line of Python through machine learning and deep learning to shipping an LLM app. Read on the web or straight from GitHub.`}
   keywords="AI roadmap for beginners, learn AI free, machine learning course, LLM roadmap"
   jsonLd={[courseSchema, faqSchema]}
   wide

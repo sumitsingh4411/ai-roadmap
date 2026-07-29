@@ -13,12 +13,23 @@ interface Props {
   keywords?: string;
   /** Page-specific schema.org JSON-LD object(s). */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** og:type — "website" (default) or "article" for content pages. */
+  ogType?: string;
+  /** Article metadata (lessons): the stage/section, tags, and publish date. */
+  articleSection?: string;
+  articleTags?: string[];
+  datePublished?: string;
 }
 
-const { title, description, wide = false, keywords, jsonLd } = Astro.props;
-const ogImage = 'https://sumitsingh4411.github.io/ai-roadmap/og.png';
+const {
+  title, description, wide = false, keywords, jsonLd,
+  ogType = 'website', articleSection, articleTags, datePublished,
+} = Astro.props;
+
+const ORIGIN = 'https://sumitsingh4411.github.io/ai-roadmap';
+const ogImage = `${ORIGIN}/og.png`;
 const fullTitle = title === 'AI Roadmap'
-  ? 'AI Roadmap — Learn AI from zero: 34 free lessons, Python to LLMs'
+  ? 'AI Roadmap — Learn AI from Zero: Free, Structured Path from Python to LLMs'
   : `${title} · AI Roadmap`;
 const canonical = new URL(Astro.url.pathname, Astro.site).toString();
 
@@ -26,25 +37,30 @@ const DEFAULT_KEYWORDS =
   'learn AI, AI roadmap, machine learning roadmap, how to learn AI, AI for beginners, ' +
   'learn machine learning, deep learning tutorial, LLM tutorial, generative AI course, ' +
   'python for AI, free AI course, AI study plan, neural networks tutorial, transformers explained, ' +
-  'RAG tutorial, PyTorch tutorial, data science roadmap';
+  'RAG tutorial, PyTorch tutorial, data science roadmap, reinforcement learning, diffusion models';
 const allKeywords = keywords ? `${keywords}, ${DEFAULT_KEYWORDS}` : DEFAULT_KEYWORDS;
 
-// Site-wide structured data. Google understands this site is a learning resource.
+// Site-wide structured data. The WebSite + Organization tell Google what this is
+// and who publishes it (used for article/rich-result attribution).
+const orgSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Organization',
+  name: 'AI Roadmap',
+  url: `${ORIGIN}/`,
+  logo: `${ORIGIN}/apple-touch-icon.png`,
+  sameAs: ['https://github.com/sumitsingh4411/ai-roadmap'],
+};
 const siteSchema = {
   '@context': 'https://schema.org',
   '@type': 'WebSite',
   name: 'AI Roadmap',
-  url: 'https://sumitsingh4411.github.io/ai-roadmap/',
+  url: `${ORIGIN}/`,
   description:
-    'A free, open-source roadmap to learn AI from zero — 34 lessons from your first line of Python to shipping an LLM app.',
+    'A free, open-source roadmap to learn AI from zero — lessons from your first line of Python to shipping an LLM app.',
   inLanguage: 'en',
-  potentialAction: {
-    '@type': 'SearchAction',
-    target: 'https://sumitsingh4411.github.io/ai-roadmap/?q={search_term_string}',
-    'query-input': 'required name=search_term_string',
-  },
+  publisher: { '@type': 'Organization', name: 'AI Roadmap', url: `${ORIGIN}/` },
 };
-const schemas = [siteSchema, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [])];
+const schemas = [siteSchema, orgSchema, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd : [jsonLd]) : [])];
 const hasSidebar = Astro.slots.has('sidebar');
 ---
 <!doctype html>
@@ -56,7 +72,7 @@ const hasSidebar = Astro.slots.has('sidebar');
     <meta name="description" content={description} />
     <meta name="keywords" content={allKeywords} />
     <meta name="author" content="AI Roadmap" />
-    <meta name="robots" content="index, follow" />
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
     <meta name="theme-color" content="#07070c" />
     <link rel="canonical" href={canonical} />
 
@@ -68,11 +84,15 @@ const hasSidebar = Astro.slots.has('sidebar');
     <!-- Open Graph -->
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content="AI Roadmap" />
     <meta property="og:locale" content="en_US" />
+    {ogType === 'article' && datePublished && <meta property="article:published_time" content={datePublished} />}
+    {ogType === 'article' && articleSection && <meta property="article:section" content={articleSection} />}
+    {ogType === 'article' && (articleTags ?? []).map((t) => <meta property="article:tag" content={t} />)}
     <meta property="og:image" content={ogImage} />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="AI Roadmap — learn AI from zero to shipping an LLM app" />

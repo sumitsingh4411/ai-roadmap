@@ -73,12 +73,20 @@ const itemListSchema = {
     lv.projects.map((pr, pi) => ({ '@type': 'ListItem', position: li * 10 + pi + 1, name: pr.title, url: `${SITE}/lessons/${pr.lesson}` })),
   ),
 };
+const breadcrumbSchema = {
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  itemListElement: [
+    { "@type": "ListItem", position: 1, name: "AI Roadmap", item: `${SITE}/` },
+    { "@type": "ListItem", position: 2, name: "Projects", item: `${SITE}/projects` },
+  ],
+};
 ---
 <BaseLayout
   title="Projects — build AI to learn it"
   description="Learn AI by building. Nearly 30 hands-on project ideas from beginner to advanced — Titanic, image classifiers, semantic search, RAG chatbots, fine-tuning, deploying models, and capstone builds — each mapped to the lesson it builds on."
   keywords="AI project ideas, machine learning projects for beginners, deep learning projects, LLM project ideas, AI portfolio projects, hands-on machine learning, build AI projects"
-  jsonLd={itemListSchema}
+  jsonLd={[itemListSchema, breadcrumbSchema]}
   wide
 >
   <header class="pj-head">

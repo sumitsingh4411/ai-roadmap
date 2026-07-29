@@ -59,8 +59,11 @@ const lessonSchema = [
     timeRequired: `PT${lesson.data.minutes}M`,
     inLanguage: 'en',
     isAccessibleForFree: true,
+    datePublished: '2026-07-24',
+    image: `${SITE}/og.png`,
     keywords: lesson.data.tags?.join(', '),
     isPartOf: { '@type': 'Course', name: 'AI Roadmap', url: `${SITE}/` },
+    publisher: { '@type': 'Organization', name: 'AI Roadmap', url: `${SITE}/` },
   },
   {
     '@context': 'https://schema.org',
@@ -78,6 +81,10 @@ const lessonSchema = [
   description={lesson.data.summary}
   keywords={lesson.data.tags?.join(', ')}
   jsonLd={lessonSchema}
+  ogType="article"
+  articleSection={stage?.name}
+  articleTags={lesson.data.tags}
+  datePublished="2026-07-24"
 >
   <Sidebar slot="sidebar" stages={stages} currentSlug={lesson.id} />
 

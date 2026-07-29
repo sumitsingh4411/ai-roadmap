@@ -24,6 +24,14 @@ const itemListSchema = {
     s.lessons.map((l, idx) => ({ '@type': 'ListItem', position: idx + 1, name: l.title, url: `${SITE}/lessons/${l.slug}` })),
   ),
 };
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'AI Roadmap', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Roadmap', item: `${SITE}/roadmap` },
+  ],
+};
 
 // Ordered stream: a stage marker, then its lessons, alternating sides.
 type Row =
@@ -42,9 +50,9 @@ for (const stage of stages) {
 ---
 <BaseLayout
   title="Roadmap"
-  description="The complete AI learning path as one interactive winding roadmap — 34 topics from Python to LLMs, in dependency order. Click any topic to jump straight into the lesson."
+  description={`The complete AI learning path as one interactive winding roadmap — ${total} topics from Python to LLMs, in dependency order. Click any topic to jump straight into the lesson.`}
   keywords="AI learning path, machine learning roadmap, AI topics list, what to learn for AI"
-  jsonLd={itemListSchema}
+  jsonLd={[itemListSchema, breadcrumbSchema]}
   wide
 >
   <header class="rm-head">
