@@ -76,7 +76,7 @@ out += `\n`;
 for (const stage of roadmap.stages) {
   const ls = ordered.filter((n) => n.stage === stage.id);
   if (!ls.length) continue;
-  out += `<details>\n<summary><b>${EMOJI[stage.id]} Stage ${stage.id} · ${stage.name}</b> &nbsp;—&nbsp; ${ls.length} lessons</summary>\n\n`;
+  out += `<details open>\n<summary><b>${EMOJI[stage.id]} Stage ${stage.id} · ${stage.name}</b> &nbsp;—&nbsp; ${ls.length} lessons</summary>\n\n`;
   out += `| # | Lesson | Time | Level | What you'll learn |\n|--:|---|--:|---|---|\n`;
   for (const n of ls) {
     const d = data(n.id);

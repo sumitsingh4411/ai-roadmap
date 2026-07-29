@@ -47,7 +47,7 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 | 🤖 **5 · Generative AI & LLMs** | How LLMs work, and how to build with them | 15 |
 | 🚀 **6 · Ship It** | Take a model off your laptop and ship it | 3 |
 
-<details>
+<details open>
 <summary><b>🧭 Stage 0 · Orientation</b> &nbsp;—&nbsp; 2 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
@@ -57,7 +57,7 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 
 </details>
 
-<details>
+<details open>
 <summary><b>🐍 Stage 1 · Python & Data</b> &nbsp;—&nbsp; 5 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
@@ -70,7 +70,7 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 
 </details>
 
-<details>
+<details open>
 <summary><b>📐 Stage 2 · Math You Actually Need</b> &nbsp;—&nbsp; 3 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
@@ -81,7 +81,7 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 
 </details>
 
-<details>
+<details open>
 <summary><b>🌳 Stage 3 · Classical ML</b> &nbsp;—&nbsp; 10 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
@@ -99,7 +99,7 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 
 </details>
 
-<details>
+<details open>
 <summary><b>🧠 Stage 4 · Deep Learning</b> &nbsp;—&nbsp; 7 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
@@ -114,7 +114,7 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 
 </details>
 
-<details>
+<details open>
 <summary><b>🤖 Stage 5 · Generative AI & LLMs</b> &nbsp;—&nbsp; 15 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
@@ -137,7 +137,7 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 
 </details>
 
-<details>
+<details open>
 <summary><b>🚀 Stage 6 · Ship It</b> &nbsp;—&nbsp; 3 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
