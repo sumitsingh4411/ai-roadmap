@@ -5,11 +5,12 @@
   "engines": { "node": ">=22.12.0" },
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "npm run validate && npm run gen:curriculum && npm run gen:search && npm run gen:sitemap",
+    "prebuild": "npm run validate && npm run gen:curriculum && npm run gen:readme && npm run gen:search && npm run gen:sitemap",
     "build": "astro build",
     "preview": "astro preview",
     "validate": "tsx scripts/validate-content.ts",
     "gen:curriculum": "tsx scripts/generate-curriculum.ts",
+    "gen:readme": "tsx scripts/generate-readme.ts",
     "gen:search": "tsx scripts/build-search-index.ts",
     "gen:sitemap": "tsx scripts/build-sitemap.ts",
     "test": "vitest run",

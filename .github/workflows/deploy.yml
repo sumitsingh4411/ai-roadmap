@@ -30,10 +30,11 @@ jobs:
       - name: Validate content
         run: npm run validate -- --strict
 
-      - name: Check CURRICULUM.md is up to date
+      - name: Check generated docs are up to date
         run: |
           npm run gen:curriculum
-          git diff --exit-code CURRICULUM.md
+          npm run gen:readme
+          git diff --exit-code CURRICULUM.md README.md
 
       - name: Run tests
         run: npm test
