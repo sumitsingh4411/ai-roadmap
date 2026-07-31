@@ -1,0 +1,227 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '../lib/url';
+
+const SITE = 'https://sumitsingh4411.github.io/ai-roadmap';
+
+interface Row { code: string; note: string; }
+interface Sheet { icon: string; hue: string; title: string; blurb: string; lesson?: string; rows: Row[]; }
+
+const sheets: Sheet[] = [
+  {
+    icon: '🐍', hue: '#facc15', title: 'Python essentials', lesson: 'python-basics',
+    blurb: 'The 20% of syntax you use 80% of the time.',
+    rows: [
+      { code: "xs = [1, 2, 3]", note: 'List — ordered, mutable' },
+      { code: "[x * 2 for x in xs if x > 1]", note: 'List comprehension (filter + map)' },
+      { code: "d = {'a': 1}; d.get('b', 0)", note: 'Dict lookup with default' },
+      { code: "for i, v in enumerate(xs):", note: 'Index + value together' },
+      { code: "for a, b in zip(xs, ys):", note: 'Iterate two lists in lockstep' },
+      { code: "def f(x, *args, **kwargs):", note: 'Variadic positional + keyword args' },
+      { code: "f = lambda x: x + 1", note: 'Anonymous one-line function' },
+      { code: "with open('f.txt') as fh:", note: 'Auto-closes the file' },
+      { code: "sorted(xs, key=lambda x: -x)", note: 'Sort by a custom key' },
+      { code: "from collections import Counter", note: 'Counter, defaultdict, deque' },
+    ],
+  },
+  {
+    icon: '🔢', hue: '#22d3ee', title: 'NumPy', lesson: 'numpy',
+    blurb: 'Vectorised arrays — the base of everything numeric.',
+    rows: [
+      { code: "import numpy as np", note: 'The universal import' },
+      { code: "a = np.array([[1, 2], [3, 4]])", note: '2×2 array' },
+      { code: "np.zeros((3, 4)), np.ones(5)", note: 'Filled arrays' },
+      { code: "np.arange(0, 1, 0.1)", note: 'Range with a step' },
+      { code: "np.linspace(0, 1, 11)", note: '11 evenly spaced points' },
+      { code: "a.shape, a.dtype, a.reshape(4)", note: 'Inspect & reshape' },
+      { code: "a @ b", note: 'Matrix multiply' },
+      { code: "a.sum(axis=0), a.mean(axis=1)", note: 'Reduce along an axis' },
+      { code: "a[a > 2]", note: 'Boolean mask select' },
+      { code: "np.random.seed(0)", note: 'Reproducible randomness' },
+    ],
+  },
+  {
+    icon: '🐼', hue: '#a78bfa', title: 'pandas', lesson: 'pandas',
+    blurb: 'Load, clean, and slice tabular data.',
+    rows: [
+      { code: "df = pd.read_csv('data.csv')", note: 'Load a CSV' },
+      { code: "df.head(), df.info(), df.describe()", note: 'First look at any dataset' },
+      { code: "df['col'], df[['a', 'b']]", note: 'Select column(s)' },
+      { code: "df.loc[rows, cols]", note: 'Label-based indexing' },
+      { code: "df.iloc[0:5, 0:2]", note: 'Position-based indexing' },
+      { code: "df[df['age'] > 30]", note: 'Filter rows by condition' },
+      { code: "df.groupby('city')['sales'].mean()", note: 'Split-apply-combine' },
+      { code: "df.isna().sum()", note: 'Count missing per column' },
+      { code: "df.fillna(0), df.dropna()", note: 'Handle missing values' },
+      { code: "df.merge(other, on='id')", note: 'SQL-style join' },
+    ],
+  },
+  {
+    icon: '🤖', hue: '#2dd4bf', title: 'scikit-learn', lesson: 'ml-fundamentals',
+    blurb: 'The same fit/predict shape for every classic model.',
+    rows: [
+      { code: "from sklearn.model_selection import train_test_split", note: 'Split first — always' },
+      { code: "X_tr, X_te, y_tr, y_te = train_test_split(X, y, test_size=0.2, stratify=y)", note: 'Held-out test set' },
+      { code: "from sklearn.ensemble import RandomForestClassifier", note: 'A strong default model' },
+      { code: "model.fit(X_tr, y_tr)", note: 'Train' },
+      { code: "preds = model.predict(X_te)", note: 'Predict' },
+      { code: "model.predict_proba(X_te)", note: 'Class probabilities' },
+      { code: "from sklearn.metrics import classification_report", note: 'Precision/recall/F1 at once' },
+      { code: "from sklearn.preprocessing import StandardScaler", note: 'Fit on train only' },
+      { code: "from sklearn.pipeline import make_pipeline", note: 'Bundle transforms + model' },
+      { code: "cross_val_score(model, X, y, cv=5)", note: '5-fold cross-validation' },
+    ],
+  },
+  {
+    icon: '🔥', hue: '#fb7185', title: 'PyTorch', lesson: 'pytorch',
+    blurb: 'The training loop that every deep-learning project shares.',
+    rows: [
+      { code: "import torch, torch.nn as nn", note: 'Core imports' },
+      { code: "x = torch.tensor([1., 2.], requires_grad=True)", note: 'Autograd tensor' },
+      { code: "device = 'cuda' if torch.cuda.is_available() else 'cpu'", note: 'Pick GPU if present' },
+      { code: "model = nn.Sequential(nn.Linear(4, 16), nn.ReLU(), nn.Linear(16, 3))", note: 'A small MLP' },
+      { code: "loss_fn = nn.CrossEntropyLoss()", note: 'Classification loss' },
+      { code: "opt = torch.optim.Adam(model.parameters(), lr=1e-3)", note: 'Optimiser' },
+      { code: "opt.zero_grad()", note: '1 · clear old gradients' },
+      { code: "loss = loss_fn(model(xb), yb); loss.backward()", note: '2 · forward + backprop' },
+      { code: "opt.step()", note: '3 · update weights' },
+      { code: "with torch.no_grad(): model.eval()", note: 'Inference mode' },
+    ],
+  },
+  {
+    icon: '💬', hue: '#818cf8', title: 'Prompt engineering', lesson: 'prompt-engineering',
+    blurb: 'Patterns that reliably get better LLM output.',
+    rows: [
+      { code: "Role: 'You are an expert X…'", note: 'Set the persona & context' },
+      { code: "Be specific: format, length, audience", note: 'Vague in → vague out' },
+      { code: "Give 2–3 examples (few-shot)", note: 'Show the pattern you want' },
+      { code: "'Think step by step.'", note: 'Chain-of-thought for reasoning' },
+      { code: "Return JSON: {\"answer\": …}", note: 'Constrain the output shape' },
+      { code: "Ground it: 'Using only the text below…'", note: 'Reduce hallucination (RAG)' },
+      { code: "'If unsure, say you don't know.'", note: 'Permission to abstain' },
+      { code: "Lower temperature for facts, raise for ideas", note: 'Control randomness' },
+      { code: "Delimit input with ``` or <tags>", note: 'Separate instructions from data' },
+      { code: "Iterate: test, tweak, keep an eval set", note: 'Prompting is empirical' },
+    ],
+  },
+  {
+    icon: '📐', hue: '#38bdf8', title: 'ML concepts', lesson: 'model-evaluation',
+    blurb: 'The definitions interviewers expect you to know cold.',
+    rows: [
+      { code: "Supervised vs unsupervised", note: 'Labelled targets vs finding structure' },
+      { code: "Overfitting", note: 'Great on train, bad on new data' },
+      { code: "Bias–variance", note: 'Too simple vs too sensitive to noise' },
+      { code: "Precision", note: 'Of flagged, how many were right' },
+      { code: "Recall", note: 'Of the real positives, how many caught' },
+      { code: "F1", note: 'Harmonic mean of precision & recall' },
+      { code: "Regularization (L1/L2)", note: 'Penalise big weights → less overfit' },
+      { code: "Gradient descent", note: 'Step downhill on the loss' },
+      { code: "Embedding", note: 'Meaning as a vector; near = similar' },
+      { code: "RAG", note: 'Retrieve facts, then let the LLM answer' },
+    ],
+  },
+  {
+    icon: '🐙', hue: '#94a3b8', title: 'Git & environments', lesson: 'python-basics',
+    blurb: 'Ship your work — the commands you actually type.',
+    rows: [
+      { code: "python -m venv .venv && source .venv/bin/activate", note: 'Isolated environment' },
+      { code: "pip install numpy pandas scikit-learn", note: 'Install packages' },
+      { code: "pip freeze > requirements.txt", note: 'Pin your deps' },
+      { code: "git init && git add . && git commit -m 'init'", note: 'Start a repo' },
+      { code: "git checkout -b feature", note: 'Work on a branch' },
+      { code: "git status, git diff, git log --oneline", note: 'See what changed' },
+      { code: "git push -u origin feature", note: 'Publish the branch' },
+      { code: "jupyter notebook", note: 'Interactive exploration' },
+      { code: "%matplotlib inline", note: 'Show plots in notebooks' },
+      { code: ".gitignore: .venv/ __pycache__/ *.ipynb_checkpoints", note: 'Keep junk out of git' },
+    ],
+  },
+];
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'AI Roadmap', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Cheat Sheets', item: `${SITE}/cheatsheets` },
+  ],
+};
+---
+<BaseLayout
+  title="AI & ML Cheat Sheets"
+  description="Quick-reference cheat sheets for Python, NumPy, pandas, scikit-learn, PyTorch, prompt engineering, ML concepts, and Git — the commands and definitions you actually use, on one page. Free."
+  keywords="python cheat sheet, numpy cheat sheet, pandas cheat sheet, scikit-learn cheat sheet, pytorch cheat sheet, machine learning cheat sheet, prompt engineering cheat sheet, AI cheat sheet"
+  jsonLd={[breadcrumbSchema]}
+  wide
+>
+  <header class="cs-head">
+    <p class="cs-eyebrow">Cheat sheets</p>
+    <h1><span class="grad">Everything you keep looking up</span>, on one page</h1>
+    <p class="cs-sub">
+      Fast reference for the tools and terms you use every day — Python, NumPy, pandas, scikit-learn,
+      PyTorch, prompting, and the ML concepts interviewers ask about. Bookmark it. Each sheet links to
+      the lesson that teaches it in full.
+    </p>
+    <div class="cs-toc">
+      {sheets.map((s) => <a href={`#${s.title.toLowerCase().replace(/[^a-z]+/g, '-')}`}>{s.icon} {s.title}</a>)}
+    </div>
+  </header>
+
+  <div class="cs-grid">
+    {sheets.map((s) => (
+      <section class="cs-card" id={s.title.toLowerCase().replace(/[^a-z]+/g, '-')} style={`--hue:${s.hue}`}>
+        <div class="cs-card-head">
+          <span class="cs-icon" aria-hidden="true">{s.icon}</span>
+          <div>
+            <h2>{s.title}</h2>
+            <p class="cs-blurb">{s.blurb}</p>
+          </div>
+        </div>
+        <dl class="cs-rows">
+          {s.rows.map((r) => (
+            <div class="cs-row">
+              <dt><code>{r.code}</code></dt>
+              <dd>{r.note}</dd>
+            </div>
+          ))}
+        </dl>
+        {s.lesson && <a class="cs-lesson" href={href(`/lessons/${s.lesson}`)}>Full lesson →</a>}
+      </section>
+    ))}
+  </div>
+
+  <p class="cs-foot">
+    These are the highlights — the real understanding is in the
+    <a href={href('/roadmap')}>lessons</a>. Prepping for interviews? Pair this with the
+    <a href={href('/interview')}>interview questions</a>.
+  </p>
+</BaseLayout>
+
+<style>
+  .cs-head { border-bottom: 1px solid var(--border); margin: 0 auto 2.5rem; max-width: 66ch; padding-bottom: 2rem; text-align: center; }
+  .cs-eyebrow { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; margin: 0 0 0.6rem; text-transform: uppercase; }
+  .cs-head h1 { font-size: clamp(1.9rem, 5vw, 3rem); letter-spacing: -0.03em; line-height: 1.08; margin: 0; }
+  .grad { background: linear-gradient(100deg, var(--violet-400), var(--cyan-300)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .cs-sub { color: var(--text-muted); font-size: 1.02rem; margin: 1rem auto 1.4rem; max-width: 60ch; }
+  .cs-toc { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .cs-toc a { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; color: var(--text-muted); font-size: 0.78rem; padding: 0.3rem 0.75rem; text-decoration: none; }
+  .cs-toc a:hover { border-color: var(--border-bright); color: var(--text); }
+
+  .cs-grid { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); }
+  .cs-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); border-top: 3px solid var(--hue); display: flex; flex-direction: column; padding: 1.25rem 1.35rem 1.1rem; scroll-margin-top: 1.5rem; }
+  .cs-card-head { align-items: flex-start; display: flex; gap: 0.7rem; margin-bottom: 1rem; }
+  .cs-icon { align-items: center; background: color-mix(in srgb, var(--hue) 16%, transparent); border: 1px solid color-mix(in srgb, var(--hue) 40%, var(--border)); border-radius: 10px; display: inline-flex; flex: none; font-size: 1.1rem; height: 40px; justify-content: center; width: 40px; }
+  .cs-card h2 { font-size: 1.15rem; letter-spacing: -0.02em; margin: 0.1rem 0 0.2rem; }
+  .cs-blurb { color: var(--text-muted); font-size: 0.85rem; margin: 0; }
+  .cs-rows { display: flex; flex-direction: column; gap: 0; margin: 0; }
+  .cs-row { border-top: 1px solid var(--border); display: flex; flex-direction: column; gap: 0.15rem; padding: 0.55rem 0; }
+  .cs-row dt { min-width: 0; }
+  .cs-row code { color: var(--text); display: block; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.45; overflow-x: auto; white-space: pre; }
+  .cs-row dd { color: var(--text-muted); font-size: 0.82rem; margin: 0; }
+  .cs-lesson { color: var(--hue); font-size: 0.85rem; font-weight: 600; margin-top: 1rem; text-decoration: none; }
+  .cs-lesson:hover { text-decoration: underline; }
+
+  .cs-foot { border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; margin: 3rem auto 0; max-width: 52rem; padding-top: 1.5rem; text-align: center; }
+  .cs-foot a { color: var(--accent-2); text-decoration: none; }
+  .cs-foot a:hover { text-decoration: underline; }
+</style>

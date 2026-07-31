@@ -11,6 +11,8 @@ function buildSitemap(): string {
     { loc: `${SITE}/`, priority: '1.0', changefreq: 'weekly' },
     { loc: `${SITE}/roadmap`, priority: '0.9', changefreq: 'weekly' },
     { loc: `${SITE}/projects`, priority: '0.8', changefreq: 'monthly' },
+    { loc: `${SITE}/interview`, priority: '0.9', changefreq: 'monthly' },
+    { loc: `${SITE}/cheatsheets`, priority: '0.9', changefreq: 'monthly' },
     { loc: `${SITE}/advanced`, priority: '0.8', changefreq: 'monthly' },
     ...slugs.map((slug) => ({ loc: `${SITE}/lessons/${slug}`, priority: '0.8', changefreq: 'monthly' })),
   ];

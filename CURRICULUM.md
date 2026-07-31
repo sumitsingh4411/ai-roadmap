@@ -3,7 +3,7 @@
 
 # Curriculum
 
-**45 lessons** · roughly 38 hours of reading ·
+**50 lessons** · roughly 42 hours of reading ·
 free and open source.
 
 Work top to bottom. Each lesson lists what it assumes you already know, so if
@@ -49,6 +49,7 @@ you are ready.
 | 17 | [First ML Project](content/lessons/17-first-ml-project.md) | 90 min | intermediate | A full guided ML pipeline end to end: problem framing, EDA, cleaning, features, baseline, iteration, evaluation, and writing up results. |
 | 37 | [Explainable AI — Opening the Black Box](content/lessons/37-explainable-ai.md) | 45 min | intermediate | Why a model made a prediction — feature importance, permutation importance, and reading a model you can't see inside. |
 | 38 | [Time-Series Forecasting](content/lessons/38-time-series.md) | 50 min | intermediate | Predicting what happens next — why time data breaks normal ML, lag features, a proper time-aware split, and honest baselines. |
+| 45 | [Recommender Systems](content/lessons/45-recommender-systems.md) | 45 min | intermediate | The engine behind every 'you might also like' — content-based vs collaborative filtering, similarity, and the cold-start problem. |
 
 ## Stage 4 · Deep Learning
 
@@ -61,6 +62,8 @@ you are ready.
 | 22 | [Sequence Models](content/lessons/22-sequence-models.md) | 50 min | advanced | Why order matters, how RNNs process sequences step by step, the vanishing gradient problem, LSTM/GRU, and why attention replaced them. |
 | 23 | [Transformers](content/lessons/23-transformers.md) | 70 min | advanced | Attention as a learned lookup over query, key and value, self-attention and multi-head attention, positional encoding, and the encoder/decoder split. |
 | 39 | [Reinforcement Learning](content/lessons/39-reinforcement-learning.md) | 55 min | advanced | Learning from reward instead of labels — agents, states, actions, rewards, and Q-learning taught by making an agent solve a tiny grid world. |
+| 46 | [Object Detection & Segmentation](content/lessons/46-object-detection.md) | 50 min | advanced | Beyond 'what's in this image?' to 'what's where?' — bounding boxes, IoU, non-max suppression, and how YOLO detects in real time. |
+| 47 | [Generative Adversarial Networks (GANs)](content/lessons/47-gans.md) | 50 min | advanced | Two networks in a duel — a generator faking data and a discriminator catching fakes — and how that adversarial game learns to create. |
 
 ## Stage 5 · Generative AI & LLMs
 
@@ -81,6 +84,8 @@ you are ready.
 | 42 | [Structured Outputs & Function Calling](content/lessons/42-structured-outputs.md) | 45 min | intermediate | Getting reliable JSON out of an LLM — schemas, validation, function/tool calling, and what to do when the model returns something wrong. |
 | 43 | [Model Context Protocol (MCP)](content/lessons/43-model-context-protocol.md) | 45 min | advanced | The USB-C of AI tools — a standard protocol that lets any agent connect to any tool or data source without custom glue for each one. |
 | 44 | [AI Ethics & Responsible AI](content/lessons/44-ai-ethics.md) | 45 min | intermediate | Building AI that doesn't cause harm — bias and fairness, privacy, transparency, misuse, and the responsibility that comes with shipping models. |
+| 48 | [Speech & Audio AI](content/lessons/48-speech-audio.md) | 45 min | intermediate | How machines hear — turning sound into spectrograms, speech-to-text with Whisper, and text-to-speech, from waveform to model input. |
+| 49 | [Multimodal AI (CLIP & Vision-Language Models)](content/lessons/49-multimodal.md) | 50 min | advanced | One model, many senses — how CLIP puts images and text in the same space, enabling zero-shot classification and image search. |
 
 ## Stage 6 · Ship It
 

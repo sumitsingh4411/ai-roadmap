@@ -4,11 +4,11 @@
 
 # 🧠 AI Roadmap
 
-### Learn AI from zero — 45 free, hands-on lessons from your first line of Python to shipping an LLM app.
+### Learn AI from zero — 50 free, hands-on lessons from your first line of Python to shipping an LLM app.
 
-[![Deploy](https://github.com/sumitsingh4411/ai-roadmap/actions/workflows/deploy.yml/badge.svg)](https://github.com/sumitsingh4411/ai-roadmap/actions/workflows/deploy.yml) ![lessons](https://img.shields.io/badge/lessons-45-8b5cf6?style=flat-square) ![reading](https://img.shields.io/badge/reading-~38h-22d3ee?style=flat-square) ![stages](https://img.shields.io/badge/stages-7-38bdf8?style=flat-square) ![license](https://img.shields.io/badge/license-MIT%20%C2%B7%20CC%20BY%204.0-2dd4bf?style=flat-square) ![PRs](https://img.shields.io/badge/PRs-welcome-fb7185?style=flat-square)
+[![Deploy](https://github.com/sumitsingh4411/ai-roadmap/actions/workflows/deploy.yml/badge.svg)](https://github.com/sumitsingh4411/ai-roadmap/actions/workflows/deploy.yml) ![lessons](https://img.shields.io/badge/lessons-50-8b5cf6?style=flat-square) ![reading](https://img.shields.io/badge/reading-~42h-22d3ee?style=flat-square) ![stages](https://img.shields.io/badge/stages-7-38bdf8?style=flat-square) ![license](https://img.shields.io/badge/license-MIT%20%C2%B7%20CC%20BY%204.0-2dd4bf?style=flat-square) ![PRs](https://img.shields.io/badge/PRs-welcome-fb7185?style=flat-square)
 
-**[🌐 Open the site](https://sumitsingh4411.github.io/ai-roadmap)** &nbsp;·&nbsp; **[▶️ Start lesson 1](https://sumitsingh4411.github.io/ai-roadmap/lessons/what-is-ai)** &nbsp;·&nbsp; **[🗺️ Roadmap](https://sumitsingh4411.github.io/ai-roadmap/roadmap)** &nbsp;·&nbsp; **[🛠️ Projects](https://sumitsingh4411.github.io/ai-roadmap/projects)** &nbsp;·&nbsp; **[🎯 What's next](https://sumitsingh4411.github.io/ai-roadmap/advanced)**
+**[🌐 Open the site](https://sumitsingh4411.github.io/ai-roadmap)** &nbsp;·&nbsp; **[▶️ Start lesson 1](https://sumitsingh4411.github.io/ai-roadmap/lessons/what-is-ai)** &nbsp;·&nbsp; **[🗺️ Roadmap](https://sumitsingh4411.github.io/ai-roadmap/roadmap)** &nbsp;·&nbsp; **[🛠️ Projects](https://sumitsingh4411.github.io/ai-roadmap/projects)** &nbsp;·&nbsp; **[💬 Interview prep](https://sumitsingh4411.github.io/ai-roadmap/interview)** &nbsp;·&nbsp; **[📑 Cheat sheets](https://sumitsingh4411.github.io/ai-roadmap/cheatsheets)** &nbsp;·&nbsp; **[🎯 What's next](https://sumitsingh4411.github.io/ai-roadmap/advanced)**
 
 </div>
 
@@ -35,16 +35,44 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 
 ## 🗺️ The curriculum
 
-**45 lessons · 7 stages · ~38 hours.** Click any lesson to read it right here on GitHub.
+**50 lessons · 7 stages · ~42 hours.** Seven stages, each building on the last:
+
+```mermaid
+flowchart LR
+    S0["🧭 Orientation<br/><small>2 lessons</small>"]
+    S1["🐍 Python & Data<br/><small>5 lessons</small>"]
+    S2["📐 Math You Actually Need<br/><small>3 lessons</small>"]
+    S3["🌳 Classical ML<br/><small>11 lessons</small>"]
+    S4["🧠 Deep Learning<br/><small>9 lessons</small>"]
+    S5["🤖 Generative AI & LLMs<br/><small>17 lessons</small>"]
+    S6["🚀 Ship It<br/><small>3 lessons</small>"]
+    S0 --> S1 --> S2 --> S3 --> S4 --> S5 --> S6
+    class S0 s0;
+    class S1 s1;
+    class S2 s2;
+    class S3 s3;
+    class S4 s4;
+    class S5 s5;
+    class S6 s6;
+    classDef s0 fill:#8b5cf622,stroke:#8b5cf6,stroke-width:2px,color:#e5e7eb;
+    classDef s1 fill:#6366f122,stroke:#6366f1,stroke-width:2px,color:#e5e7eb;
+    classDef s2 fill:#38bdf822,stroke:#38bdf8,stroke-width:2px,color:#e5e7eb;
+    classDef s3 fill:#22d3ee22,stroke:#22d3ee,stroke-width:2px,color:#e5e7eb;
+    classDef s4 fill:#2dd4bf22,stroke:#2dd4bf,stroke-width:2px,color:#e5e7eb;
+    classDef s5 fill:#f59e0b22,stroke:#f59e0b,stroke-width:2px,color:#e5e7eb;
+    classDef s6 fill:#fb718522,stroke:#fb7185,stroke-width:2px,color:#e5e7eb;
+```
+
+Click any lesson to read it right here on GitHub.
 
 | Stage | Focus | Lessons |
 |---|---|:--:|
 | 🧭 **0 · Orientation** | Get your bearings before writing code | 2 |
 | 🐍 **1 · Python & Data** | The everyday tools — Python, NumPy, pandas, plots | 5 |
 | 📐 **2 · Math You Actually Need** | Just enough linear algebra, calculus & statistics | 3 |
-| 🌳 **3 · Classical ML** | How machines learn from tables — regression to ensembles | 10 |
-| 🧠 **4 · Deep Learning** | Neural networks, from one neuron to the transformer | 7 |
-| 🤖 **5 · Generative AI & LLMs** | How LLMs work, and how to build with them | 15 |
+| 🌳 **3 · Classical ML** | How machines learn from tables — regression to ensembles | 11 |
+| 🧠 **4 · Deep Learning** | Neural networks, from one neuron to the transformer | 9 |
+| 🤖 **5 · Generative AI & LLMs** | How LLMs work, and how to build with them | 17 |
 | 🚀 **6 · Ship It** | Take a model off your laptop and ship it | 3 |
 
 <details open>
@@ -82,7 +110,7 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 </details>
 
 <details open>
-<summary><b>🌳 Stage 3 · Classical ML</b> &nbsp;—&nbsp; 10 lessons</summary>
+<summary><b>🌳 Stage 3 · Classical ML</b> &nbsp;—&nbsp; 11 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
 |--:|---|--:|---|---|
@@ -96,11 +124,12 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 | `17` | **[First ML Project](content/lessons/17-first-ml-project.md)** | 90m | intermediate | A full guided ML pipeline end to end: problem framing, EDA, cleaning, features, baseline, iteration, evaluation, and writing up results. |
 | `37` | **[Explainable AI — Opening the Black Box](content/lessons/37-explainable-ai.md)** | 45m | intermediate | Why a model made a prediction — feature importance, permutation importance, and reading a model you can't see inside. |
 | `38` | **[Time-Series Forecasting](content/lessons/38-time-series.md)** | 50m | intermediate | Predicting what happens next — why time data breaks normal ML, lag features, a proper time-aware split, and honest baselines. |
+| `45` | **[Recommender Systems](content/lessons/45-recommender-systems.md)** | 45m | intermediate | The engine behind every 'you might also like' — content-based vs collaborative filtering, similarity, and the cold-start problem. |
 
 </details>
 
 <details open>
-<summary><b>🧠 Stage 4 · Deep Learning</b> &nbsp;—&nbsp; 7 lessons</summary>
+<summary><b>🧠 Stage 4 · Deep Learning</b> &nbsp;—&nbsp; 9 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
 |--:|---|--:|---|---|
@@ -111,11 +140,13 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 | `22` | **[Sequence Models](content/lessons/22-sequence-models.md)** | 50m | advanced | Why order matters, how RNNs process sequences step by step, the vanishing gradient problem, LSTM/GRU, and why attention replaced them. |
 | `23` | **[Transformers](content/lessons/23-transformers.md)** | 70m | advanced | Attention as a learned lookup over query, key and value, self-attention and multi-head attention, positional encoding, and the encoder/decoder split. |
 | `39` | **[Reinforcement Learning](content/lessons/39-reinforcement-learning.md)** | 55m | advanced | Learning from reward instead of labels — agents, states, actions, rewards, and Q-learning taught by making an agent solve a tiny grid world. |
+| `46` | **[Object Detection & Segmentation](content/lessons/46-object-detection.md)** | 50m | advanced | Beyond 'what's in this image?' to 'what's where?' — bounding boxes, IoU, non-max suppression, and how YOLO detects in real time. |
+| `47` | **[Generative Adversarial Networks (GANs)](content/lessons/47-gans.md)** | 50m | advanced | Two networks in a duel — a generator faking data and a discriminator catching fakes — and how that adversarial game learns to create. |
 
 </details>
 
 <details open>
-<summary><b>🤖 Stage 5 · Generative AI & LLMs</b> &nbsp;—&nbsp; 15 lessons</summary>
+<summary><b>🤖 Stage 5 · Generative AI & LLMs</b> &nbsp;—&nbsp; 17 lessons</summary>
 
 | # | Lesson | Time | Level | What you'll learn |
 |--:|---|--:|---|---|
@@ -134,6 +165,8 @@ Most people learning AI drown in scattered tutorials with no order and no idea w
 | `42` | **[Structured Outputs & Function Calling](content/lessons/42-structured-outputs.md)** | 45m | intermediate | Getting reliable JSON out of an LLM — schemas, validation, function/tool calling, and what to do when the model returns something wrong. |
 | `43` | **[Model Context Protocol (MCP)](content/lessons/43-model-context-protocol.md)** | 45m | advanced | The USB-C of AI tools — a standard protocol that lets any agent connect to any tool or data source without custom glue for each one. |
 | `44` | **[AI Ethics & Responsible AI](content/lessons/44-ai-ethics.md)** | 45m | intermediate | Building AI that doesn't cause harm — bias and fairness, privacy, transparency, misuse, and the responsibility that comes with shipping models. |
+| `48` | **[Speech & Audio AI](content/lessons/48-speech-audio.md)** | 45m | intermediate | How machines hear — turning sound into spectrograms, speech-to-text with Whisper, and text-to-speech, from waveform to model input. |
+| `49` | **[Multimodal AI (CLIP & Vision-Language Models)](content/lessons/49-multimodal.md)** | 50m | advanced | One model, many senses — how CLIP puts images and text in the same space, enabling zero-shot classification and image search. |
 
 </details>
 
@@ -159,6 +192,13 @@ You learn AI by making things. The **[Projects page](https://sumitsingh4411.gith
 - 🟥 **Advanced / GenAI** — a RAG chatbot over your docs, LoRA fine-tuning, an AI agent, reproduce nanoGPT.
 - 🟨 **Capstone** — a full-stack AI product, a Kaggle competition, reproduce a paper, an open-source contribution.
 
+## 💬 Interview prep & cheat sheets
+
+Two extras to get you job-ready and keep you fast:
+
+- **[Interview questions](https://sumitsingh4411.github.io/ai-roadmap/interview)** — the ML, deep-learning, LLM, and system-design questions that actually come up, each with a clear answer and a link to the lesson that teaches it.
+- **[Cheat sheets](https://sumitsingh4411.github.io/ai-roadmap/cheatsheets)** — one-page quick reference for Python, NumPy, pandas, scikit-learn, PyTorch, prompting, and the core ML concepts. Bookmark it.
+
 ## 🎯 After the roadmap
 
 Finished? The **[What's next page](https://sumitsingh4411.github.io/ai-roadmap/advanced)** is a curated guide to going further — specializing (computer vision, RL, diffusion, LLMs from scratch), practicing on Kaggle, free courses & books, communities, MLOps, and turning it all into a career. Every resource is free.
@@ -168,7 +208,7 @@ Finished? The **[What's next page](https://sumitsingh4411.github.io/ai-roadmap/a
 - **Run every code sample.** Don't just read it — type it, break it, change the numbers. That's where the learning is.
 - **Do the "Build this" exercise** at the end of each lesson before moving on.
 - **Ship 3 projects** as you go (a data project, a deep-learning project, an LLM app). A public repo beats any certificate.
-- **A few focused hours a week beats cramming** — the whole path is ~38 hours of reading.
+- **A few focused hours a week beats cramming** — the whole path is ~42 hours of reading.
 
 ## 🧑‍💻 Built with
 

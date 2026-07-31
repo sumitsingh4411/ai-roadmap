@@ -32,6 +32,7 @@
     { "id": "first-ml-project",    "lesson": "17-first-ml-project",    "stage": 3, "grid": { "x": 7, "y": 3 }, "prerequisites": ["feature-engineering", "trees-ensembles", "data-visualization", "real-datasets"] },
     { "id": "explainable-ai",      "lesson": "37-explainable-ai",      "stage": 3, "grid": { "x": 8, "y": 3 }, "prerequisites": ["model-evaluation"] },
     { "id": "time-series",         "lesson": "38-time-series",         "stage": 3, "grid": { "x": 9, "y": 3 }, "prerequisites": ["feature-engineering"] },
+    { "id": "recommender-systems", "lesson": "45-recommender-systems", "stage": 3, "grid": { "x": 10, "y": 3 }, "prerequisites": ["clustering-pca"] },
 
     { "id": "neural-networks",     "lesson": "18-neural-networks",     "stage": 4, "grid": { "x": 0, "y": 4 }, "prerequisites": ["first-ml-project", "calculus"] },
     { "id": "backprop-training",   "lesson": "19-backprop-training",   "stage": 4, "grid": { "x": 1, "y": 4 }, "prerequisites": ["neural-networks"] },
@@ -40,6 +41,8 @@
     { "id": "sequence-models",     "lesson": "22-sequence-models",     "stage": 4, "grid": { "x": 4, "y": 4 }, "prerequisites": ["pytorch"] },
     { "id": "transformers",        "lesson": "23-transformers",        "stage": 4, "grid": { "x": 5, "y": 4 }, "prerequisites": ["sequence-models"] },
     { "id": "reinforcement-learning", "lesson": "39-reinforcement-learning", "stage": 4, "grid": { "x": 6, "y": 4 }, "prerequisites": ["pytorch"] },
+    { "id": "object-detection",    "lesson": "46-object-detection",    "stage": 4, "grid": { "x": 7, "y": 4 }, "prerequisites": ["cnns-vision"] },
+    { "id": "gans",                "lesson": "47-gans",                "stage": 4, "grid": { "x": 8, "y": 4 }, "prerequisites": ["neural-networks"] },
 
     { "id": "how-llms-work",       "lesson": "24-how-llms-work",       "stage": 5, "grid": { "x": 0, "y": 5 }, "prerequisites": ["transformers"] },
     { "id": "prompt-engineering",  "lesson": "25-prompt-engineering",  "stage": 5, "grid": { "x": 1, "y": 5 }, "prerequisites": ["how-llms-work"] },
@@ -56,6 +59,8 @@
     { "id": "structured-outputs",  "lesson": "42-structured-outputs",  "stage": 5, "grid": { "x": 12, "y": 5 }, "prerequisites": ["prompt-engineering"] },
     { "id": "model-context-protocol", "lesson": "43-model-context-protocol", "stage": 5, "grid": { "x": 13, "y": 5 }, "prerequisites": ["agent-harness"] },
     { "id": "ai-ethics",           "lesson": "44-ai-ethics",           "stage": 5, "grid": { "x": 14, "y": 5 }, "prerequisites": ["evals-guardrails"] },
+    { "id": "speech-audio",        "lesson": "48-speech-audio",        "stage": 5, "grid": { "x": 15, "y": 5 }, "prerequisites": ["transformers"] },
+    { "id": "multimodal",          "lesson": "49-multimodal",          "stage": 5, "grid": { "x": 16, "y": 5 }, "prerequisites": ["transformers"] },
 
     { "id": "mlops-basics",        "lesson": "31-mlops-basics",        "stage": 6, "grid": { "x": 0, "y": 6 }, "prerequisites": ["first-ml-project"] },
     { "id": "deploying-models",    "lesson": "32-deploying-models",    "stage": 6, "grid": { "x": 1, "y": 6 }, "prerequisites": ["mlops-basics"] },

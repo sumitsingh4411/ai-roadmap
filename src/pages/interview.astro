@@ -1,0 +1,169 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { href } from '../lib/url';
+
+const SITE = 'https://sumitsingh4411.github.io/ai-roadmap';
+
+interface QA { q: string; a: string; lesson?: string; lessonName?: string; }
+interface Cat { icon: string; hue: string; title: string; qas: QA[]; }
+
+const cats: Cat[] = [
+  {
+    icon: '🐍', hue: '#22d3ee', title: 'Python, data & statistics',
+    qas: [
+      { q: 'Why are NumPy arrays faster than Python lists for numeric work?', a: 'A NumPy array is a contiguous block of one dtype, so operations run as compiled, vectorised C loops over the whole array at once — no per-element Python object overhead or type checks. A list holds boxed Python objects scattered in memory and must be looped one at a time.', lesson: 'numpy', lessonName: 'NumPy' },
+      { q: 'What is data leakage and how do you prevent it?', a: 'Leakage is when information from outside the training data (often the target, or the test set) sneaks into training, giving a falsely great score that collapses in production. Prevent it by splitting first, then fitting every transform (scalers, encoders, imputers) only on the training fold — never the whole dataset.', lesson: 'feature-engineering', lessonName: 'Feature Engineering' },
+      { q: 'Explain the bias–variance tradeoff.', a: 'Bias is error from a model too simple to capture the pattern (underfitting); variance is error from a model so flexible it memorises noise (overfitting). Increasing model complexity lowers bias but raises variance — you tune for the sweet spot with validation data.', lesson: 'ml-fundamentals', lessonName: 'ML Fundamentals' },
+      { q: 'What is a p-value — and what is it NOT?', a: 'It is the probability of seeing a result at least this extreme if the null hypothesis were true. It is NOT the probability the hypothesis is true, nor the size or importance of an effect. A small p-value means "surprising under the null", nothing more.', lesson: 'probability-stats', lessonName: 'Probability & Statistics' },
+      { q: 'How would you design an A/B test?', a: 'Define one metric and a hypothesis, randomly split users into control and variant, pick a sample size from the effect you care about and the significance/power you want, run until that size (not until it looks good), then test whether the difference is beyond what noise explains.', lesson: 'probability-stats', lessonName: 'Probability & Statistics' },
+      { q: 'How do you handle an imbalanced dataset?', a: 'First stop using accuracy — use precision/recall, F1, or ROC-AUC. Then options: resample (oversample the minority e.g. SMOTE, or undersample the majority), reweight the loss toward the minority class, or adjust the decision threshold. Match the choice to what a false positive vs false negative actually costs.', lesson: 'model-evaluation', lessonName: 'Model Evaluation' },
+    ],
+  },
+  {
+    icon: '🌳', hue: '#a78bfa', title: 'Classical machine learning',
+    qas: [
+      { q: 'Precision vs recall — and when do you optimise for each?', a: 'Precision = of the items you flagged, how many were right; recall = of the items that should have been flagged, how many you caught. Optimise precision when false positives are costly (spam filter binning real mail); optimise recall when false negatives are costly (missing a disease or fraud).', lesson: 'model-evaluation', lessonName: 'Model Evaluation' },
+      { q: 'Why can accuracy be misleading?', a: 'On imbalanced data a model can score high by ignoring the rare class — 99% accuracy predicting "not fraud" on data that is 99% not-fraud is useless. Accuracy hides which errors you make; precision, recall, and a confusion matrix show it.', lesson: 'model-evaluation', lessonName: 'Model Evaluation' },
+      { q: 'What is regularization? L1 vs L2?', a: 'Regularization penalises large weights to curb overfitting. L2 (Ridge) shrinks weights smoothly toward zero; L1 (Lasso) can drive some weights exactly to zero, doing feature selection. L1 gives sparse models; L2 handles correlated features more gracefully.', lesson: 'regression', lessonName: 'Regression' },
+      { q: 'Bagging vs boosting?', a: 'Bagging (e.g. random forests) trains many models in parallel on bootstrapped samples and averages them — it mainly reduces variance. Boosting (e.g. gradient boosting, XGBoost) trains models sequentially, each fixing the previous one’s mistakes — it mainly reduces bias but can overfit.', lesson: 'trees-ensembles', lessonName: 'Trees & Ensembles' },
+      { q: 'What is cross-validation and why use it?', a: 'k-fold CV splits the data into k parts, trains on k−1 and validates on the held-out fold, rotating through all k — then averages the scores. It uses all the data for both training and validation and gives a more stable estimate than a single split.', lesson: 'model-evaluation', lessonName: 'Model Evaluation' },
+      { q: 'What is the curse of dimensionality?', a: 'As features grow, data becomes sparse and distances between points become almost equal, so notions like "nearest neighbour" break down and models need exponentially more data. It motivates dimensionality reduction (PCA) and good feature selection.', lesson: 'clustering-pca', lessonName: 'Clustering & PCA' },
+    ],
+  },
+  {
+    icon: '🧠', hue: '#818cf8', title: 'Deep learning',
+    qas: [
+      { q: 'Why do neural nets need non-linear activation functions?', a: 'Stacking linear layers is still just one linear function — no matter how deep, it can only draw straight boundaries. A non-linearity (ReLU, etc.) between layers lets the network compose curves and represent arbitrarily complex functions.', lesson: 'neural-networks', lessonName: 'Neural Networks' },
+      { q: 'Explain backpropagation.', a: 'It is the chain rule applied layer by layer. After a forward pass computes the loss, backprop propagates the gradient of the loss backward through each layer, giving how much every weight contributed to the error — which the optimiser then uses to nudge weights downhill.', lesson: 'backprop-training', lessonName: 'Backprop & Training' },
+      { q: 'What is the vanishing gradient problem?', a: 'In deep or recurrent nets, gradients multiplied through many layers can shrink toward zero, so early layers barely learn. Fixes include ReLU activations, residual connections, careful init, batch norm, and gated units (LSTM/GRU) for sequences.', lesson: 'sequence-models', lessonName: 'Sequence Models' },
+      { q: 'Explain self-attention.', a: 'Each token computes a query, key, and value; it scores its query against every token’s key, softmaxes those scores into weights, and returns the weighted sum of values. This lets every token look at every other token directly — the core of the transformer.', lesson: 'transformers', lessonName: 'Transformers' },
+      { q: 'What is transfer learning?', a: 'Take a model pretrained on a huge dataset and adapt it to your smaller task — freeze or lightly fine-tune its learned features and train a new head. It gets strong results from little data because the low-level features (edges, textures, language patterns) transfer.', lesson: 'cnns-vision', lessonName: 'CNNs & Vision' },
+      { q: 'What do dropout and batch norm do?', a: 'Dropout randomly zeros a fraction of activations during training so the net can’t rely on any one unit — a regulariser that reduces overfitting. Batch norm normalises layer inputs per mini-batch, stabilising and speeding up training.', lesson: 'backprop-training', lessonName: 'Backprop & Training' },
+    ],
+  },
+  {
+    icon: '🤖', hue: '#fb7185', title: 'LLMs & generative AI',
+    qas: [
+      { q: 'How does an LLM actually generate text?', a: 'It predicts the probability of the next token given all previous tokens, samples one, appends it, and repeats. Everything — answering, coding, reasoning — is that one next-token loop over a huge learned distribution.', lesson: 'how-llms-work', lessonName: 'How LLMs Work' },
+      { q: 'What causes hallucinations and how do you reduce them?', a: 'The model optimises for plausible-sounding text, not truth, so with weak or missing knowledge it confidently fabricates. Reduce it by grounding answers in retrieved sources (RAG), asking for citations, lowering temperature, and adding evals/guardrails — you reduce, not eliminate.', lesson: 'rag', lessonName: 'RAG' },
+      { q: 'RAG vs fine-tuning — when do you use each?', a: 'RAG injects fresh or private knowledge at query time by retrieving relevant text into the prompt — best for facts that change or must be cited. Fine-tuning changes the model’s weights — best for teaching a style, format, or skill. Often you prompt first, add RAG for knowledge, and fine-tune last.', lesson: 'fine-tuning', lessonName: 'Fine-tuning' },
+      { q: 'What is an embedding, and what is a vector database for?', a: 'An embedding maps text (or images) to a vector where similar meanings sit close together. A vector database stores millions of these and finds the nearest ones fast with approximate-nearest-neighbour indexes — the retrieval backbone of RAG and semantic search.', lesson: 'vector-databases', lessonName: 'Vector Databases' },
+      { q: 'What is LoRA / parameter-efficient fine-tuning?', a: 'Instead of updating all of a model’s weights, LoRA freezes them and trains small low-rank adapter matrices added alongside — a tiny fraction of the parameters. You get most of the benefit of fine-tuning at a fraction of the compute and storage.', lesson: 'fine-tuning', lessonName: 'Fine-tuning' },
+      { q: 'What is an AI agent, and what is a "harness"?', a: 'An agent is an LLM in a loop that can call tools: the model decides an action, the program runs it, feeds the result back, and repeats until done. The harness is that surrounding program — the tool registry, the loop, history, and the guards that make it reliable.', lesson: 'agent-harness', lessonName: 'Build an Agent Harness' },
+      { q: 'How do you evaluate an LLM application?', a: 'Manual spot-checking doesn’t scale. Build an eval set of inputs with expected properties, score outputs automatically (exact match, rules, or an LLM-as-judge), and run it like a regression test on every prompt or model change — while watching the judge’s own biases.', lesson: 'evals-guardrails', lessonName: 'Evals & Guardrails' },
+    ],
+  },
+  {
+    icon: '🏗️', hue: '#2dd4bf', title: 'ML system design',
+    qas: [
+      { q: 'How would you build a RAG chatbot over a company’s docs?', a: 'Ingest and chunk the docs, embed each chunk into a vector database, and at query time embed the question, retrieve the top-k relevant chunks, put them in the prompt, and have the LLM answer grounded in them — with citations, guardrails, and evals to catch regressions.', lesson: 'rag', lessonName: 'RAG' },
+      { q: 'How do you deploy a model to production?', a: 'Wrap it behind an API (e.g. FastAPI) with validated request/response schemas, containerise it (Docker), and serve it — choosing batch vs real-time by latency needs. Then add monitoring, logging, and versioning so you can roll back.', lesson: 'deploying-models', lessonName: 'Deploying a Model' },
+      { q: 'What is model/data drift and how do you monitor it?', a: 'Drift is when live data diverges from training data (data drift) or the input→output relationship changes (concept drift), so accuracy silently decays. Monitor input distributions and, when labels arrive, live metrics — and retrain or alert when they move.', lesson: 'mlops-basics', lessonName: 'MLOps Basics' },
+      { q: 'How do you scale similarity search to millions of vectors?', a: 'Brute-force cosine is O(n) and stops scaling, so use an approximate-nearest-neighbour index (HNSW, IVF) in a vector database — trading a little recall for huge speed, plus metadata filters and sharding.', lesson: 'vector-databases', lessonName: 'Vector Databases' },
+      { q: 'How would you design a recommendation system?', a: 'Start with the signal: content-based (item features) for cold start, collaborative filtering (the user–item matrix) once you have interactions, and matrix factorization / embeddings at scale. Serve candidates fast, then rerank, and measure with online metrics, not just offline scores.', lesson: 'recommender-systems', lessonName: 'Recommender Systems' },
+    ],
+  },
+  {
+    icon: '💬', hue: '#fbbf24', title: 'Practical & behavioural',
+    qas: [
+      { q: 'How do you approach a brand-new ML problem end to end?', a: 'Frame the problem and the metric first, explore and clean the data, build a dumb baseline, then iterate: features, model, evaluation on a held-out set — and only ship if it beats the baseline by enough to matter. Simple and correct beats clever and fragile.', lesson: 'first-ml-project', lessonName: 'First ML Project' },
+      { q: 'A model works in your notebook but fails in production. How do you debug?', a: 'Check for train/serve skew: different preprocessing, a scaler fit on the wrong data, feature order, dtypes, or data drift. Reproduce with the exact production input, compare features at each step, and add logging — it is almost always the data pipeline, not the model.', lesson: 'mlops-basics', lessonName: 'MLOps Basics' },
+      { q: 'How do you decide whether a problem even needs ML?', a: 'If a few clear rules solve it, use rules — they’re cheaper and debuggable. ML earns its complexity only when the pattern is real but too intricate to hand-code, you have representative labelled data, and being occasionally wrong is acceptable.', lesson: 'what-is-ai', lessonName: 'What AI Actually Is' },
+      { q: 'How do you keep up with a field moving this fast?', a: 'Depth over hype: master the fundamentals (they change slowly), follow a few high-signal sources, and learn new things by building with them. The "What’s next" page collects free courses, books, and newsletters worth your time.', lesson: undefined, lessonName: undefined },
+    ],
+  },
+];
+
+const faqSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: cats.flatMap((c) =>
+    c.qas.map((qa) => ({ '@type': 'Question', name: qa.q, acceptedAnswer: { '@type': 'Answer', text: qa.a } })),
+  ),
+};
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'AI Roadmap', item: `${SITE}/` },
+    { '@type': 'ListItem', position: 2, name: 'Interview Prep', item: `${SITE}/interview` },
+  ],
+};
+const totalQ = cats.reduce((n, c) => n + c.qas.length, 0);
+---
+<BaseLayout
+  title="AI & ML Interview Questions"
+  description={`${totalQ} common machine-learning, deep-learning, and LLM interview questions with clear answers — bias-variance, precision vs recall, attention, RAG vs fine-tuning, system design, and more. Free, and linked to the lesson that teaches each.`}
+  keywords="machine learning interview questions, AI interview prep, ML interview questions and answers, deep learning interview, LLM interview questions, data science interview, ML system design interview"
+  jsonLd={[faqSchema, breadcrumbSchema]}
+  wide
+>
+  <header class="iv-head">
+    <p class="iv-eyebrow">Interview prep</p>
+    <h1><span class="grad">{totalQ} questions</span> you'll actually be asked</h1>
+    <p class="iv-sub">
+      The machine-learning, deep-learning, and LLM questions that come up again and again —
+      each with a clear, correct answer, and a link to the lesson that teaches it properly.
+      Read the answer, then go learn the "why".
+    </p>
+    <div class="iv-toc">
+      {cats.map((c) => <a href={`#${c.title.toLowerCase().replace(/[^a-z]+/g, '-')}`}>{c.icon} {c.title}</a>)}
+    </div>
+  </header>
+
+  <div class="iv-cats">
+    {cats.map((c) => (
+      <section class="iv-cat" id={c.title.toLowerCase().replace(/[^a-z]+/g, '-')} style={`--hue:${c.hue}`}>
+        <h2><span class="iv-icon" aria-hidden="true">{c.icon}</span> {c.title} <span class="iv-count">{c.qas.length}</span></h2>
+        <div class="iv-list">
+          {c.qas.map((qa) => (
+            <details class="iv-item">
+              <summary>{qa.q}</summary>
+              <div class="iv-answer">
+                <p>{qa.a}</p>
+                {qa.lesson && <a class="iv-lesson" href={href(`/lessons/${qa.lesson}`)}>Learn it → {qa.lessonName}</a>}
+              </div>
+            </details>
+          ))}
+        </div>
+      </section>
+    ))}
+  </div>
+
+  <p class="iv-foot">
+    Want the full picture behind these answers? Work through the
+    <a href={href('/roadmap')}>roadmap</a>, then build the
+    <a href={href('/projects')}>projects</a> — nothing proves you can do the job like shipped work.
+  </p>
+</BaseLayout>
+
+<style>
+  .iv-head { border-bottom: 1px solid var(--border); margin: 0 auto 2.5rem; max-width: 64ch; padding-bottom: 2rem; text-align: center; }
+  .iv-eyebrow { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 0.14em; margin: 0 0 0.6rem; text-transform: uppercase; }
+  .iv-head h1 { font-size: clamp(1.9rem, 5vw, 3rem); letter-spacing: -0.03em; line-height: 1.08; margin: 0; }
+  .grad { background: linear-gradient(100deg, var(--violet-400), var(--cyan-300)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .iv-sub { color: var(--text-muted); font-size: 1.02rem; margin: 1rem auto 1.4rem; max-width: 58ch; }
+  .iv-toc { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+  .iv-toc a { background: var(--surface); border: 1px solid var(--border); border-radius: 999px; color: var(--text-muted); font-size: 0.78rem; padding: 0.3rem 0.75rem; text-decoration: none; }
+  .iv-toc a:hover { border-color: var(--border-bright); color: var(--text); }
+
+  .iv-cats { display: flex; flex-direction: column; gap: 2.5rem; margin: 0 auto; max-width: 52rem; }
+  .iv-cat h2 { align-items: center; display: flex; font-size: 1.3rem; gap: 0.5rem; letter-spacing: -0.02em; margin: 0 0 1rem; scroll-margin-top: 1.5rem; }
+  .iv-icon { align-items: center; background: color-mix(in srgb, var(--hue) 16%, transparent); border: 1px solid color-mix(in srgb, var(--hue) 40%, var(--border)); border-radius: 10px; display: inline-flex; height: 38px; justify-content: center; width: 38px; }
+  .iv-count { color: var(--text-muted); font-family: var(--font-mono); font-size: 0.85rem; margin-left: auto; }
+  .iv-list { display: flex; flex-direction: column; gap: 0.55rem; }
+  .iv-item { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 0 1.1rem; transition: border-color 0.2s; }
+  .iv-item[open] { border-color: color-mix(in srgb, var(--hue) 45%, var(--border)); }
+  .iv-item summary { cursor: pointer; font-size: 0.98rem; font-weight: 600; list-style: none; padding: 0.9rem 1.6rem 0.9rem 0; position: relative; }
+  .iv-item summary::-webkit-details-marker { display: none; }
+  .iv-item summary::after { color: var(--hue); content: '+'; font-size: 1.3rem; position: absolute; right: 0.2rem; top: 50%; transform: translateY(-50%); }
+  .iv-item[open] summary::after { content: '−'; }
+  .iv-answer { padding: 0 0 1rem; }
+  .iv-answer p { color: var(--text-muted); line-height: 1.6; margin: 0 0 0.6rem; }
+  .iv-lesson { color: var(--hue); font-size: 0.85rem; font-weight: 600; text-decoration: none; }
+  .iv-lesson:hover { text-decoration: underline; }
+
+  .iv-foot { border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.9rem; margin: 3rem auto 0; max-width: 52rem; padding-top: 1.5rem; text-align: center; }
+  .iv-foot a { color: var(--accent-2); text-decoration: none; }
+  .iv-foot a:hover { text-decoration: underline; }
+</style>

@@ -42,7 +42,7 @@ out += `${badge('stages', String(stageCount), '38bdf8')} `;
 out += `${badge('license', 'MIT · CC BY 4.0', '2dd4bf')} `;
 out += `${badge('PRs', 'welcome', 'fb7185')}\n\n`;
 out += `**[🌐 Open the site](${SITE})** &nbsp;·&nbsp; **[▶️ Start lesson 1](${SITE}/lessons/${ordered[0].id})** &nbsp;·&nbsp; `;
-out += `**[🗺️ Roadmap](${SITE}/roadmap)** &nbsp;·&nbsp; **[🛠️ Projects](${SITE}/projects)** &nbsp;·&nbsp; **[🎯 What's next](${SITE}/advanced)**\n\n`;
+out += `**[🗺️ Roadmap](${SITE}/roadmap)** &nbsp;·&nbsp; **[🛠️ Projects](${SITE}/projects)** &nbsp;·&nbsp; **[💬 Interview prep](${SITE}/interview)** &nbsp;·&nbsp; **[📑 Cheat sheets](${SITE}/cheatsheets)** &nbsp;·&nbsp; **[🎯 What's next](${SITE}/advanced)**\n\n`;
 out += `</div>\n\n`;
 out += `---\n\n`;
 
@@ -64,7 +64,27 @@ out += `> **New to all this?** Do the lessons in order. Already know some? Each 
 
 // ---------- Curriculum ----------
 out += `## 🗺️ The curriculum\n\n`;
-out += `**${lessonCount} lessons · ${stageCount} stages · ~${hours} hours.** Click any lesson to read it right here on GitHub.\n\n`;
+out += `**${lessonCount} lessons · ${stageCount} stages · ~${hours} hours.** Seven stages, each building on the last:\n\n`;
+// Mermaid stage-flow (renders natively on GitHub)
+{
+  const flowStages = roadmap.stages.filter((s) => ordered.some((n) => n.stage === s.id));
+  out += '```mermaid\n';
+  out += 'flowchart LR\n';
+  flowStages.forEach((s) => {
+    const count = ordered.filter((n) => n.stage === s.id).length;
+    out += `    S${s.id}["${EMOJI[s.id]} ${s.name}<br/><small>${count} lessons</small>"]\n`;
+  });
+  out += '    ' + flowStages.map((s) => `S${s.id}`).join(' --> ') + '\n';
+  flowStages.forEach((s) => {
+    out += `    class S${s.id} s${s.id};\n`;
+  });
+  const COLORS: Record<number, string> = { 0: '#8b5cf6', 1: '#6366f1', 2: '#38bdf8', 3: '#22d3ee', 4: '#2dd4bf', 5: '#f59e0b', 6: '#fb7185' };
+  flowStages.forEach((s) => {
+    out += `    classDef s${s.id} fill:${COLORS[s.id]}22,stroke:${COLORS[s.id]},stroke-width:2px,color:#e5e7eb;\n`;
+  });
+  out += '```\n\n';
+}
+out += `Click any lesson to read it right here on GitHub.\n\n`;
 out += `| Stage | Focus | Lessons |\n|---|---|:--:|\n`;
 for (const stage of roadmap.stages) {
   const ls = ordered.filter((n) => n.stage === stage.id);
@@ -93,6 +113,12 @@ out += `- 🟦 **Beginner** — Titanic predictor, a stats CLI, an MNIST digit r
 out += `- 🟪 **Intermediate** — semantic search, transfer-learning image classifier, an end-to-end churn model.\n`;
 out += `- 🟥 **Advanced / GenAI** — a RAG chatbot over your docs, LoRA fine-tuning, an AI agent, reproduce nanoGPT.\n`;
 out += `- 🟨 **Capstone** — a full-stack AI product, a Kaggle competition, reproduce a paper, an open-source contribution.\n\n`;
+
+// ---------- Interview prep & cheat sheets ----------
+out += `## 💬 Interview prep & cheat sheets\n\n`;
+out += `Two extras to get you job-ready and keep you fast:\n\n`;
+out += `- **[Interview questions](${SITE}/interview)** — the ML, deep-learning, LLM, and system-design questions that actually come up, each with a clear answer and a link to the lesson that teaches it.\n`;
+out += `- **[Cheat sheets](${SITE}/cheatsheets)** — one-page quick reference for Python, NumPy, pandas, scikit-learn, PyTorch, prompting, and the core ML concepts. Bookmark it.\n\n`;
 
 // ---------- What's next ----------
 out += `## 🎯 After the roadmap\n\n`;
